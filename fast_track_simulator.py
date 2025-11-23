@@ -52,30 +52,35 @@ class PolicySettings:
 
 @dataclass
 class AMI_Data:
-    """2025 Delta County AMI data"""
-    ami_60_2person: float = 39020
-    ami_80_2person: float = 52050
-    ami_100_2person: float = 65100
-    ami_110_2person: float = 71610
-    ami_120_2person: float = 78120
+    """2025 Delta County AMI data from CHFA"""
+    # 2025 Income Limits (2 Person Household)
+    ami_60_2person: float = 48960
+    ami_70_2person: float = 57120
+    ami_80_2person: float = 65280
+    ami_90_2person: float = 73440
+    ami_100_2person: float = 81600
+    ami_110_2person: float = 89760
+    ami_120_2person: float = 97920
 
     def get_affordable_rent(self, ami_pct: float) -> float:
-        """Calculate affordable rent at given AMI percentage (2-person HH)"""
-        if ami_pct == 0.60:
-            income = self.ami_60_2person
-        elif ami_pct == 0.80:
-            income = self.ami_80_2person
-        elif ami_pct == 1.00:
-            income = self.ami_100_2person
-        elif ami_pct == 1.10:
-            income = self.ami_110_2person
-        elif ami_pct == 1.20:
-            income = self.ami_120_2person
+        """Get CHFA maximum rent at given AMI percentage (2BR units)
+        Source: 2025 Delta County CHFA Maximum Rents"""
+        # Use official CHFA maximum rents for 2BR units
+        rent_table = {
+            0.60: 1377,
+            0.70: 1606,
+            0.80: 1836,
+            0.90: 2065,
+            1.00: 2295,
+            1.10: 2524,
+            1.20: 2754
+        }
+
+        if ami_pct in rent_table:
+            return rent_table[ami_pct]
         else:
             # Linear interpolation for other values
-            income = ami_pct * self.ami_100_2person
-
-        return (income * 0.30) / 12  # 30% of monthly income
+            return ami_pct * rent_table[1.00]
 
     def get_affordable_purchase_price(self, ami_pct: float) -> float:
         """Estimate affordable purchase price at given AMI"""
