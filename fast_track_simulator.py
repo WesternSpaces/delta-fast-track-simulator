@@ -23,6 +23,7 @@ class ProjectParams:
     construction_cost_per_unit: float = 75000  # Conservative estimate
     land_dev_value_per_unit: float = 90000
     market_rent_2br: float = 1425  # Current Delta market
+    market_sale_price: float = 334000  # Median home price in Delta
     construction_valuation: float = 9600000  # For fee calculations
 
 @dataclass
@@ -33,6 +34,7 @@ class PolicySettings:
     rental_ami_threshold: float = 0.80  # 60% or 80%
     ownership_ami_threshold: float = 1.00  # 100%, 110%, or 120%
     min_affordable_pct: float = 0.25  # 25% of original units
+    ownership_pct: float = 0.0  # % of affordable units that are ownership (0-1)
 
     # Density bonus
     density_bonus_pct: float = 0.20  # Up to 20%
@@ -170,6 +172,10 @@ class DeveloperProForma:
         total_affordable = base_affordable + bonus_affordable
         market_rate_units = total_units - total_affordable
 
+        # Split affordable units into rental vs ownership
+        ownership_affordable = int(total_affordable * self.policy.ownership_pct)
+        rental_affordable = total_affordable - ownership_affordable
+
         # DEVELOPER BENEFITS
 
         # 1. Density bonus value
@@ -210,16 +216,27 @@ class DeveloperProForma:
 
         # DEVELOPER COSTS
 
-        # Lost rent from affordable units
+        # 1. Lost rent from rental affordable units (over affordability period)
+        # NOTE: Model assumes developer retains ownership and manages rental units
         market_rent = self.project.market_rent_2br
         affordable_rent = self.ami.get_affordable_rent(self.policy.rental_ami_threshold)
         monthly_rent_gap = max(0, market_rent - affordable_rent)
 
-        total_lost_rent = (monthly_rent_gap * total_affordable * 12 *
+        total_lost_rent = (monthly_rent_gap * rental_affordable * 12 *
                           self.policy.affordability_period_years)
 
+        # 2. Lost profit from ownership affordable units (one-time at sale)
+        market_sale_price = self.project.market_sale_price
+        affordable_sale_price = self.ami.get_affordable_purchase_price(self.policy.ownership_ami_threshold)
+        per_unit_sale_gap = max(0, market_sale_price - affordable_sale_price)
+
+        total_lost_sale_profit = per_unit_sale_gap * ownership_affordable
+
+        # Total developer costs
+        total_developer_costs = total_lost_rent + total_lost_sale_profit
+
         # Net developer position
-        net_developer_gain = total_benefits - total_lost_rent
+        net_developer_gain = total_benefits - total_developer_costs
 
         # ROI calculation
         total_project_cost = (total_units * self.project.construction_cost_per_unit +
@@ -234,6 +251,8 @@ class DeveloperProForma:
             'base_affordable': base_affordable,
             'bonus_affordable': bonus_affordable,
             'total_affordable': total_affordable,
+            'rental_affordable': rental_affordable,
+            'ownership_affordable': ownership_affordable,
             'market_rate_units': market_rate_units,
 
             # Financial - Benefits
@@ -247,13 +266,20 @@ class DeveloperProForma:
             'time_savings': time_savings,
             'total_benefits': total_benefits,
 
-            # Financial - Costs
+            # Financial - Costs (Rental)
             'market_rent': market_rent,
             'affordable_rent': affordable_rent,
             'monthly_rent_gap': monthly_rent_gap,
             'total_lost_rent': total_lost_rent,
 
+            # Financial - Costs (Ownership)
+            'market_sale_price': market_sale_price,
+            'affordable_sale_price': affordable_sale_price,
+            'per_unit_sale_gap': per_unit_sale_gap,
+            'total_lost_sale_profit': total_lost_sale_profit,
+
             # Bottom line
+            'total_developer_costs': total_developer_costs,
             'net_developer_gain': net_developer_gain,
             'total_project_cost': total_project_cost,
             'roi_pct': roi_pct,
@@ -378,6 +404,11 @@ def main():
             color: #3498db;
         }
 
+        /* Sidebar labels - make them visible on dark background */
+        [data-testid="stSidebar"] label {
+            color: #ecf0f1 !important;
+        }
+
         /* Tabs */
         .stTabs [data-baseweb="tab-list"] {
             gap: 8px;
@@ -484,8 +515,8 @@ def main():
 
     rental_ami = st.sidebar.select_slider(
         "Rental AMI Threshold",
-        options=[0.60, 0.80],
-        value=0.80,
+        options=[0.60, 0.70, 0.80, 0.90, 1.00, 1.10, 1.20],
+        value=0.60,
         format_func=lambda x: f"{int(x*100)}% AMI (${ami_data.get_affordable_rent(x):.0f}/mo)",
         help="Income limit for affordable rental units"
     )
@@ -497,6 +528,16 @@ def main():
         format_func=lambda x: f"{int(x*100)}% AMI (${ami_data.get_affordable_purchase_price(x):,.0f})",
         help="Income limit for affordable for-sale units"
     )
+
+    ownership_pct = st.sidebar.slider(
+        "% of Affordable Units as Ownership",
+        min_value=0,
+        max_value=100,
+        value=0,
+        step=10,
+        format="%d%%",
+        help="What percentage of affordable units will be for-sale (ownership) vs rental? Remaining will be rental."
+    ) / 100  # Convert to decimal
 
     min_affordable_pct = st.sidebar.slider(
         "Minimum Affordable % (of base units)",
@@ -610,6 +651,7 @@ def main():
         construction_cost_per_unit=construction_cost,
         land_dev_value_per_unit=land_value,
         market_rent_2br=market_rent,
+        market_sale_price=334000,  # Median home price in Delta (from Fast Track Quick Reference)
         construction_valuation=construction_valuation
     )
 
@@ -618,6 +660,7 @@ def main():
         rental_ami_threshold=rental_ami,
         ownership_ami_threshold=ownership_ami,
         min_affordable_pct=min_affordable_pct,
+        ownership_pct=ownership_pct,
         density_bonus_pct=density_bonus_pct,
         bonus_affordable_req=bonus_affordable_req,
         waive_planning_fees=waive_planning,
@@ -656,12 +699,16 @@ def main():
 
     with col2:
         affordable_pct = (dev_results['total_affordable']/dev_results['total_units']*100)
+        rental_units = dev_results['rental_affordable']
+        ownership_units = dev_results['ownership_affordable']
+        breakdown = f"{rental_units} rental, {ownership_units} ownership" if ownership_units > 0 else f"{rental_units} rental units"
+
         st.markdown(f"""
             <div style='background-color: #e8f8f5; padding: 20px; border-radius: 10px;
                         border-left: 5px solid #27ae60;'>
                 <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>AFFORDABLE UNITS</p>
                 <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>{dev_results['total_affordable']}</p>
-                <p style='color: #27ae60; font-size: 14px; margin: 0;'>{affordable_pct:.0f}% of total</p>
+                <p style='color: #27ae60; font-size: 14px; margin: 0;'>{breakdown}</p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -738,25 +785,59 @@ def main():
 
         with col_b:
             st.markdown("### Costs to Developer")
+            st.markdown("*Note: Model assumes developer retains ownership and manages rental units over the affordability period.*")
 
             costs_data = {
-                'Category': [
+                'Category': [],
+                'Amount': []
+            }
+
+            # Rental costs (if any)
+            if dev_results['rental_affordable'] > 0:
+                costs_data['Category'].extend([
+                    '**RENTAL UNITS:**',
                     'Market Rent (2BR)',
                     'Affordable Rent (2BR)',
                     'Monthly Rent Gap',
-                    f'× {dev_results["total_affordable"]} units',
+                    f'× {dev_results["rental_affordable"]} rental units',
                     f'× {policy.affordability_period_years} years',
-                    '**TOTAL LOST RENT**'
-                ],
-                'Amount': [
+                    'Subtotal Lost Rent'
+                ])
+                costs_data['Amount'].extend([
+                    '',
                     f"${dev_results['market_rent']:,.0f}",
                     f"${dev_results['affordable_rent']:,.0f}",
                     f"${dev_results['monthly_rent_gap']:,.0f}",
                     '',
                     '',
-                    f"**${dev_results['total_lost_rent']:,.0f}**"
-                ]
-            }
+                    f"${dev_results['total_lost_rent']:,.0f}"
+                ])
+
+            # Ownership costs (if any)
+            if dev_results['ownership_affordable'] > 0:
+                costs_data['Category'].extend([
+                    '',
+                    '**OWNERSHIP UNITS:**',
+                    'Market Sale Price',
+                    'Affordable Sale Price',
+                    'Per Unit Gap',
+                    f'× {dev_results["ownership_affordable"]} ownership units',
+                    'Subtotal Lost Profit'
+                ])
+                costs_data['Amount'].extend([
+                    '',
+                    '',
+                    f"${dev_results['market_sale_price']:,.0f}",
+                    f"${dev_results['affordable_sale_price']:,.0f}",
+                    f"${dev_results['per_unit_sale_gap']:,.0f}",
+                    '',
+                    f"${dev_results['total_lost_sale_profit']:,.0f}"
+                ])
+
+            # Total
+            costs_data['Category'].extend(['', '**TOTAL DEVELOPER COSTS**'])
+            costs_data['Amount'].extend(['', f"**${dev_results['total_developer_costs']:,.0f}**"])
+
             st.table(pd.DataFrame(costs_data))
 
         st.markdown("---")
