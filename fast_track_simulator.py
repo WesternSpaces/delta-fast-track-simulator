@@ -898,33 +898,86 @@ def main():
         with col_e:
             st.metric("Return on Investment", f"{dev_results['roi_pct']:.2f}%")
 
-        # Waterfall chart
-        st.markdown("### Financial Waterfall")
+        # Stacked bar chart: Benefits vs Costs
+        st.markdown("### Developer Financial Impact")
 
-        fig = go.Figure(go.Waterfall(
-            orientation="v",
-            measure=["relative", "relative", "relative", "relative", "total"],
-            x=["Density Bonus", "Fee Waivers", "Time Savings", "Lost Rent", "Net Position"],
-            y=[
-                dev_results['density_bonus_value'],
-                dev_results['total_fee_waivers'],
-                dev_results['time_savings'],
-                -dev_results['total_lost_rent'],
-                dev_results['net_developer_gain']
-            ],
-            connector={"line": {"color": "rgb(63, 63, 63)"}},
-            decreasing={"marker": {"color": "#EF553B"}},
-            increasing={"marker": {"color": "#00CC96"}},
-            totals={"marker": {"color": "#636EFA"}}
+        # Prepare data for stacked bars
+        benefits_components = ['Density Bonus', 'Fee Waivers', 'Time Savings']
+        benefits_values = [
+            dev_results['density_bonus_value'],
+            dev_results['total_fee_waivers'],
+            dev_results['time_savings']
+        ]
+
+        # Build cost components dynamically based on what's present
+        costs_components = []
+        costs_values = []
+
+        if dev_results['rental_affordable'] > 0:
+            costs_components.append('Rental Costs')
+            costs_values.append(dev_results['total_lost_rent'])
+
+        if dev_results['ownership_affordable'] > 0:
+            costs_components.append('Ownership Costs')
+            costs_values.append(dev_results['total_lost_sale_profit'])
+
+        # Create stacked bar chart
+        fig = go.Figure()
+
+        # Benefits stack (green shades)
+        benefit_colors = ['#27ae60', '#2ecc71', '#58d68d']
+        for i, (component, value) in enumerate(zip(benefits_components, benefits_values)):
+            fig.add_trace(go.Bar(
+                name=component,
+                x=['Benefits'],
+                y=[value],
+                marker_color=benefit_colors[i],
+                text=f"${value:,.0f}",
+                textposition='inside',
+                hovertemplate=f'{component}: ${value:,.0f}<extra></extra>'
+            ))
+
+        # Costs stack (red shades)
+        cost_colors = ['#e74c3c', '#ec7063']
+        for i, (component, value) in enumerate(zip(costs_components, costs_values)):
+            fig.add_trace(go.Bar(
+                name=component,
+                x=['Costs'],
+                y=[value],
+                marker_color=cost_colors[i % len(cost_colors)],
+                text=f"${value:,.0f}",
+                textposition='inside',
+                hovertemplate=f'{component}: ${value:,.0f}<extra></extra>'
+            ))
+
+        # Add net position as separate bar
+        net_color = '#27ae60' if dev_results['net_developer_gain'] > 0 else '#e74c3c'
+        fig.add_trace(go.Bar(
+            name='Net Position',
+            x=['Net Position'],
+            y=[abs(dev_results['net_developer_gain'])],
+            marker_color=net_color,
+            text=f"${dev_results['net_developer_gain']:,.0f}",
+            textposition='outside',
+            hovertemplate=f"Net Developer Gain: ${dev_results['net_developer_gain']:,.0f}<extra></extra>"
         ))
 
         fig.update_layout(
-            title="Developer Financial Impact",
-            showlegend=False,
-            height=400
+            barmode='stack',
+            height=400,
+            showlegend=True,
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            yaxis_title="Amount ($)",
+            xaxis_title="",
+            hovermode='x unified'
         )
 
         st.plotly_chart(fig, use_container_width=True)
+
+        # Add summary below chart
+        total_benefits = sum(benefits_values)
+        total_costs = sum(costs_values)
+        st.caption(f"**Total Benefits:** ${total_benefits:,.0f} | **Total Costs:** ${total_costs:,.0f} | **Net Gain:** ${dev_results['net_developer_gain']:,.0f}")
 
     with tab2:
         st.subheader("Community Benefit Analysis")
