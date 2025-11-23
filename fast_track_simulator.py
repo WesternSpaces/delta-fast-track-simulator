@@ -979,6 +979,7 @@ def main():
                     rental_ami_threshold=rental_ami,
                     ownership_ami_threshold=ownership_ami,
                     min_affordable_pct=min_affordable_pct,
+                    ownership_pct=ownership_pct,
                     density_bonus_pct=density_bonus_pct,
                     bonus_affordable_req=bonus_affordable_req,
                     waive_planning_fees=waive_planning,
@@ -1024,6 +1025,7 @@ def main():
                     rental_ami_threshold=ami_pct,
                     ownership_ami_threshold=ownership_ami,
                     min_affordable_pct=min_affordable_pct,
+                    ownership_pct=ownership_pct,
                     density_bonus_pct=density_bonus_pct,
                     bonus_affordable_req=bonus_affordable_req,
                     waive_planning_fees=waive_planning,
@@ -1054,6 +1056,7 @@ def main():
                 rental_ami_threshold=rental_ami,
                 ownership_ami_threshold=ownership_ami,
                 min_affordable_pct=min_affordable_pct,
+                ownership_pct=ownership_pct,
                 density_bonus_pct=density_bonus_pct,
                 bonus_affordable_req=bonus_affordable_req,
                 waive_planning_fees=waive_planning,
@@ -1070,7 +1073,7 @@ def main():
             scatter_data.append({
                 'Years': years,
                 'Cost per Unit-Year': temp_comm_results['cost_per_unit_year'],
-                'Developer Net': temp_results['net_developer_gain'],
+                'Developer Net': abs(temp_results['net_developer_gain']),  # Use absolute value for size
                 'Feasible': 'Yes' if temp_results['developer_feasible'] else 'No'
             })
 
