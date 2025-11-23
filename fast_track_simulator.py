@@ -406,7 +406,7 @@ def main():
         }
 
         [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-            color: #3498db;
+            color: #ecf0f1;
         }
 
         /* Sidebar labels - make them visible on dark background */
@@ -543,6 +543,9 @@ def main():
         format="%d%%",
         help="What percentage of affordable units will be for-sale (ownership) vs rental? Remaining will be rental."
     ) / 100  # Convert to decimal
+
+    # Show inverse rental percentage for clarity
+    st.sidebar.caption(f"↳ Rental: {100 - int(ownership_pct*100)}%")
 
     min_affordable_pct = st.sidebar.slider(
         "Minimum Affordable % (of base units)",
@@ -759,6 +762,44 @@ def main():
     with tab1:
         st.subheader("Developer Pro Forma")
 
+        # How the Numbers Work expander
+        with st.expander("ℹ️ How the Numbers Work"):
+            st.markdown("""
+            ### Model Assumptions
+
+            **Rental Units:**
+            - Developer retains ownership and manages rental units over the entire affordability period
+            - Cost = monthly rent gap × rental units × 12 months × affordability years
+            - Longer affordability periods = higher developer costs
+
+            **Ownership Units:**
+            - Developer sells units at affordable price (one-time discount)
+            - Cost = (market price - affordable price) × ownership units
+            - Affordability period enforced through deed restrictions/resale controls
+            - Developer cost is upfront at sale; period doesn't affect developer's bottom line
+
+            ### Calculation Methodology
+
+            **Developer Benefits:**
+            1. **Density Bonus Value:** Additional units allowed × (construction cost + land value per unit)
+               - Construction cost: $75,000/unit (conservative estimate)
+               - Land/development value: $90,000/unit
+            2. **Fee Waivers:** Building permits + tap/sewer fees + use tax rebate + planning fees
+               - Based on City of Delta 2025 Fee Schedule
+            3. **Fast Track Time Savings:** $50,000 in reduced carrying costs
+
+            **Developer Costs:**
+            1. **Rental Units:** Monthly gap between market rent ($1,425) and affordable rent (CHFA limits) over full period
+            2. **Ownership Units:** Gap between market sale price ($334,000 median) and affordable sale price (based on AMI)
+
+            ### Data Sources
+            - **Rental Limits:** 2025 CHFA Maximum Rents for Delta County (2BR units)
+            - **Income Limits:** 2025 HUD Area Median Income for Delta County
+            - **Fee Schedule:** City of Delta 2025 Fee Schedule (official)
+            - **Market Data:** $1,425/mo market rent, $334,000 median home price
+            - **Construction Costs:** Industry standard estimates for multi-family development
+            """)
+
         col_a, col_b = st.columns(2)
 
         with col_a:
@@ -790,7 +831,6 @@ def main():
 
         with col_b:
             st.markdown("### Costs to Developer")
-            st.markdown("*Note: Model assumes developer retains ownership and manages rental units over the affordability period.*")
 
             costs_data = {
                 'Category': [],
@@ -889,61 +929,119 @@ def main():
     with tab2:
         st.subheader("Community Benefit Analysis")
 
+        # How the Numbers Work expander
+        with st.expander("ℹ️ How the Numbers Work"):
+            st.markdown("""
+            ### Key Metrics Explained
+
+            **Cost per Unit-Year:**
+            - Normalizes city investment across different affordability periods
+            - Calculation: Total city investment ÷ (affordable units × years)
+            - Lower is better = more efficient use of city resources
+            - Allows apples-to-apples comparison of different term lengths
+
+            **Total Unit-Years:**
+            - Measures total duration of affordability created
+            - Calculation: Affordable units × affordability period
+            - Example: 7 units for 30 years = 210 unit-years
+
+            **20-Year Total Cost:**
+            - Projects long-term budget impact
+            - Shows cost to maintain affordable units over 20 years
+            - Short terms require re-incentivizing units multiple times
+            - Formula: City investment × (20 ÷ affordability period)
+
+            ### Ownership Unit Wealth-Building
+
+            **How Ownership Units Build Wealth:**
+
+            Affordable ownership units help buyers build wealth through home equity. Even with deed restrictions that may cap appreciation, homeowners benefit from:
+            - **Monthly payments building equity** instead of paying rent to a landlord
+            - **Appreciation within allowed limits** (varies by program and deed restriction terms)
+            - **Asset ownership and housing stability** that rental cannot provide
+            - **Forced savings** through mortgage principal paydown
+
+            The "developer cost" shown in this tool reflects the one-time discount at initial sale. The buyer's long-term wealth gain depends on:
+            - Market appreciation rates
+            - Deed restriction terms (resale price caps, shared equity formulas, etc.)
+            - Length of homeownership
+            - Maintenance and improvements made to the property
+
+            These factors vary significantly and are not calculated in this model. The primary benefit is that buyers are building equity in an asset they own, rather than paying rent.
+
+            ### City Investment Components
+            - **Density Bonus Value:** Revenue foregone by allowing more units without charging impact fees
+            - **Fee Waivers:** Direct cost to city for waived building permits, tap fees, etc.
+            - **Use Tax Rebate:** Sales tax revenue returned to developer on construction materials
+            - **Fast Track Time Savings:** Administrative efficiency benefit (no direct city cost)
+
+            ### Data Sources
+            - All calculations based on official 2025 City of Delta fee schedules
+            - Employment multipliers from standard economic impact models
+            - Population estimates use 2.3 persons per household (Delta County average)
+            """)
+
         col_x, col_y = st.columns(2)
 
         with col_x:
             st.markdown("### City Investment")
 
+            # Show rental vs ownership breakdown
+            rental_count = dev_results['rental_affordable']
+            ownership_count = dev_results['ownership_affordable']
+            unit_breakdown = f"{rental_count} rental, {ownership_count} ownership" if ownership_count > 0 else f"{rental_count} rental"
+
             city_data = {
                 'Metric': [
-                    'Total City Investment',
                     'Affordable Units Created',
-                    'Affordability Period',
-                    'Total Unit-Years',
+                    '  Unit Breakdown',
                     '',
-                    'Cost per Affordable Unit',
-                    'Cost per Unit per Year',
-                    'Cost per Unit-Year'
+                    'Total City Investment',
+                    'Cost per Unit-Year',
+                    '20-Year Total Cost',
+                    '',
+                    'Affordability Period',
+                    'Total Unit-Years'
                 ],
                 'Value': [
-                    f"${community_results['city_investment']:,.0f}",
                     f"{community_results['affordable_units']:.0f} units",
-                    affordability_display,
-                    f"{community_results['unit_years']:.0f}",
+                    f"{unit_breakdown}",
                     '',
-                    f"${community_results['cost_per_unit_total']:,.0f}",
-                    f"${community_results['cost_per_unit_per_year']:,.0f}",
-                    f"${community_results['cost_per_unit_year']:,.0f}"
+                    f"${community_results['city_investment']:,.0f}",
+                    f"${community_results['cost_per_unit_year']:,.0f}",
+                    f"${community_results['cost_20_year']:,.0f}",
+                    '',
+                    affordability_display,
+                    f"{community_results['unit_years']:.0f}"
                 ]
             }
             st.table(pd.DataFrame(city_data))
+
+            # Add brief explanation for key metric
+            st.caption("💡 Cost per Unit-Year normalizes investment across different time periods for fair comparison.")
 
         with col_y:
             st.markdown("### Economic Impact")
 
             jobs_data = {
                 'Impact': [
-                    'Construction Jobs (temp)',
-                    'Permanent Jobs Created',
                     'Total Housing Units',
                     'Estimated Population Served',
                     '',
-                    '20-Year Projection',
-                    f'  Cycles ({policy.affordability_period_years} yr terms)',
-                    '  Total 20-Year Cost'
+                    'Construction Jobs (temp)',
+                    'Permanent Jobs Created'
                 ],
                 'Value': [
-                    f"{community_results['construction_jobs']:.0f} jobs",
-                    f"{community_results['permanent_jobs']:.0f} jobs",
                     f"{dev_results['total_units']} units",
                     f"{dev_results['total_units'] * 2.3:.0f} people",
                     '',
-                    '',
-                    f"{community_results['cycles_in_20_years']:.1f} cycles",
-                    f"${community_results['cost_20_year']:,.0f}"
+                    f"{community_results['construction_jobs']:.0f} jobs",
+                    f"{community_results['permanent_jobs']:.0f} jobs"
                 ]
             }
             st.table(pd.DataFrame(jobs_data))
+
+            st.caption("💡 Permanent jobs estimate based on property management and maintenance needs.")
 
         # Units breakdown pie chart
         st.markdown("### Unit Mix")
@@ -975,6 +1073,19 @@ def main():
         with col_comp1:
             st.markdown("#### Alternative Affordability Periods")
 
+            # Explanatory note about how period affects costs
+            rental_units = int(dev_results['total_affordable'] * (1 - ownership_pct))
+            ownership_units = int(dev_results['total_affordable'] * ownership_pct)
+
+            if ownership_pct > 0:
+                st.info(f"""
+                **How affordability period affects developer costs:**
+                - **Rental units ({rental_units}):** Longer period = higher costs (ongoing rent gap × years)
+                - **Ownership units ({ownership_units}):** Period doesn't affect developer's upfront cost (one-time sale discount)
+
+                If all units are ownership, developer net gain stays the same across periods.
+                """)
+
             comparison_periods = [5, 15, 20, 30, 50]
             comparison_data = []
 
@@ -1000,6 +1111,8 @@ def main():
 
                 comparison_data.append({
                     'Period': f"{years} yrs" if years < 99 else "Permanent",
+                    'Rental Units': temp_results['rental_affordable'],
+                    'Ownership Units': temp_results['ownership_affordable'],
                     'Developer Net': temp_results['net_developer_gain'],
                     'Cost/Unit-Yr': temp_comm_results['cost_per_unit_year'],
                     '20-Yr Cost': temp_comm_results['cost_20_year']
