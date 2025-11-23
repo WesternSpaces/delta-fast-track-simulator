@@ -321,15 +321,147 @@ def main():
     st.set_page_config(
         page_title="Delta Fast Track Simulator",
         page_icon="🏘️",
-        layout="wide"
+        layout="wide",
+        initial_sidebar_state="expanded"
     )
+
+    # Custom CSS for better aesthetics
+    st.markdown("""
+        <style>
+        /* Main container styling */
+        .main {
+            background-color: #f8f9fa;
+        }
+
+        /* Header styling */
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #34495e;
+            font-weight: 500;
+            margin-top: 25px;
+        }
+
+        h3 {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        /* Metric cards */
+        [data-testid="stMetricValue"] {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        [data-testid="stMetricLabel"] {
+            font-size: 14px;
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+
+        /* Sidebar styling */
+        [data-testid="stSidebar"] {
+            background-color: #2c3e50;
+        }
+
+        [data-testid="stSidebar"] .stMarkdown {
+            color: #ecf0f1;
+        }
+
+        [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+            color: #3498db;
+        }
+
+        /* Tabs */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 8px;
+        }
+
+        .stTabs [data-baseweb="tab"] {
+            background-color: #ecf0f1;
+            border-radius: 4px 4px 0 0;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+
+        .stTabs [aria-selected="true"] {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Info boxes */
+        .stAlert {
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        /* Buttons */
+        .stButton > button {
+            background-color: #3498db;
+            color: white;
+            border-radius: 6px;
+            border: none;
+            padding: 10px 24px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .stButton > button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Download button */
+        .stDownloadButton > button {
+            background-color: #27ae60;
+            color: white;
+            border-radius: 6px;
+            border: none;
+            padding: 10px 24px;
+            font-weight: 500;
+        }
+
+        .stDownloadButton > button:hover {
+            background-color: #229954;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
     st.title("🏘️ City of Delta Fast Track Incentive Simulator")
     st.markdown("""
+    <p style='font-size: 18px; color: #7f8c8d; margin-bottom: 30px;'>
     Explore the tradeoffs between affordability period, density bonuses, AMI thresholds,
     and fee waivers. Adjust the policy levers below to see real-time impacts on developer
     feasibility and community benefit.
-    """)
+    </p>
+    """, unsafe_allow_html=True)
 
     # Initialize data
     ami_data = AMI_Data()
@@ -507,38 +639,59 @@ def main():
 
     st.header("📊 Scenario Results")
 
-    # Top-line metrics
+    st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
+
+    # Top-line metrics with color coding
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.metric(
-            "Total Units Created",
-            f"{dev_results['total_units']}",
-            delta=f"+{dev_results['bonus_units']} bonus" if dev_results['bonus_units'] > 0 else None
-        )
+        st.markdown(f"""
+            <div style='background-color: #e8f4f8; padding: 20px; border-radius: 10px;
+                        border-left: 5px solid #3498db;'>
+                <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>TOTAL UNITS CREATED</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>{dev_results['total_units']}</p>
+                <p style='color: #3498db; font-size: 14px; margin: 0;'>+{dev_results['bonus_units']} bonus units</p>
+            </div>
+        """, unsafe_allow_html=True)
 
     with col2:
-        st.metric(
-            "Affordable Units",
-            f"{dev_results['total_affordable']}",
-            delta=f"{(dev_results['total_affordable']/dev_results['total_units']*100):.0f}% of total"
-        )
+        affordable_pct = (dev_results['total_affordable']/dev_results['total_units']*100)
+        st.markdown(f"""
+            <div style='background-color: #e8f8f5; padding: 20px; border-radius: 10px;
+                        border-left: 5px solid #27ae60;'>
+                <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>AFFORDABLE UNITS</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>{dev_results['total_affordable']}</p>
+                <p style='color: #27ae60; font-size: 14px; margin: 0;'>{affordable_pct:.0f}% of total</p>
+            </div>
+        """, unsafe_allow_html=True)
 
     with col3:
-        feasible_color = "normal" if dev_results['developer_feasible'] else "inverse"
-        st.metric(
-            "Developer Net Gain",
-            f"${dev_results['net_developer_gain']:,.0f}",
-            delta="Feasible" if dev_results['developer_feasible'] else "Not Feasible",
-            delta_color=feasible_color
-        )
+        feasible = dev_results['developer_feasible']
+        box_color = "#e8f8f5" if feasible else "#fee"
+        border_color = "#27ae60" if feasible else "#e74c3c"
+        text_color = "#27ae60" if feasible else "#e74c3c"
+        status_text = "✓ Feasible" if feasible else "✗ Not Feasible"
+
+        st.markdown(f"""
+            <div style='background-color: {box_color}; padding: 20px; border-radius: 10px;
+                        border-left: 5px solid {border_color};'>
+                <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>DEVELOPER NET GAIN</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}</p>
+                <p style='color: {text_color}; font-size: 14px; margin: 0; font-weight: 600;'>{status_text}</p>
+            </div>
+        """, unsafe_allow_html=True)
 
     with col4:
-        st.metric(
-            "City Cost per Unit-Year",
-            f"${community_results['cost_per_unit_year']:,.0f}",
-            delta=f"{community_results['unit_years']:.0f} unit-years"
-        )
+        st.markdown(f"""
+            <div style='background-color: #fef5e7; padding: 20px; border-radius: 10px;
+                        border-left: 5px solid #f39c12;'>
+                <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>CITY COST PER UNIT-YEAR</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${community_results['cost_per_unit_year']:,.0f}</p>
+                <p style='color: #f39c12; font-size: 14px; margin: 0;'>{community_results['unit_years']:.0f} total unit-years</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
 
     # ========================================================================
     # TABS FOR DETAILED ANALYSIS
