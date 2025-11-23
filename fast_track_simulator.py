@@ -22,9 +22,31 @@ class ProjectParams:
     base_units: int = 20
     construction_cost_per_unit: float = 75000  # Conservative estimate
     land_dev_value_per_unit: float = 90000
-    market_rent_2br: float = 1425  # Current Delta market
+
+    # Market rents by bedroom size (Delta, CO - from Grand Mesa Flats market data)
+    market_rent_1br: float = 1211  # 85% of 2BR (estimated)
+    market_rent_2br: float = 1425  # Confirmed from Grand Mesa Flats
+    market_rent_3br: float = 1710  # 120% of 2BR (estimated)
+
+    # Typical unit mix for multi-family development
+    unit_mix: dict = None  # Will default to {'1BR': 0.20, '2BR': 0.60, '3BR': 0.20}
+
     market_sale_price: float = 334000  # Median home price in Delta
     construction_valuation: float = 9600000  # For fee calculations
+
+    def __post_init__(self):
+        """Set default unit mix if not provided"""
+        if self.unit_mix is None:
+            self.unit_mix = {'1BR': 0.20, '2BR': 0.60, '3BR': 0.20}
+
+    def get_weighted_market_rent(self) -> float:
+        """Calculate weighted average market rent across bedroom types"""
+        market_rents = {
+            '1BR': self.market_rent_1br,
+            '2BR': self.market_rent_2br,
+            '3BR': self.market_rent_3br
+        }
+        return sum(market_rents[br] * self.unit_mix[br] for br in self.unit_mix if br in market_rents)
 
 @dataclass
 class PolicySettings:
@@ -62,25 +84,54 @@ class AMI_Data:
     ami_110_2person: float = 89760
     ami_120_2person: float = 97920
 
+    # CHFA Maximum Rents by Bedroom Size
+    # Source: 2025 Delta County CHFA Maximum Rents
+    chfa_rents_by_bedroom = {
+        0.60: {'1BR': 1147, '2BR': 1377, '3BR': 1591},
+        0.70: {'1BR': 1338, '2BR': 1606, '3BR': 1856},
+        0.80: {'1BR': 1530, '2BR': 1836, '3BR': 2122},
+        0.90: {'1BR': 1721, '2BR': 2065, '3BR': 2387},
+        1.00: {'1BR': 1912, '2BR': 2295, '3BR': 2652},
+        1.10: {'1BR': 2103, '2BR': 2524, '3BR': 2917},
+        1.20: {'1BR': 2295, '2BR': 2754, '3BR': 3183}
+    }
+
     def get_affordable_rent(self, ami_pct: float) -> float:
         """Get CHFA maximum rent at given AMI percentage (2BR units)
-        Source: 2025 Delta County CHFA Maximum Rents"""
-        # Use official CHFA maximum rents for 2BR units
-        rent_table = {
-            0.60: 1377,
-            0.70: 1606,
-            0.80: 1836,
-            0.90: 2065,
-            1.00: 2295,
-            1.10: 2524,
-            1.20: 2754
-        }
+        Source: 2025 Delta County CHFA Maximum Rents
 
-        if ami_pct in rent_table:
-            return rent_table[ami_pct]
+        Note: This returns 2BR rent for display purposes.
+        Use get_weighted_affordable_rent() for calculations."""
+        if ami_pct in self.chfa_rents_by_bedroom:
+            return self.chfa_rents_by_bedroom[ami_pct]['2BR']
         else:
-            # Linear interpolation for other values
-            return ami_pct * rent_table[1.00]
+            # Linear interpolation
+            return ami_pct * self.chfa_rents_by_bedroom[1.00]['2BR']
+
+    def get_weighted_affordable_rent(self, ami_pct: float, unit_mix: dict) -> float:
+        """Calculate weighted average affordable rent across bedroom types
+
+        Args:
+            ami_pct: AMI percentage (e.g., 0.60 for 60% AMI)
+            unit_mix: Dict with bedroom types as keys and percentages as values
+                     e.g., {'1BR': 0.20, '2BR': 0.60, '3BR': 0.20}
+
+        Returns:
+            Weighted average CHFA maximum rent
+        """
+        if ami_pct not in self.chfa_rents_by_bedroom:
+            # Linear interpolation if exact AMI not in table
+            base_amt = 1.00
+            rent_1br = ami_pct * self.chfa_rents_by_bedroom[base_amt]['1BR']
+            rent_2br = ami_pct * self.chfa_rents_by_bedroom[base_amt]['2BR']
+            rent_3br = ami_pct * self.chfa_rents_by_bedroom[base_amt]['3BR']
+            rents = {'1BR': rent_1br, '2BR': rent_2br, '3BR': rent_3br}
+        else:
+            rents = self.chfa_rents_by_bedroom[ami_pct]
+
+        # Calculate weighted average
+        weighted_rent = sum(rents[br] * unit_mix[br] for br in unit_mix if br in rents)
+        return weighted_rent
 
     def get_affordable_purchase_price(self, ami_pct: float) -> float:
         """Estimate affordable purchase price at given AMI"""
@@ -223,12 +274,20 @@ class DeveloperProForma:
 
         # 1. Lost rent from rental affordable units (over affordability period)
         # NOTE: Model assumes developer retains ownership and manages rental units
-        market_rent = self.project.market_rent_2br
-        affordable_rent = self.ami.get_affordable_rent(self.policy.rental_ami_threshold)
-        monthly_rent_gap = max(0, market_rent - affordable_rent)
+        # Use weighted average across bedroom types for more accurate calculation
+        market_rent_weighted = self.project.get_weighted_market_rent()
+        affordable_rent_weighted = self.ami.get_weighted_affordable_rent(
+            self.policy.rental_ami_threshold,
+            self.project.unit_mix
+        )
+        monthly_rent_gap = max(0, market_rent_weighted - affordable_rent_weighted)
 
         total_lost_rent = (monthly_rent_gap * rental_affordable * 12 *
                           self.policy.affordability_period_years)
+
+        # For display purposes, also calculate 2BR-only values
+        market_rent = self.project.market_rent_2br
+        affordable_rent = self.ami.get_affordable_rent(self.policy.rental_ami_threshold)
 
         # 2. Lost profit from ownership affordable units (one-time at sale)
         market_sale_price = self.project.market_sale_price
@@ -272,9 +331,11 @@ class DeveloperProForma:
             'total_benefits': total_benefits,
 
             # Financial - Costs (Rental)
-            'market_rent': market_rent,
-            'affordable_rent': affordable_rent,
-            'monthly_rent_gap': monthly_rent_gap,
+            'market_rent': market_rent,  # 2BR only, for display
+            'affordable_rent': affordable_rent,  # 2BR only, for display
+            'market_rent_weighted': market_rent_weighted,  # Weighted average used in calculation
+            'affordable_rent_weighted': affordable_rent_weighted,  # Weighted average used in calculation
+            'monthly_rent_gap': monthly_rent_gap,  # Weighted average gap
             'total_lost_rent': total_lost_rent,
 
             # Financial - Costs (Ownership)
@@ -789,15 +850,23 @@ def main():
             3. **Fast Track Time Savings:** $50,000 in reduced carrying costs
 
             **Developer Costs:**
-            1. **Rental Units:** Monthly gap between market rent ($1,425) and affordable rent (CHFA limits) over full period
+            1. **Rental Units:** Weighted average rent gap × rental units × 12 months × affordability years
+               - **Unit Mix Assumption:** 20% 1BR, 60% 2BR, 20% 3BR (typical multi-family)
+               - **Market Rents:** 1BR ($1,211), 2BR ($1,425), 3BR ($1,710)
+               - **Weighted Avg Market Rent:** $1,439/mo
+               - **CHFA Rents:** Weighted average at selected AMI level
+               - **Key Insight:** At 70% AMI and above, CHFA rents exceed market - NO rental cost!
             2. **Ownership Units:** Gap between market sale price ($334,000 median) and affordable sale price (based on AMI)
 
             ### Data Sources
-            - **Rental Limits:** 2025 CHFA Maximum Rents for Delta County (2BR units)
+            - **Rental Limits:** 2025 CHFA Maximum Rents for Delta County (1BR, 2BR, 3BR)
             - **Income Limits:** 2025 HUD Area Median Income for Delta County
             - **Fee Schedule:** City of Delta 2025 Fee Schedule (official)
-            - **Market Data:** $1,425/mo market rent, $334,000 median home price
+            - **Market Data:** Grand Mesa Flats rental data (Nov 2025), $334,000 median sale price
+              - 2BR market rent confirmed: $1,425/mo
+              - 1BR and 3BR estimated using standard ratios (85% and 120% of 2BR)
             - **Construction Costs:** Industry standard estimates for multi-family development
+            - **Unit Mix:** Typical multi-family development pattern (20/60/20 split)
             """)
 
         col_a, col_b = st.columns(2)
@@ -884,6 +953,22 @@ def main():
             costs_data['Amount'].extend(['', f"**${dev_results['total_developer_costs']:,.0f}**"])
 
             st.table(pd.DataFrame(costs_data))
+
+            # Add warning/info if rent gap is zero or negative
+            if dev_results['rental_affordable'] > 0 and dev_results['monthly_rent_gap'] <= 0:
+                ami_pct = policy.rental_ami_threshold * 100
+                st.warning(f"""
+                **⚠️ No Rental Cost at {ami_pct:.0f}% AMI**
+
+                At {ami_pct:.0f}% AMI, the CHFA maximum affordable rent (${dev_results['affordable_rent_weighted']:,.0f}/mo weighted avg)
+                equals or exceeds Delta's market rent (${dev_results['market_rent_weighted']:,.0f}/mo weighted avg).
+
+                This means there is **NO cost to the developer** for providing affordable rental units at this AMI level.
+                The developer can charge full CHFA maximum rents, which meet or beat market rates.
+                """)
+            elif dev_results['rental_affordable'] > 0:
+                # Show that weighted average was used
+                st.caption(f"💡 Rent gap calculated using weighted average across unit mix: 20% 1BR, 60% 2BR, 20% 3BR. Weighted avg market rent: ${dev_results['market_rent_weighted']:,.0f}/mo")
 
         st.markdown("---")
 
