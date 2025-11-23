@@ -368,34 +368,34 @@ def main():
 
     min_affordable_pct = st.sidebar.slider(
         "Minimum Affordable % (of base units)",
-        min_value=0.10,
-        max_value=0.50,
-        value=0.25,
-        step=0.05,
-        format="%0.0f%%",
+        min_value=10,
+        max_value=50,
+        value=25,
+        step=5,
+        format="%d%%",
         help="Minimum percentage of original project that must be affordable"
-    )
+    ) / 100  # Convert back to decimal for calculations
 
     st.sidebar.subheader("Density Bonus")
 
     density_bonus_pct = st.sidebar.slider(
         "Density Bonus Percentage",
-        min_value=0.0,
-        max_value=0.30,
-        value=0.20,
-        step=0.05,
-        format="%0.0f%%",
+        min_value=0,
+        max_value=30,
+        value=20,
+        step=5,
+        format="%d%%",
         help="Additional units allowed beyond base zoning"
-    )
+    ) / 100  # Convert back to decimal for calculations
 
     bonus_affordable_req = st.sidebar.slider(
         "% of Bonus Units that Must Be Affordable",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.50,
-        step=0.10,
-        format="%0.0f%%"
-    )
+        min_value=0,
+        max_value=100,
+        value=50,
+        step=10,
+        format="%d%%"
+    ) / 100  # Convert back to decimal for calculations
 
     st.sidebar.subheader("Fee Waivers & Reductions")
 
@@ -412,13 +412,13 @@ def main():
 
     use_tax_rebate = st.sidebar.slider(
         "Use Tax Rebate",
-        min_value=0.0,
-        max_value=0.50,
-        value=0.50,
-        step=0.10,
-        format="%0.0f%%",
+        min_value=0,
+        max_value=50,
+        value=50,
+        step=10,
+        format="%d%%",
         help="Percentage of 3% materials use tax rebated"
-    )
+    ) / 100  # Convert back to decimal for calculations
 
     # ========================================================================
     # PROJECT PARAMETERS (Advanced)
