@@ -1019,7 +1019,7 @@ def main():
         - **Construction Costs:** Industry standard estimates for multi-family development
         - **Unit Mix:** Typical multi-family development pattern (20/60/20 split)
         - **Workforce Metrics:**
-          - Local workers housed: 1.5 workers per affordable household (conservative estimate)
+          - Subsidized workers housed: 1.5 workers per affordable household (conservative estimate)
           - Population served: 2.3 persons per household (Delta County average)
           - Construction jobs: 0.5 jobs per unit (temporary, during construction)
 
@@ -1352,7 +1352,7 @@ def main():
                     'Market Rate Units',
                     '',
                     'Estimated Population Served',
-                    'Local Workers Housed',
+                    'Subsidized Workers Housed',
                     '',
                     'Construction Jobs (temp)'
                 ],
@@ -1369,7 +1369,7 @@ def main():
             }
             st.table(pd.DataFrame(workforce_data))
 
-            st.caption("💡 Local workers housed: Affordable units enable teachers, healthcare workers, and service employees to live in Delta.")
+            st.caption("💡 Subsidized workers: Affordable units enable teachers, healthcare workers, and service employees to live in Delta.")
 
     with tab2:
         st.subheader("Scenario Comparisons")
