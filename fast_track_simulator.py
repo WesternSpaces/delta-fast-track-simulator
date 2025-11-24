@@ -1182,8 +1182,8 @@ def main():
                 ])
 
             # Total
-            costs_data['Category'].extend(['', '**TOTAL DEVELOPER COSTS**'])
-            costs_data['Amount'].extend(['', f"**${dev_results['total_developer_costs']:,.0f}**"])
+            costs_data['Category'].extend(['**TOTAL DEVELOPER COSTS**'])
+            costs_data['Amount'].extend([f"**${dev_results['total_developer_costs']:,.0f}**"])
 
             st.table(pd.DataFrame(costs_data))
 
