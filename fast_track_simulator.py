@@ -1052,324 +1052,212 @@ def main():
     ])
 
     with tab1:
-        st.markdown("### Developer Economics")
-        st.caption("Fast Track incentives vs. affordability costs")
+        # ================================================================
+        # WATERFALL CHART - Hero visualization
+        # ================================================================
 
-        # Add info about rental income dynamics (full width at top)
+        # Build waterfall data
+        waterfall_labels = ['Density Bonus', 'Fee Waivers', 'Time Savings']
+        waterfall_values = [
+            dev_results['density_bonus_value'],
+            dev_results['total_fee_waivers'],
+            dev_results['time_savings']
+        ]
+        waterfall_measures = ['relative', 'relative', 'relative']
+
+        # Add rental income premium if applicable (CHFA > market)
+        if dev_results['rental_affordable'] > 0 and dev_results['total_lost_rent'] < 0:
+            waterfall_labels.append('Rental Premium')
+            waterfall_values.append(abs(dev_results['total_lost_rent']))
+            waterfall_measures.append('relative')
+
+        # Add costs (as negative values)
+        if dev_results['rental_affordable'] > 0 and dev_results['total_lost_rent'] > 0:
+            waterfall_labels.append('Rental Costs')
+            waterfall_values.append(-dev_results['total_lost_rent'])
+            waterfall_measures.append('relative')
+
+        if dev_results['ownership_affordable'] > 0 and dev_results['total_lost_sale_profit'] > 0:
+            waterfall_labels.append('Ownership Costs')
+            waterfall_values.append(-dev_results['total_lost_sale_profit'])
+            waterfall_measures.append('relative')
+
+        # Add net total
+        waterfall_labels.append('Net Gain')
+        waterfall_values.append(dev_results['net_developer_gain'])
+        waterfall_measures.append('total')
+
+        fig_waterfall = go.Figure(go.Waterfall(
+            orientation='h',
+            y=waterfall_labels,
+            x=waterfall_values,
+            measure=waterfall_measures,
+            connector={"line": {"color": "rgb(63, 63, 63)", "width": 1}},
+            increasing={"marker": {"color": "#27ae60"}},
+            decreasing={"marker": {"color": "#e74c3c"}},
+            totals={"marker": {"color": "#3498db"}},
+            textposition="outside",
+            text=[f"${abs(v):,.0f}" for v in waterfall_values],
+            hovertemplate="%{y}: $%{x:,.0f}<extra></extra>"
+        ))
+
+        fig_waterfall.update_layout(
+            height=280,
+            margin=dict(t=20, b=20, l=20, r=80),
+            xaxis_title="",
+            yaxis_title="",
+            showlegend=False,
+            xaxis=dict(showgrid=True, gridcolor='rgba(0,0,0,0.1)', zeroline=True, zerolinecolor='rgba(0,0,0,0.3)')
+        )
+
+        st.plotly_chart(fig_waterfall, use_container_width=True)
+
+        # Caption with key insight
         if dev_results['rental_affordable'] > 0 and dev_results['monthly_rent_gap'] < 0:
-            ami_pct = policy.rental_ami_threshold * 100
-            rental_premium = abs(dev_results['monthly_rent_gap'])
-            st.success(f"""
-            **✓ Rental Income Premium at {ami_pct:.0f}% AMI**
+            st.caption(f"✓ At {int(policy.rental_ami_threshold*100)}% AMI, CHFA rents exceed market by \\${abs(dev_results['monthly_rent_gap']):,.0f}/mo — a developer advantage.")
+        elif dev_results['total_developer_costs'] == 0:
+            st.caption("✓ No affordability costs at current settings — all incentive value flows to developer.")
+        else:
+            st.caption(f"Benefits minus costs = \\${dev_results['net_developer_gain']:,.0f} net developer gain")
 
-            At {ami_pct:.0f}% AMI, the CHFA maximum affordable rent (\\${dev_results['affordable_rent_weighted']:,.0f}/mo weighted avg)
-            **exceeds** Delta's current market rent (\\${dev_results['market_rent_weighted']:,.0f}/mo weighted avg) by \\${rental_premium:.0f}/mo.
+        st.markdown("---")
 
-            **Developer Advantage:** The developer can charge \\${rental_premium:.0f}/mo MORE per affordable unit than market rate,
-            generating extra rental income over the {policy.affordability_period_years}-year period.
-            This additional income increases developer net gain compared to lower AMI thresholds.
-            """)
-        elif dev_results['rental_affordable'] > 0 and dev_results['monthly_rent_gap'] == 0:
-            ami_pct = policy.rental_ami_threshold * 100
-            st.info(f"""
-            **At {ami_pct:.0f}% AMI:** CHFA affordable rent equals market rent (\\${dev_results['market_rent_weighted']:,.0f}/mo).
-            No cost or benefit to developer from rental restrictions at this AMI level.
-            """)
-        elif dev_results['rental_affordable'] > 0:
-            # Show that weighted average was used
-            st.caption(f"💡 Rent gap calculated using weighted average across unit mix: 20% 1BR, 60% 2BR, 20% 3BR. Weighted avg market rent: \\${dev_results['market_rent_weighted']:,.0f}/mo")
+        # ================================================================
+        # SUMMARY CARDS ROW
+        # ================================================================
 
-        col_a, col_b = st.columns(2)
+        col1, col2, col3, col4 = st.columns(4)
 
-        with col_a:
-            st.markdown("### Benefits to Developer")
+        with col1:
+            st.metric("Total Benefits", f"${dev_results['total_benefits']:,.0f}")
+        with col2:
+            st.metric("Total Costs", f"${dev_results['total_developer_costs']:,.0f}")
+        with col3:
+            st.metric("City Investment", f"${community_results['city_investment']:,.0f}")
+        with col4:
+            workers_housed = dev_results['total_affordable'] * 1.5
+            st.metric("Workers Housed", f"~{workers_housed:.0f}")
 
-            benefits_data = {
+        st.markdown("---")
+
+        # ================================================================
+        # COMMUNITY IMPACT SUMMARY
+        # ================================================================
+
+        col_left, col_right = st.columns(2)
+
+        with col_left:
+            st.markdown("#### City Investment Efficiency")
+            efficiency_col1, efficiency_col2, efficiency_col3 = st.columns(3)
+            with efficiency_col1:
+                st.metric("Cost/Unit-Year", f"${community_results['cost_per_unit_year']:,.0f}")
+            with efficiency_col2:
+                st.metric("Unit-Years", f"{community_results['unit_years']:.0f}")
+            with efficiency_col3:
+                st.metric("20-Year Cost", f"${community_results['cost_20_year']:,.0f}")
+            st.caption(f"City invests \\${community_results['city_investment']:,.0f} in fee waivers for {community_results['affordable_units']:.0f} affordable units over {affordability_display}.")
+
+        with col_right:
+            st.markdown("#### Housing Created")
+            housing_col1, housing_col2, housing_col3 = st.columns(3)
+            with housing_col1:
+                st.metric("Total Units", f"{dev_results['total_units']}")
+            with housing_col2:
+                st.metric("Affordable", f"{dev_results['total_affordable']}")
+            with housing_col3:
+                st.metric("Market Rate", f"{dev_results['market_rate_units']}")
+            st.caption(f"Serves ~{dev_results['total_units'] * 2.3:.0f} residents. {community_results['construction_jobs']:.0f} construction jobs created.")
+
+        # ================================================================
+        # DETAILED BREAKDOWNS (Expanders)
+        # ================================================================
+
+        with st.expander("📋 Detailed Developer Benefits"):
+            benefits_detail = {
                 'Category': [
                     'Density Bonus Value',
-                    'Fee Waivers',
-                    '  Building Permits',
-                    '  Tap/System Fees',
-                    '  Use Tax Rebate',
-                    '  Planning Fees',
+                    '',
+                    'Fee Waivers:',
+                    '  • Building Permits',
+                    '  • Tap/System Fees',
+                    '  • Use Tax Rebate',
+                    '  • Planning Fees',
+                    '',
                     'Fast Track Time Savings',
-                    '**TOTAL BENEFITS**'
+                    '',
+                    'TOTAL BENEFITS'
                 ],
                 'Amount': [
                     f"${dev_results['density_bonus_value']:,.0f}",
+                    '',
                     f"${dev_results['total_fee_waivers']:,.0f}",
                     f"${dev_results['building_permit_waived']:,.0f}",
                     f"${dev_results['tap_fee_savings']:,.0f}",
                     f"${dev_results['use_tax_savings']:,.0f}",
                     f"${dev_results['planning_fees_waived']:,.0f}",
+                    '',
                     f"${dev_results['time_savings']:,.0f}",
-                    f"**${dev_results['total_benefits']:,.0f}**"
+                    '',
+                    f"${dev_results['total_benefits']:,.0f}"
                 ]
             }
-            st.table(pd.DataFrame(benefits_data))
+            st.table(pd.DataFrame(benefits_detail))
 
-        with col_b:
-            st.markdown("### Costs to Developer")
+        with st.expander("📋 Detailed Developer Costs"):
+            costs_detail = {'Category': [], 'Amount': []}
 
-            costs_data = {
-                'Category': [],
-                'Amount': []
-            }
-
-            # Rental costs (if any)
             if dev_results['rental_affordable'] > 0:
-                # Check if this is a cost (positive gap) or benefit (negative gap)
                 if dev_results['monthly_rent_gap'] >= 0:
-                    # Traditional case: market rent exceeds affordable rent (developer loses money)
-                    costs_data['Category'].extend([
-                        '**RENTAL UNITS:**',
-                        'Market Rent (weighted avg)',
-                        'Affordable Rent (weighted avg)',
-                        'Monthly Rent Gap',
-                        f'× {dev_results["rental_affordable"]} rental units',
-                        f'× {policy.affordability_period_years} years',
-                        'Subtotal Lost Rent'
+                    costs_detail['Category'].extend([
+                        'RENTAL UNITS:',
+                        f'  Market Rent (weighted avg)',
+                        f'  Affordable Rent (weighted avg)',
+                        f'  Monthly Gap × {dev_results["rental_affordable"]} units × {policy.affordability_period_years} yrs',
+                        ''
                     ])
-                    costs_data['Amount'].extend([
+                    costs_detail['Amount'].extend([
                         '',
-                        f"${dev_results['market_rent_weighted']:,.0f}",
-                        f"${dev_results['affordable_rent_weighted']:,.0f}",
-                        f"${dev_results['monthly_rent_gap']:,.0f}",
-                        '',
-                        '',
-                        f"${dev_results['total_lost_rent']:,.0f}"
+                        f"${dev_results['market_rent_weighted']:,.0f}/mo",
+                        f"${dev_results['affordable_rent_weighted']:,.0f}/mo",
+                        f"${dev_results['total_lost_rent']:,.0f}",
+                        ''
                     ])
                 else:
-                    # CHFA rent exceeds market: developer can charge more (benefit, not cost)
-                    rental_income_gain = abs(dev_results['total_lost_rent'])
-                    costs_data['Category'].extend([
-                        '**RENTAL UNITS:**',
-                        'Market Rent (weighted avg)',
-                        'Affordable Rent (weighted avg)',
-                        'Monthly Rent Premium',
-                        f'× {dev_results["rental_affordable"]} rental units',
-                        f'× {policy.affordability_period_years} years',
-                        'Subtotal Extra Rental Income ✓'
+                    costs_detail['Category'].extend([
+                        'RENTAL UNITS:',
+                        f'  Market Rent (weighted avg)',
+                        f'  CHFA Rent (weighted avg)',
+                        f'  Monthly PREMIUM × {dev_results["rental_affordable"]} units × {policy.affordability_period_years} yrs',
+                        ''
                     ])
-                    costs_data['Amount'].extend([
+                    costs_detail['Amount'].extend([
                         '',
-                        f"${dev_results['market_rent_weighted']:,.0f}",
-                        f"${dev_results['affordable_rent_weighted']:,.0f}",
-                        f"${abs(dev_results['monthly_rent_gap']):,.0f}",
-                        '',
-                        '',
-                        f"-${rental_income_gain:,.0f}"
+                        f"${dev_results['market_rent_weighted']:,.0f}/mo",
+                        f"${dev_results['affordable_rent_weighted']:,.0f}/mo",
+                        f"-${abs(dev_results['total_lost_rent']):,.0f} (benefit)",
+                        ''
                     ])
 
-            # Ownership costs (if any)
             if dev_results['ownership_affordable'] > 0:
-                costs_data['Category'].extend([
-                    '',
-                    '**OWNERSHIP UNITS:**',
-                    'Market Sale Price',
-                    'Affordable Sale Price',
-                    'Per Unit Gap',
-                    f'× {dev_results["ownership_affordable"]} ownership units',
-                    'Subtotal Lost Profit'
+                costs_detail['Category'].extend([
+                    'OWNERSHIP UNITS:',
+                    '  Market Sale Price',
+                    '  Affordable Sale Price',
+                    f'  Gap × {dev_results["ownership_affordable"]} units',
+                    ''
                 ])
-                costs_data['Amount'].extend([
-                    '',
+                costs_detail['Amount'].extend([
                     '',
                     f"${dev_results['market_sale_price']:,.0f}",
                     f"${dev_results['affordable_sale_price']:,.0f}",
-                    f"${dev_results['per_unit_sale_gap']:,.0f}",
-                    '',
-                    f"${dev_results['total_lost_sale_profit']:,.0f}"
+                    f"${dev_results['total_lost_sale_profit']:,.0f}",
+                    ''
                 ])
 
-            # Total
-            costs_data['Category'].extend(['**TOTAL DEVELOPER COSTS**'])
-            costs_data['Amount'].extend([f"**${dev_results['total_developer_costs']:,.0f}**"])
+            costs_detail['Category'].append('TOTAL DEVELOPER COSTS')
+            costs_detail['Amount'].append(f"${dev_results['total_developer_costs']:,.0f}")
 
-            st.table(pd.DataFrame(costs_data))
-
-        st.markdown("---")
-
-        col_c, col_d, col_e = st.columns(3)
-
-        with col_c:
-            st.metric("Net Developer Position", f"${dev_results['net_developer_gain']:,.0f}")
-
-        with col_d:
-            st.metric("Total Project Cost", f"${dev_results['total_project_cost']:,.0f}")
-
-        with col_e:
-            st.metric("Return on Investment", f"{dev_results['roi_pct']:.2f}%")
-
-        # Stacked bar chart: Benefits vs Costs
-        st.markdown("### Developer Financial Impact")
-
-        # Prepare data for stacked bars
-        benefits_components = ['Density Bonus', 'Fee Waivers', 'Time Savings']
-        benefits_values = [
-            dev_results['density_bonus_value'],
-            dev_results['total_fee_waivers'],
-            dev_results['time_savings']
-        ]
-
-        # Check if there's rental income premium to add
-        has_rental_premium = (dev_results['rental_affordable'] > 0 and
-                             dev_results['total_lost_rent'] < 0)
-
-        # Build cost components dynamically based on what's present
-        costs_components = []
-        costs_values = []
-
-        # Separate benefits that come from rental income premium
-        rental_income_benefit = 0
-
-        if dev_results['rental_affordable'] > 0:
-            if dev_results['total_lost_rent'] > 0:
-                # Positive = cost to developer
-                costs_components.append('Rental Costs')
-                costs_values.append(dev_results['total_lost_rent'])
-            elif dev_results['total_lost_rent'] < 0:
-                # Negative = additional income benefit to developer
-                rental_income_benefit = abs(dev_results['total_lost_rent'])
-
-        if dev_results['ownership_affordable'] > 0:
-            costs_components.append('Ownership Costs')
-            costs_values.append(dev_results['total_lost_sale_profit'])
-
-        # Create stacked bar chart
-        fig = go.Figure()
-
-        # Benefits stack (green shades)
-        benefit_colors = ['#27ae60', '#2ecc71', '#58d68d', '#7dcea0']
-
-        # Add rental income premium if applicable
-        if has_rental_premium:
-            benefits_components.append('Rental Income Premium')
-            benefits_values.append(rental_income_benefit)
-
-        for i, (component, value) in enumerate(zip(benefits_components, benefits_values)):
-            fig.add_trace(go.Bar(
-                name=component,
-                x=['Benefits'],
-                y=[value],
-                marker_color=benefit_colors[i % len(benefit_colors)],
-                text=f"${value:,.0f}",
-                textposition='inside',
-                hovertemplate=f'{component}: ${value:,.0f}<extra></extra>'
-            ))
-
-        # Costs stack (red shades)
-        cost_colors = ['#e74c3c', '#ec7063']
-        for i, (component, value) in enumerate(zip(costs_components, costs_values)):
-            fig.add_trace(go.Bar(
-                name=component,
-                x=['Costs'],
-                y=[value],
-                marker_color=cost_colors[i % len(cost_colors)],
-                text=f"${value:,.0f}",
-                textposition='inside',
-                hovertemplate=f'{component}: ${value:,.0f}<extra></extra>'
-            ))
-
-        # Add net position as separate bar
-        net_color = '#27ae60' if dev_results['net_developer_gain'] > 0 else '#e74c3c'
-        fig.add_trace(go.Bar(
-            name='Net Position',
-            x=['Net Position'],
-            y=[abs(dev_results['net_developer_gain'])],
-            marker_color=net_color,
-            text=f"${dev_results['net_developer_gain']:,.0f}",
-            textposition='outside',
-            hovertemplate=f"Net Developer Gain: ${dev_results['net_developer_gain']:,.0f}<extra></extra>"
-        ))
-
-        fig.update_layout(
-            barmode='stack',
-            height=400,
-            showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-            yaxis_title="Amount ($)",
-            xaxis_title="",
-            hovermode='x unified'
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-        # Add summary below chart
-        total_benefits = sum(benefits_values)
-        total_costs = sum(costs_values)
-        st.caption(f"**Total Benefits:** \\${total_benefits:,.0f} | **Total Costs:** \\${total_costs:,.0f} | **Net Gain:** \\${dev_results['net_developer_gain']:,.0f}")
-
-        st.markdown("---")
-
-        # Community Benefit section
-        st.markdown("### Community Benefit")
-        st.caption("City investment and housing impact")
-
-        col_x, col_y = st.columns(2)
-
-        with col_x:
-            st.markdown("#### City Investment")
-
-            city_data = {
-                'Metric': [
-                    'Affordable Units Created',
-                    '',
-                    'Total City Investment',
-                    'Cost per Unit-Year',
-                    '20-Year Total Cost',
-                    '',
-                    'Affordability Period',
-                    'Total Unit-Years'
-                ],
-                'Value': [
-                    f"{community_results['affordable_units']:.0f} units",
-                    '',
-                    f"${community_results['city_investment']:,.0f}",
-                    f"${community_results['cost_per_unit_year']:,.0f}",
-                    f"${community_results['cost_20_year']:,.0f}",
-                    '',
-                    affordability_display,
-                    f"{community_results['unit_years']:.0f}"
-                ]
-            }
-            st.table(pd.DataFrame(city_data))
-
-            # Add brief explanation for key metric
-            st.caption("💡 Cost per Unit-Year normalizes investment across different time periods for fair comparison.")
-
-        with col_y:
-            st.markdown("#### Workforce Housing Impact")
-
-            # Calculate workforce metrics
-            # Assume 1.5 workers per household on average
-            workers_housed = dev_results['total_affordable'] * 1.5
-
-            workforce_data = {
-                'Impact': [
-                    'Total Housing Units',
-                    'Affordable Units',
-                    'Market Rate Units',
-                    '',
-                    'Estimated Population Served',
-                    'Subsidized Workers Housed',
-                    '',
-                    'Construction Jobs (temp)'
-                ],
-                'Value': [
-                    f"{dev_results['total_units']} units",
-                    f"{dev_results['total_affordable']} units",
-                    f"{dev_results['market_rate_units']} units",
-                    '',
-                    f"{dev_results['total_units'] * 2.3:.0f} people",
-                    f"~{workers_housed:.0f} workers",
-                    '',
-                    f"{community_results['construction_jobs']:.0f} jobs"
-                ]
-            }
-            st.table(pd.DataFrame(workforce_data))
-
-            st.caption("💡 Subsidized workers: Affordable units enable teachers, healthcare workers, and service employees to live in Delta.")
+            st.table(pd.DataFrame(costs_detail))
 
     with tab2:
         st.subheader("Scenario Comparisons")
