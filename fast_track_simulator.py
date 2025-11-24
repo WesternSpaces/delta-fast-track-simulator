@@ -1079,14 +1079,14 @@ def main():
         ))
 
         fig_compare.add_trace(go.Bar(
-            y=['Affordability Costs'],
+            y=['Lost Income (AMI Cap)'],
             x=[total_costs],
             orientation='h',
             marker_color='#e74c3c',
             text=f"${total_costs:,.0f}",
             textposition='inside',
             textfont=dict(color='white', size=16),
-            hovertemplate="Total Costs: $%{x:,.0f}<extra></extra>"
+            hovertemplate="Lost Income (AMI Cap): $%{x:,.0f}<extra></extra>"
         ))
 
         # Add net gain as third bar
