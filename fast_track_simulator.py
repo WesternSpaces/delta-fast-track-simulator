@@ -555,6 +555,24 @@ def main():
             color: #ecf0f1 !important;
         }
 
+        /* Sidebar expander - fix text color on dark background */
+        [data-testid="stSidebar"] .streamlit-expanderHeader {
+            color: #ecf0f1 !important;
+        }
+
+        [data-testid="stSidebar"] .streamlit-expanderHeader:hover {
+            color: #ecf0f1 !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-testid="stSidebar"] details summary {
+            color: #ecf0f1 !important;
+        }
+
+        [data-testid="stSidebar"] details summary:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
         /* Tabs */
         .stTabs [data-baseweb="tab-list"] {
             gap: 8px;
@@ -677,25 +695,6 @@ def main():
     # Set ownership_pct based on project type (all or nothing)
     ownership_pct = 1.0 if project_type == "Ownership" else 0.0
 
-    # AMI Thresholds
-    st.sidebar.subheader("AMI Thresholds")
-
-    rental_ami = st.sidebar.select_slider(
-        "Rental AMI Threshold",
-        options=[0.30, 0.40, 0.50, 0.60, 0.70, 0.80],
-        value=0.80,
-        format_func=lambda x: f"{int(x*100)}% AMI",
-        help="Area Median Income threshold for rental affordable units"
-    )
-
-    ownership_ami = st.sidebar.select_slider(
-        "Ownership AMI Threshold",
-        options=[0.80, 1.00, 1.10, 1.20],
-        value=1.00,
-        format_func=lambda x: f"{int(x*100)}% AMI",
-        help="Area Median Income threshold for ownership affordable units"
-    )
-
     # Fixed minimum affordable requirement (shown in assumptions box at top)
     min_affordable_pct = 0.25  # 25% of base units to qualify for Fast Track
 
@@ -793,6 +792,25 @@ def main():
             value=9600000,
             step=100000,
             format="%d"
+        )
+
+        st.markdown("---")
+        st.markdown("**AMI Thresholds**")
+
+        rental_ami = st.select_slider(
+            "Rental AMI Threshold",
+            options=[0.30, 0.40, 0.50, 0.60, 0.70, 0.80],
+            value=0.80,
+            format_func=lambda x: f"{int(x*100)}% AMI",
+            help="Area Median Income threshold for rental affordable units"
+        )
+
+        ownership_ami = st.select_slider(
+            "Ownership AMI Threshold",
+            options=[0.80, 1.00, 1.10, 1.20],
+            value=1.00,
+            format_func=lambda x: f"{int(x*100)}% AMI",
+            help="Area Median Income threshold for ownership affordable units"
         )
 
     # ========================================================================
