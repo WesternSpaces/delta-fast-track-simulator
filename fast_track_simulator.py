@@ -1373,13 +1373,85 @@ def main():
 
     with tab2:
         st.subheader("Scenario Comparisons")
+        st.caption("Compare how different policy choices affect outcomes")
 
-        # Quick comparison scenarios
-        col_comp1, col_comp2 = st.columns(2)
+        # ================================================================
+        # SCATTER PLOT - Hero visualization at top
+        # ================================================================
 
-        with col_comp1:
-            st.markdown("#### Alternative Affordability Periods")
+        scatter_data = []
+        for years in [5, 10, 15, 20, 30, 50]:
+            temp_policy = PolicySettings(
+                affordability_period_years=years,
+                rental_ami_threshold=rental_ami,
+                ownership_ami_threshold=ownership_ami,
+                min_affordable_pct=min_affordable_pct,
+                ownership_pct=ownership_pct,
+                density_bonus_pct=density_bonus_pct,
+                bonus_affordable_req=bonus_affordable_req,
+                waive_planning_fees=waive_planning,
+                waive_building_permit=waive_building,
+                tap_fee_reduction_pct=tap_fee_reduction,
+                use_tax_rebate_pct=use_tax_rebate
+            )
 
+            temp_dev = DeveloperProForma(project, temp_policy, ami_data)
+            temp_results = temp_dev.calculate()
+            temp_comm = CommunityBenefitAnalysis(temp_results, temp_policy)
+            temp_comm_results = temp_comm.calculate()
+
+            scatter_data.append({
+                'Years': years,
+                'Cost per Unit-Year': temp_comm_results['cost_per_unit_year'],
+                'Developer Net': abs(temp_results['net_developer_gain']),
+                'Adds Value': 'Yes' if temp_results['developer_feasible'] else 'No'
+            })
+
+        df_scatter = pd.DataFrame(scatter_data)
+
+        fig_scatter = px.scatter(
+            df_scatter,
+            x='Years',
+            y='Cost per Unit-Year',
+            size='Developer Net',
+            color='Adds Value',
+            color_discrete_map={'Yes': '#00CC96', 'No': '#EF553B'},
+            labels={'Years': 'Affordability Period (Years)',
+                   'Cost per Unit-Year': 'City Cost per Unit-Year ($)'}
+        )
+
+        # Add current scenario marker
+        fig_scatter.add_trace(go.Scatter(
+            x=[affordability_period],
+            y=[community_results['cost_per_unit_year']],
+            mode='markers',
+            marker=dict(size=20, color='yellow', symbol='star', line=dict(width=2, color='black')),
+            name='Current Scenario',
+            showlegend=True
+        ))
+
+        fig_scatter.update_layout(
+            height=350,
+            margin=dict(t=20, b=40),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+
+        st.plotly_chart(fig_scatter, use_container_width=True)
+        st.caption("⭐ Yellow star = your current scenario. Bubble size = developer net gain. Green = Fast Track adds value.")
+
+        st.markdown("---")
+
+        # ================================================================
+        # TABBED COMPARISON TABLES
+        # ================================================================
+
+        compare_tab1, compare_tab2, compare_tab3 = st.tabs([
+            "📅 By Affordability Period",
+            "🏠 By Rental AMI",
+            "🏡 By Ownership AMI"
+        ])
+
+        with compare_tab1:
             comparison_periods = [5, 15, 20, 30, 50]
             comparison_data = []
 
@@ -1404,12 +1476,11 @@ def main():
                 temp_comm_results = temp_comm.calculate()
 
                 comparison_data.append({
-                    'Period': f"{years} yrs" if years < 99 else "Permanent",
-                    'Rental Units': temp_results['rental_affordable'],
-                    'Ownership Units': temp_results['ownership_affordable'],
+                    'Period': f"{years} yrs",
                     'Developer Net': temp_results['net_developer_gain'],
                     'Cost/Unit-Yr': temp_comm_results['cost_per_unit_year'],
-                    '20-Yr Cost': temp_comm_results['cost_20_year']
+                    '20-Yr Cost': temp_comm_results['cost_20_year'],
+                    'Unit-Years': temp_comm_results['unit_years']
                 })
 
             df_comp = pd.DataFrame(comparison_data)
@@ -1420,11 +1491,9 @@ def main():
             df_comp['20-Yr Cost'] = df_comp['20-Yr Cost'].apply(lambda x: f"${x:,.0f}")
 
             st.dataframe(df_comp, use_container_width=True, hide_index=True)
+            st.caption(f"All scenarios use current settings: {int(rental_ami*100)}% rental AMI, {int(density_bonus_pct*100)}% density bonus")
 
-        with col_comp2:
-            st.markdown("#### Alternative Rental AMI Thresholds")
-            st.caption(f"Current ownership AMI: {int(ownership_ami*100)}%")
-
+        with compare_tab2:
             rental_ami_scenarios = [
                 ("60% AMI", 0.60),
                 ("70% AMI", 0.70),
@@ -1455,21 +1524,15 @@ def main():
 
                 rental_ami_comparison.append({
                     'AMI Level': name,
-                    'Affordable Rent': f"${temp_results['affordable_rent_weighted']:,.0f}",
-                    'Rent Gap': f"${temp_results['monthly_rent_gap']:,.0f}",
+                    'CHFA Rent': f"${temp_results['affordable_rent_weighted']:,.0f}",
+                    'vs Market': f"${temp_results['monthly_rent_gap']:,.0f}",
                     'Developer Net': f"${temp_results['net_developer_gain']:,.0f}"
                 })
 
             st.dataframe(pd.DataFrame(rental_ami_comparison), use_container_width=True, hide_index=True)
+            st.caption(f"Market rent: \\${project.get_weighted_market_rent():,.0f}/mo (weighted avg). Negative 'vs Market' = CHFA rent exceeds market.")
 
-        # Ownership AMI comparison
-        st.markdown("#### Alternative Ownership AMI Thresholds")
-
-        col_own1, col_own2 = st.columns(2)
-
-        with col_own1:
-            st.caption(f"Current rental AMI: {int(rental_ami*100)}%")
-
+        with compare_tab3:
             ownership_ami_scenarios = [
                 ("100% AMI", 1.00),
                 ("110% AMI", 1.10),
@@ -1496,85 +1559,18 @@ def main():
                 temp_dev = DeveloperProForma(project, temp_policy, ami_data)
                 temp_results = temp_dev.calculate()
 
-                # Calculate affordable sale price based on AMI
                 affordable_sale_price = ami_data.get_affordable_purchase_price(ami_pct)
                 sale_gap = project.market_sale_price - affordable_sale_price
 
                 ownership_ami_comparison.append({
                     'AMI Level': name,
                     'Affordable Price': f"${affordable_sale_price:,.0f}",
-                    'Price Gap': f"${sale_gap:,.0f}",
+                    'vs Market': f"${sale_gap:,.0f}",
                     'Developer Net': f"${temp_results['net_developer_gain']:,.0f}"
                 })
 
             st.dataframe(pd.DataFrame(ownership_ami_comparison), use_container_width=True, hide_index=True)
-
-        with col_own2:
-            st.info("""
-            **Rental vs. Ownership AMI Impact:**
-
-            - **Rental AMI:** Affects monthly rent gap (ongoing cost over affordability period)
-            - **Ownership AMI:** Affects one-time sale price discount (upfront cost to developer)
-
-            Higher AMI = less affordable to households, but lower cost to developer.
-            """)
-
-        # Scatter plot: Cost vs Affordability
-        st.markdown("#### Tradeoff Analysis: City Cost vs. Affordability Duration")
-
-        scatter_data = []
-        for years in [5, 10, 15, 20, 30, 50]:
-            temp_policy = PolicySettings(
-                affordability_period_years=years,
-                rental_ami_threshold=rental_ami,
-                ownership_ami_threshold=ownership_ami,
-                min_affordable_pct=min_affordable_pct,
-                ownership_pct=ownership_pct,
-                density_bonus_pct=density_bonus_pct,
-                bonus_affordable_req=bonus_affordable_req,
-                waive_planning_fees=waive_planning,
-                waive_building_permit=waive_building,
-                tap_fee_reduction_pct=tap_fee_reduction,
-                use_tax_rebate_pct=use_tax_rebate
-            )
-
-            temp_dev = DeveloperProForma(project, temp_policy, ami_data)
-            temp_results = temp_dev.calculate()
-            temp_comm = CommunityBenefitAnalysis(temp_results, temp_policy)
-            temp_comm_results = temp_comm.calculate()
-
-            scatter_data.append({
-                'Years': years,
-                'Cost per Unit-Year': temp_comm_results['cost_per_unit_year'],
-                'Developer Net': abs(temp_results['net_developer_gain']),  # Use absolute value for size
-                'Adds Value': 'Yes' if temp_results['developer_feasible'] else 'No'
-            })
-
-        df_scatter = pd.DataFrame(scatter_data)
-
-        fig_scatter = px.scatter(
-            df_scatter,
-            x='Years',
-            y='Cost per Unit-Year',
-            size='Developer Net',
-            color='Adds Value',
-            color_discrete_map={'Yes': '#00CC96', 'No': '#EF553B'},
-            title="City Cost Efficiency vs. Affordability Duration",
-            labels={'Years': 'Affordability Period (Years)',
-                   'Cost per Unit-Year': 'City Cost per Unit-Year ($)'}
-        )
-
-        # Add current scenario marker
-        fig_scatter.add_trace(go.Scatter(
-            x=[affordability_period],
-            y=[community_results['cost_per_unit_year']],
-            mode='markers',
-            marker=dict(size=20, color='yellow', symbol='star', line=dict(width=2, color='black')),
-            name='Current Scenario',
-            showlegend=True
-        ))
-
-        st.plotly_chart(fig_scatter, use_container_width=True)
+            st.caption(f"Market price: \\${project.market_sale_price:,.0f}. 'vs Market' = developer cost per ownership unit.")
 
     with tab3:
         st.subheader("Export Results")
