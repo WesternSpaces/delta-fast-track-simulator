@@ -470,8 +470,16 @@ def main():
             color: #ecf0f1;
         }
 
-        /* Sidebar labels - make them visible on dark background */
+        /* Sidebar labels and text - make them visible on dark background */
         [data-testid="stSidebar"] label {
+            color: #ecf0f1 !important;
+        }
+
+        [data-testid="stSidebar"] p {
+            color: #ecf0f1 !important;
+        }
+
+        [data-testid="stSidebar"] .stMarkdown p {
             color: #ecf0f1 !important;
         }
 
