@@ -1374,7 +1374,7 @@ def main():
                 temp_results = temp_dev.calculate()
 
                 # Calculate affordable sale price based on AMI
-                affordable_sale_price = ami_data.get_affordable_sale_price(ami_pct)
+                affordable_sale_price = ami_data.get_affordable_purchase_price(ami_pct)
                 sale_gap = project.market_sale_price - affordable_sale_price
 
                 ownership_ami_comparison.append({
