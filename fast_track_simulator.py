@@ -1159,8 +1159,8 @@ def main():
         with col3:
             st.metric("City Investment", f"${community_results['city_investment']:,.0f}")
         with col4:
-            workers_housed = dev_results['total_affordable'] * 1.5
-            st.metric("Workers Housed", f"~{workers_housed:.0f}")
+            residents_served = int(round(dev_results['total_units'] * 2.3, -1))  # Round to nearest 10
+            st.metric("Residents Served", f"~{residents_served}")
 
         st.markdown("---")
 
@@ -1190,7 +1190,7 @@ def main():
                 st.metric("Affordable", f"{dev_results['total_affordable']}")
             with housing_col3:
                 st.metric("Market Rate", f"{dev_results['market_rate_units']}")
-            st.caption(f"Serves ~{dev_results['total_units'] * 2.3:.0f} residents. {community_results['construction_jobs']:.0f} construction jobs created.")
+            st.caption(f"{dev_results['total_affordable']} affordable + {dev_results['market_rate_units']} market rate = {dev_results['total_units']} total units")
 
         # ================================================================
         # DETAILED BREAKDOWNS (Expanders)
