@@ -1189,8 +1189,8 @@ def main():
             with housing_col2:
                 st.metric("Affordable", f"{dev_results['total_affordable']}")
             with housing_col3:
-                st.metric("Market Rate", f"{dev_results['market_rate_units']}")
-            st.caption(f"{dev_results['total_affordable']} affordable + {dev_results['market_rate_units']} market rate = {dev_results['total_units']} total units")
+                st.metric("Unrestricted", f"{dev_results['market_rate_units']}")
+            st.caption(f"{dev_results['total_affordable']} affordable + {dev_results['market_rate_units']} unrestricted = {dev_results['total_units']} total units")
 
         # ================================================================
         # DETAILED BREAKDOWNS (Expanders)
