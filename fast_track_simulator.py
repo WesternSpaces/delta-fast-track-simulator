@@ -767,6 +767,14 @@ def main():
 
     st.header("📊 Scenario Results")
 
+    # Example project callout
+    st.info("""
+    **📐 Example Project:** 20-unit base development
+
+    All scenarios below use a 20-unit base project to enable direct comparison of policy options.
+    Adjust the policy settings in the sidebar to see how different incentive packages affect this same project.
+    """)
+
     st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
 
     # Top-line metrics with color coding
