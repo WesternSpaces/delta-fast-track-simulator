@@ -764,9 +764,9 @@ def main():
     use_tax_rebate = st.sidebar.slider(
         "Use Tax Rebate",
         min_value=0,
-        max_value=50,
+        max_value=100,
         value=50,
-        step=10,
+        step=5,
         format="%d%%",
         help="Percentage of 3% materials use tax rebated"
     ) / 100  # Convert back to decimal for calculations
