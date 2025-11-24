@@ -930,11 +930,11 @@ def main():
         """, unsafe_allow_html=True)
 
     with col3:
-        feasible = dev_results['developer_feasible']
-        box_color = "#e8f8f5" if feasible else "#fee"
-        border_color = "#27ae60" if feasible else "#e74c3c"
-        text_color = "#27ae60" if feasible else "#e74c3c"
-        status_text = "✓ Feasible" if feasible else "✗ Not Feasible"
+        adds_value = dev_results['developer_feasible']
+        box_color = "#e8f8f5" if adds_value else "#fee"
+        border_color = "#27ae60" if adds_value else "#e74c3c"
+        text_color = "#27ae60" if adds_value else "#e74c3c"
+        status_text = "✓ Fast Track Adds Value" if adds_value else "✗ Cost Exceeds Benefits"
 
         st.markdown(f"""
             <div style='background-color: {box_color}; padding: 20px; border-radius: 10px;
@@ -1617,7 +1617,7 @@ def main():
                 'Years': years,
                 'Cost per Unit-Year': temp_comm_results['cost_per_unit_year'],
                 'Developer Net': abs(temp_results['net_developer_gain']),  # Use absolute value for size
-                'Feasible': 'Yes' if temp_results['developer_feasible'] else 'No'
+                'Adds Value': 'Yes' if temp_results['developer_feasible'] else 'No'
             })
 
         df_scatter = pd.DataFrame(scatter_data)
@@ -1627,7 +1627,7 @@ def main():
             x='Years',
             y='Cost per Unit-Year',
             size='Developer Net',
-            color='Feasible',
+            color='Adds Value',
             color_discrete_map={'Yes': '#00CC96', 'No': '#EF553B'},
             title="City Cost Efficiency vs. Affordability Duration",
             labels={'Years': 'Affordability Period (Years)',
