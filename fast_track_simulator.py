@@ -885,22 +885,6 @@ def main():
 
     st.header("📊 Scenario Results")
 
-    # Example project callout with key assumptions
-    project_type_display = "Rental" if ownership_pct == 0 else "Ownership"
-
-    st.info(f"""
-    **📐 Model Assumptions:**
-    - **Base Project Size:** 20 units
-    - **Project Type:** {project_type_display}
-    - **Rental AMI Threshold:** {int(rental_ami*100)}% AMI
-    - **Ownership AMI Threshold:** {int(ownership_ami*100)}% AMI
-    - **Minimum Affordable Requirement:** {int(min_affordable_pct*100)}% of base units (to qualify for Fast Track)
-
-    Adjust the policy settings in the sidebar to explore different scenarios and see their impacts.
-    """)
-
-    st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
-
     # Top-line metrics with color coding
     col1, col2, col3, col4 = st.columns(4)
 
@@ -1056,15 +1040,15 @@ def main():
     # TABS FOR DETAILED ANALYSIS
     # ========================================================================
 
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "💰 Developer Economics",
-        "🏘️ Community Benefit",
+    tab1, tab2, tab3 = st.tabs([
+        "📊 Results",
         "📈 Comparisons",
-        "💾 Export & Share"
+        "💾 Export"
     ])
 
     with tab1:
-        st.subheader("Developer Pro Forma")
+        st.markdown("### Developer Economics")
+        st.caption("Fast Track incentives vs. affordability costs")
 
         col_a, col_b = st.columns(2)
 
@@ -1311,72 +1295,16 @@ def main():
         total_costs = sum(costs_values)
         st.caption(f"**Total Benefits:** \\${total_benefits:,.0f} | **Total Costs:** \\${total_costs:,.0f} | **Net Gain:** \\${dev_results['net_developer_gain']:,.0f}")
 
-    with tab2:
-        st.subheader("Community Benefit Analysis")
+        st.markdown("---")
 
-        # How the Numbers Work expander
-        with st.expander("ℹ️ How the Numbers Work"):
-            st.markdown("""
-            ### Key Metrics Explained
-
-            **Cost per Unit-Year:**
-            - Normalizes city investment across different affordability periods
-            - Calculation: Total city investment ÷ (affordable units × years)
-            - Lower is better = more efficient use of city resources
-            - Allows apples-to-apples comparison of different term lengths
-
-            **Total Unit-Years:**
-            - Measures total duration of affordability created
-            - Calculation: Affordable units × affordability period
-            - Example: 7 units for 30 years = 210 unit-years
-
-            **20-Year Total Cost:**
-            - Projects long-term budget impact
-            - Shows cost to maintain affordable units over 20 years
-            - Short terms require re-incentivizing units multiple times
-            - Formula: City investment × (20 ÷ affordability period)
-
-            ### Ownership Unit Wealth-Building
-
-            **How Ownership Units Build Wealth:**
-
-            Affordable ownership units help buyers build wealth through home equity. Even with deed restrictions that may cap appreciation, homeowners benefit from:
-            - **Monthly payments building equity** instead of paying rent to a landlord
-            - **Appreciation within allowed limits** (varies by program and deed restriction terms)
-            - **Asset ownership and housing stability** that rental cannot provide
-            - **Forced savings** through mortgage principal paydown
-
-            The "developer cost" shown in this tool reflects the one-time discount at initial sale. The buyer's long-term wealth gain depends on:
-            - Market appreciation rates
-            - Deed restriction terms (resale price caps, shared equity formulas, etc.)
-            - Length of homeownership
-            - Maintenance and improvements made to the property
-
-            These factors vary significantly and are not calculated in this model. The primary benefit is that buyers are building equity in an asset they own, rather than paying rent.
-
-            ### City Investment Components
-            - **Density Bonus Value:** Revenue foregone by allowing more units without charging impact fees
-            - **Fee Waivers:** Direct cost to city for waived building permits, tap fees, etc.
-            - **Use Tax Rebate:** Sales tax revenue returned to developer on construction materials
-            - **Fast Track Time Savings:** Administrative efficiency benefit (no direct city cost)
-
-            ### Workforce Housing Impact
-            - **Local Workers Housed:** Estimated workers who can live in Delta due to affordable units
-            - Calculation: Affordable units × 1.5 workers per household (average)
-            - These are positions already in Delta (teachers, nurses, service workers) who need housing
-            - Enables local workforce to live in the community where they work
-
-            ### Data Sources
-            - All calculations based on official 2025 City of Delta fee schedules
-            - Construction jobs multiplier: 0.5 jobs per unit (temporary, during build)
-            - Population estimates use 2.3 persons per household (Delta County average)
-            - Workers per household: 1.5 (conservative estimate for working-age affordable housing residents)
-            """)
+        # Community Benefit section
+        st.markdown("### Community Benefit")
+        st.caption("City investment and housing impact")
 
         col_x, col_y = st.columns(2)
 
         with col_x:
-            st.markdown("### City Investment")
+            st.markdown("#### City Investment")
 
             # Show rental vs ownership breakdown
             rental_count = dev_results['rental_affordable']
@@ -1413,7 +1341,7 @@ def main():
             st.caption("💡 Cost per Unit-Year normalizes investment across different time periods for fair comparison.")
 
         with col_y:
-            st.markdown("### Workforce Housing Impact")
+            st.markdown("#### Workforce Housing Impact")
 
             # Calculate workforce metrics
             # Assume 1.5 workers per household on average
@@ -1445,31 +1373,14 @@ def main():
 
             st.caption("💡 Local workers housed: Affordable units enable teachers, healthcare workers, and service employees to live in Delta.")
 
-    with tab3:
+    with tab2:
         st.subheader("Scenario Comparisons")
-
-        st.markdown("""
-        Compare this scenario against alternative policy choices. Select comparison scenarios below.
-        """)
 
         # Quick comparison scenarios
         col_comp1, col_comp2 = st.columns(2)
 
         with col_comp1:
             st.markdown("#### Alternative Affordability Periods")
-
-            # Explanatory note about how period affects costs
-            rental_units = int(dev_results['total_affordable'] * (1 - ownership_pct))
-            ownership_units = int(dev_results['total_affordable'] * ownership_pct)
-
-            if ownership_pct > 0:
-                st.info(f"""
-                **How affordability period affects developer costs:**
-                - **Rental units ({rental_units}):** Longer period = higher costs (ongoing rent gap × years)
-                - **Ownership units ({ownership_units}):** Period doesn't affect developer's upfront cost (one-time sale discount)
-
-                If all units are ownership, developer net gain stays the same across periods.
-                """)
 
             comparison_periods = [5, 15, 20, 30, 50]
             comparison_data = []
@@ -1667,8 +1578,8 @@ def main():
 
         st.plotly_chart(fig_scatter, use_container_width=True)
 
-    with tab4:
-        st.subheader("Export & Share Results")
+    with tab3:
+        st.subheader("Export Results")
 
         st.markdown("""
         Download this scenario's results or share a link to recreate these settings.
