@@ -600,21 +600,9 @@ def main():
     )
     affordability_display = "Permanent (99+ years)" if affordability_period == 99 else f"{affordability_period} years"
 
-    rental_ami = st.sidebar.select_slider(
-        "Rental AMI Threshold",
-        options=[0.60, 0.70, 0.80, 0.90, 1.00, 1.10, 1.20],
-        value=0.60,
-        format_func=lambda x: f"{int(x*100)}% AMI (${ami_data.get_affordable_rent(x):.0f}/mo)",
-        help="Income limit for affordable rental units"
-    )
-
-    ownership_ami = st.sidebar.select_slider(
-        "Ownership AMI Threshold",
-        options=[1.00, 1.10, 1.20],
-        value=1.00,
-        format_func=lambda x: f"{int(x*100)}% AMI (${ami_data.get_affordable_purchase_price(x):,.0f})",
-        help="Income limit for affordable for-sale units"
-    )
+    # Fixed AMI thresholds (shown in assumptions box at top)
+    rental_ami = 0.80  # 80% AMI for rentals
+    ownership_ami = 1.00  # 100% AMI for ownership
 
     ownership_pct = st.sidebar.slider(
         "% of Affordable Units as Ownership",
@@ -629,12 +617,21 @@ def main():
     # Show inverse rental percentage for clarity
     st.sidebar.caption(f"↳ Rental: {100 - int(ownership_pct*100)}%")
 
-    # Fixed minimum affordable requirement (not adjustable - shown in assumptions box at top)
+    # Fixed minimum affordable requirement (shown in assumptions box at top)
     min_affordable_pct = 0.25  # 25% of base units to qualify for Fast Track
-
-    # Fixed density bonus assumptions (not adjustable - shown in assumptions box at top)
-    density_bonus_pct = 0.20  # 20% density bonus
     bonus_affordable_req = 0.50  # 50% of bonus units must be affordable
+
+    st.sidebar.subheader("Density Bonus")
+
+    density_bonus_pct = st.sidebar.slider(
+        "Density Bonus Percentage",
+        min_value=0,
+        max_value=30,
+        value=20,
+        step=5,
+        format="%d%%",
+        help="Additional units allowed beyond base zoning (key policy lever to explore)"
+    ) / 100  # Convert to decimal
 
     st.sidebar.subheader("Fee Waivers & Reductions")
 
@@ -753,11 +750,12 @@ def main():
     **📐 Model Assumptions:**
     - **Base Project Size:** 20 units
     - **Minimum Affordable Requirement:** {int(min_affordable_pct*100)}% of base units (to qualify for Fast Track)
-    - **Density Bonus:** {int(density_bonus_pct*100)}% additional units allowed
     - **Bonus Unit Affordability:** {int(bonus_affordable_req*100)}% of bonus units must be affordable
+    - **Rental AMI Threshold:** {int(rental_ami*100)}% AMI
+    - **Ownership AMI Threshold:** {int(ownership_ami*100)}% AMI
 
     All scenarios use these same assumptions to enable direct comparison of policy options.
-    Adjust the policy settings in the sidebar to see how different incentive packages affect this project.
+    Adjust the policy settings in the sidebar (density bonus, affordability period, fees) to see impacts.
     """)
 
     st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
