@@ -941,27 +941,27 @@ def main():
 
             **Developer Benefits:**
             1. **Density Bonus Value:** Additional units allowed × (construction cost + land value per unit)
-               - Construction cost: $75,000/unit (conservative estimate)
-               - Land/development value: $90,000/unit
+               - Construction cost: \\$75,000/unit (conservative estimate)
+               - Land/development value: \\$90,000/unit
             2. **Fee Waivers:** Building permits + tap/sewer fees + use tax rebate + planning fees
                - Based on City of Delta 2025 Fee Schedule
-            3. **Fast Track Time Savings:** $50,000 in reduced carrying costs
+            3. **Fast Track Time Savings:** \\$50,000 in reduced carrying costs
 
             **Developer Costs:**
             1. **Rental Units:** Weighted average rent gap × rental units × 12 months × affordability years
                - **Unit Mix Assumption:** 20% 1BR, 60% 2BR, 20% 3BR (typical multi-family)
-               - **Market Rents:** 1BR ($1,211), 2BR ($1,425), 3BR ($1,710)
-               - **Weighted Avg Market Rent:** $1,439/mo
+               - **Market Rents:** 1BR \\$1,211, 2BR \\$1,425, 3BR \\$1,710
+               - **Weighted Avg Market Rent:** \\$1,439/mo
                - **CHFA Rents:** Weighted average at selected AMI level
                - **Key Insight:** At 70% AMI and above, CHFA rents exceed market - NO rental cost!
-            2. **Ownership Units:** Gap between market sale price ($334,000 median) and affordable sale price (based on AMI)
+            2. **Ownership Units:** Gap between market sale price (\\$334,000 median) and affordable sale price (based on AMI)
 
             ### Data Sources
             - **Rental Limits:** 2025 CHFA Maximum Rents for Delta County (1BR, 2BR, 3BR)
             - **Income Limits:** 2025 HUD Area Median Income for Delta County
             - **Fee Schedule:** City of Delta 2025 Fee Schedule (official)
-            - **Market Data:** Grand Mesa Flats rental data (Nov 2025), $334,000 median sale price
-              - 2BR market rent confirmed: $1,425/mo
+            - **Market Data:** Grand Mesa Flats rental data (Nov 2025), \\$334,000 median sale price
+              - 2BR market rent confirmed: \\$1,425/mo
               - 1BR and 3BR estimated using standard ratios (85% and 120% of 2BR)
             - **Construction Costs:** Industry standard estimates for multi-family development
             - **Unit Mix:** Typical multi-family development pattern (20/60/20 split)
