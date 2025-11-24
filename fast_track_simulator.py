@@ -1306,15 +1306,9 @@ def main():
         with col_x:
             st.markdown("#### City Investment")
 
-            # Show rental vs ownership breakdown
-            rental_count = dev_results['rental_affordable']
-            ownership_count = dev_results['ownership_affordable']
-            unit_breakdown = f"{rental_count} rental, {ownership_count} ownership" if ownership_count > 0 else f"{rental_count} rental"
-
             city_data = {
                 'Metric': [
                     'Affordable Units Created',
-                    '  Unit Breakdown',
                     '',
                     'Total City Investment',
                     'Cost per Unit-Year',
@@ -1325,7 +1319,6 @@ def main():
                 ],
                 'Value': [
                     f"{community_results['affordable_units']:.0f} units",
-                    f"{unit_breakdown}",
                     '',
                     f"${community_results['city_investment']:,.0f}",
                     f"${community_results['cost_per_unit_year']:,.0f}",
