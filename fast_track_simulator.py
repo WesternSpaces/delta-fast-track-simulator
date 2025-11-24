@@ -1111,22 +1111,22 @@ def main():
                 st.success(f"""
                 **✓ Rental Income Premium at {ami_pct:.0f}% AMI**
 
-                At {ami_pct:.0f}% AMI, the CHFA maximum affordable rent (${dev_results['affordable_rent_weighted']:,.0f}/mo weighted avg)
-                **exceeds** Delta's current market rent (${dev_results['market_rent_weighted']:,.0f}/mo weighted avg) by ${rental_premium:.0f}/mo.
+                At {ami_pct:.0f}% AMI, the CHFA maximum affordable rent (\\${dev_results['affordable_rent_weighted']:,.0f}/mo weighted avg)
+                **exceeds** Delta's current market rent (\\${dev_results['market_rent_weighted']:,.0f}/mo weighted avg) by \\${rental_premium:.0f}/mo.
 
-                **Developer Advantage:** The developer can charge ${rental_premium:.0f}/mo MORE per affordable unit than market rate,
+                **Developer Advantage:** The developer can charge \\${rental_premium:.0f}/mo MORE per affordable unit than market rate,
                 generating extra rental income over the {policy.affordability_period_years}-year period.
                 This additional income increases developer net gain compared to lower AMI thresholds.
                 """)
             elif dev_results['rental_affordable'] > 0 and dev_results['monthly_rent_gap'] == 0:
                 ami_pct = policy.rental_ami_threshold * 100
                 st.info(f"""
-                **At {ami_pct:.0f}% AMI:** CHFA affordable rent equals market rent (${dev_results['market_rent_weighted']:,.0f}/mo).
+                **At {ami_pct:.0f}% AMI:** CHFA affordable rent equals market rent (\\${dev_results['market_rent_weighted']:,.0f}/mo).
                 No cost or benefit to developer from rental restrictions at this AMI level.
                 """)
             elif dev_results['rental_affordable'] > 0:
                 # Show that weighted average was used
-                st.caption(f"💡 Rent gap calculated using weighted average across unit mix: 20% 1BR, 60% 2BR, 20% 3BR. Weighted avg market rent: ${dev_results['market_rent_weighted']:,.0f}/mo")
+                st.caption(f"💡 Rent gap calculated using weighted average across unit mix: 20% 1BR, 60% 2BR, 20% 3BR. Weighted avg market rent: \\${dev_results['market_rent_weighted']:,.0f}/mo")
 
         st.markdown("---")
 
