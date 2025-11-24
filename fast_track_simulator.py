@@ -435,8 +435,9 @@ class CommunityBenefitAnalysis:
     def calculate(self) -> Dict:
         """Analyze community perspective"""
 
-        # City's investment
-        city_investment = self.dev['total_benefits']
+        # City's investment - ONLY actual dollars spent (fee waivers)
+        # Does NOT include density bonus value (no money changes hands) or time savings (developer benefit)
+        city_investment = self.dev['total_fee_waivers']
 
         # Affordable units gained
         affordable_units = self.dev['total_affordable']
