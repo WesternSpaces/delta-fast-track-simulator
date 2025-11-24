@@ -508,9 +508,17 @@ def main():
 
         th {
             background-color: #34495e;
-            color: white;
+            color: white !important;
             padding: 12px;
             text-align: left;
+        }
+
+        thead th {
+            color: white !important;
+        }
+
+        [data-testid="stTable"] th {
+            color: white !important;
         }
 
         td {
