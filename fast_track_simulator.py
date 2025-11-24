@@ -1536,7 +1536,7 @@ def main():
         - Community costs represent forgone revenue and incentives
         - Cost per unit-year normalizes across different affordability periods
 
-        Built for the City of Delta Focus Group - November 2025
+        Built for the City of Delta Focus Group - December 2025
         """)
 
 
