@@ -958,6 +958,101 @@ def main():
     st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
 
     # ========================================================================
+    # COMPREHENSIVE METHODOLOGY & DATA SOURCES
+    # ========================================================================
+
+    with st.expander("📖 Methodology & Data Sources"):
+        st.markdown("""
+        ### Model Assumptions
+
+        **Rental Units:**
+        - Developer retains ownership and manages rental units over the entire affordability period
+        - Cost = monthly rent gap × rental units × 12 months × affordability years
+        - Longer affordability periods = higher developer costs
+
+        **Ownership Units:**
+        - Developer sells units at affordable price (one-time discount)
+        - Cost = (market price - affordable price) × ownership units
+        - Affordability period enforced through deed restrictions/resale controls
+        - Developer cost is upfront at sale; period doesn't affect developer's bottom line
+
+        ---
+
+        ### Calculation Methodology
+
+        **Developer Benefits:**
+        1. **Density Bonus Value:** Additional units allowed × (construction cost + land value per unit)
+           - Construction cost: \\$75,000/unit (conservative estimate)
+           - Land/development value: \\$90,000/unit
+        2. **Fee Waivers:** Building permits + tap/sewer fees + use tax rebate + planning fees
+           - Based on City of Delta 2025 Fee Schedule
+        3. **Fast Track Time Savings:** \\$50,000 in reduced carrying costs
+
+        **Developer Costs:**
+        1. **Rental Units:** Weighted average rent gap × rental units × 12 months × affordability years
+           - **Unit Mix Assumption:** 20% 1BR, 60% 2BR, 20% 3BR (typical multi-family)
+           - **Market Rents:** 1BR \\$1,211, 2BR \\$1,425, 3BR \\$1,710
+           - **Weighted Avg Market Rent:** \\$1,439/mo
+           - **CHFA Rents:** Weighted average at selected AMI level
+           - **Key Insight:** At 70% AMI and above, CHFA rents exceed market - NO rental cost!
+        2. **Ownership Units:** Gap between market sale price (\\$334,000 median) and affordable sale price (based on AMI)
+
+        ---
+
+        ### Fee Calculations (City of Delta 2025 Fee Schedule)
+
+        **Building Permit Fees (Section 3, Table 3B):**
+        - Tiered formula based on construction valuation
+        - For example project (\\$9.6M): ~\\$32,699
+
+        **Planning Fees (Section 6, Land Development):**
+        - Preliminary Plat: \\$500 + (\\$20 × number of units)
+        - Final Plat: \\$250
+        - For example project (24 units): \\$1,230
+
+        **Tap & System Improvement Fees (Section 8, Tables 8B & 8C):**
+        - Water BSIF: \\$86,100 base + \\$1,500 per additional unit
+        - Water Tapping Fee: \\$12,420 (4" combo meter)
+        - Sewer BSIF: \\$154,000 base + \\$2,600 per additional unit
+        - For example project (24 units): \\$346,820 total
+
+        **Use Tax (Section 3D):**
+        - 3% of materials cost (materials ≈ 60% of construction valuation)
+        - Rebate: 0% to 100% based on policy slider
+        - For example project (\\$9.6M valuation): \\$172,800 tax, rebate varies by policy
+
+        ---
+
+        ### Data Sources
+
+        - **Rental Limits:** 2025 CHFA Maximum Rents for Delta County (1BR, 2BR, 3BR)
+        - **Income Limits:** 2025 HUD Area Median Income for Delta County
+        - **Fee Schedule:** City of Delta 2025 Fee Schedule (official)
+        - **Market Data:** Grand Mesa Flats rental data (Nov 2025), \\$334,000 median sale price
+          - 2BR market rent confirmed: \\$1,425/mo
+          - 1BR and 3BR estimated using standard ratios (85% and 120% of 2BR)
+        - **Construction Costs:** Industry standard estimates for multi-family development
+        - **Unit Mix:** Typical multi-family development pattern (20/60/20 split)
+
+        ---
+
+        ### Important Context
+
+        **This analysis shows Fast Track incentive value compared to affordability costs.**
+
+        Actual project feasibility will depend on a full **capital stack** that typically includes:
+        - Low Income Housing Tax Credits (LIHTC)
+        - Grant funding (HOME, CDBG, state housing funds)
+        - Land contribution or discount
+        - Partnership equity (non-profit, housing authority, etc.)
+        - Debt financing (construction loans, permanent financing)
+        - Developer equity
+
+        The "Fast Track Adds Value" indicator shows whether these incentives help close the financing gap,
+        not whether the full project pencils out.
+        """)
+
+    # ========================================================================
     # TABS FOR DETAILED ANALYSIS
     # ========================================================================
 
@@ -970,67 +1065,6 @@ def main():
 
     with tab1:
         st.subheader("Developer Pro Forma")
-
-        st.info("""
-        **💡 Important Context:** This analysis shows Fast Track incentive value compared to affordability costs.
-
-        Actual project feasibility will depend on a full **capital stack** that typically includes:
-        - Low Income Housing Tax Credits (LIHTC)
-        - Grant funding (HOME, CDBG, state housing funds)
-        - Land contribution or discount
-        - Partnership equity (non-profit, housing authority, etc.)
-        - Debt financing (construction loans, permanent financing)
-        - Developer equity
-
-        The "Fast Track Adds Value" indicator shows whether these incentives help close the gap, not whether
-        the full project pencils out.
-        """)
-
-        # How the Numbers Work expander
-        with st.expander("ℹ️ How the Numbers Work"):
-            st.markdown("""
-            ### Model Assumptions
-
-            **Rental Units:**
-            - Developer retains ownership and manages rental units over the entire affordability period
-            - Cost = monthly rent gap × rental units × 12 months × affordability years
-            - Longer affordability periods = higher developer costs
-
-            **Ownership Units:**
-            - Developer sells units at affordable price (one-time discount)
-            - Cost = (market price - affordable price) × ownership units
-            - Affordability period enforced through deed restrictions/resale controls
-            - Developer cost is upfront at sale; period doesn't affect developer's bottom line
-
-            ### Calculation Methodology
-
-            **Developer Benefits:**
-            1. **Density Bonus Value:** Additional units allowed × (construction cost + land value per unit)
-               - Construction cost: \\$75,000/unit (conservative estimate)
-               - Land/development value: \\$90,000/unit
-            2. **Fee Waivers:** Building permits + tap/sewer fees + use tax rebate + planning fees
-               - Based on City of Delta 2025 Fee Schedule
-            3. **Fast Track Time Savings:** \\$50,000 in reduced carrying costs
-
-            **Developer Costs:**
-            1. **Rental Units:** Weighted average rent gap × rental units × 12 months × affordability years
-               - **Unit Mix Assumption:** 20% 1BR, 60% 2BR, 20% 3BR (typical multi-family)
-               - **Market Rents:** 1BR \\$1,211, 2BR \\$1,425, 3BR \\$1,710
-               - **Weighted Avg Market Rent:** \\$1,439/mo
-               - **CHFA Rents:** Weighted average at selected AMI level
-               - **Key Insight:** At 70% AMI and above, CHFA rents exceed market - NO rental cost!
-            2. **Ownership Units:** Gap between market sale price (\\$334,000 median) and affordable sale price (based on AMI)
-
-            ### Data Sources
-            - **Rental Limits:** 2025 CHFA Maximum Rents for Delta County (1BR, 2BR, 3BR)
-            - **Income Limits:** 2025 HUD Area Median Income for Delta County
-            - **Fee Schedule:** City of Delta 2025 Fee Schedule (official)
-            - **Market Data:** Grand Mesa Flats rental data (Nov 2025), \\$334,000 median sale price
-              - 2BR market rent confirmed: \\$1,425/mo
-              - 1BR and 3BR estimated using standard ratios (85% and 120% of 2BR)
-            - **Construction Costs:** Industry standard estimates for multi-family development
-            - **Unit Mix:** Typical multi-family development pattern (20/60/20 split)
-            """)
 
         col_a, col_b = st.columns(2)
 
@@ -1060,34 +1094,6 @@ def main():
                 ]
             }
             st.table(pd.DataFrame(benefits_data))
-
-            # Show fee calculation breakdowns
-            if dev_results['building_permit_waived'] > 0:
-                with st.expander("ℹ️ Building Permit Fee Calculation"):
-                    st.write(f"**Total: ${dev_results['building_permit_waived']:,.2f}**")
-                    st.write(dev_results['building_permit_breakdown'])
-                    st.caption("Source: City of Delta 2025 Fee Schedule - Section 3, Table 3B")
-
-            if dev_results['planning_fees_waived'] > 0:
-                with st.expander("ℹ️ Planning Fee Calculation"):
-                    st.write(f"**Total: ${dev_results['planning_fees_waived']:,.2f}**")
-                    for item, amount in dev_results['planning_fee_breakdown'].items():
-                        st.write(f"- {item}: ${amount:,.2f}")
-                    st.caption("Source: City of Delta 2025 Fee Schedule - Section 6, Land Development")
-
-            if dev_results['tap_fee_savings'] > 0:
-                with st.expander("ℹ️ Tap & Sewer Fee Calculation"):
-                    st.write(f"**Savings: ${dev_results['tap_fee_savings']:,.2f}** ({policy.tap_fee_reduction_pct*100:.0f}% reduction)")
-                    st.write("**Full Fees:**")
-                    for item, amount in dev_results['tap_fee_breakdown'].items():
-                        st.write(f"- {item}: ${amount:,.2f}")
-                    st.caption("Source: City of Delta 2025 Fee Schedule - Section 8, Tables 8B & 8C")
-
-            if dev_results['use_tax_savings'] > 0:
-                with st.expander("ℹ️ Use Tax Rebate Calculation"):
-                    st.write(f"**Rebate: ${dev_results['use_tax_savings']:,.2f}**")
-                    st.write(dev_results['use_tax_breakdown'])
-                    st.caption("Source: City of Delta 2025 Fee Schedule - Section 3D")
 
         with col_b:
             st.markdown("### Costs to Developer")
