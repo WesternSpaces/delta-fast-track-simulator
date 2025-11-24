@@ -629,36 +629,12 @@ def main():
     # Show inverse rental percentage for clarity
     st.sidebar.caption(f"↳ Rental: {100 - int(ownership_pct*100)}%")
 
-    min_affordable_pct = st.sidebar.slider(
-        "Minimum Affordable % (of base units)",
-        min_value=10,
-        max_value=50,
-        value=25,
-        step=5,
-        format="%d%%",
-        help="Minimum percentage of original project that must be affordable"
-    ) / 100  # Convert back to decimal for calculations
+    # Fixed minimum affordable requirement (not adjustable - shown in assumptions box at top)
+    min_affordable_pct = 0.25  # 25% of base units to qualify for Fast Track
 
-    st.sidebar.subheader("Density Bonus")
-
-    density_bonus_pct = st.sidebar.slider(
-        "Density Bonus Percentage",
-        min_value=0,
-        max_value=30,
-        value=20,
-        step=5,
-        format="%d%%",
-        help="Additional units allowed beyond base zoning"
-    ) / 100  # Convert back to decimal for calculations
-
-    bonus_affordable_req = st.sidebar.slider(
-        "% of Bonus Units that Must Be Affordable",
-        min_value=0,
-        max_value=100,
-        value=50,
-        step=10,
-        format="%d%%"
-    ) / 100  # Convert back to decimal for calculations
+    # Fixed density bonus assumptions (not adjustable - shown in assumptions box at top)
+    density_bonus_pct = 0.20  # 20% density bonus
+    bonus_affordable_req = 0.50  # 50% of bonus units must be affordable
 
     st.sidebar.subheader("Fee Waivers & Reductions")
 
@@ -772,12 +748,16 @@ def main():
 
     st.header("📊 Scenario Results")
 
-    # Example project callout
-    st.info("""
-    **📐 Example Project:** 20-unit base development
+    # Example project callout with key assumptions
+    st.info(f"""
+    **📐 Model Assumptions:**
+    - **Base Project Size:** 20 units
+    - **Minimum Affordable Requirement:** {int(min_affordable_pct*100)}% of base units (to qualify for Fast Track)
+    - **Density Bonus:** {int(density_bonus_pct*100)}% additional units allowed
+    - **Bonus Unit Affordability:** {int(bonus_affordable_req*100)}% of bonus units must be affordable
 
-    All scenarios below use a 20-unit base project to enable direct comparison of policy options.
-    Adjust the policy settings in the sidebar to see how different incentive packages affect this same project.
+    All scenarios use these same assumptions to enable direct comparison of policy options.
+    Adjust the policy settings in the sidebar to see how different incentive packages affect this project.
     """)
 
     st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
