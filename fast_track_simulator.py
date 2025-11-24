@@ -1129,10 +1129,17 @@ def main():
             - **Use Tax Rebate:** Sales tax revenue returned to developer on construction materials
             - **Fast Track Time Savings:** Administrative efficiency benefit (no direct city cost)
 
+            ### Workforce Housing Impact
+            - **Local Workers Housed:** Estimated workers who can live in Delta due to affordable units
+            - Calculation: Affordable units × 1.5 workers per household (average)
+            - These are positions already in Delta (teachers, nurses, service workers) who need housing
+            - Enables local workforce to live in the community where they work
+
             ### Data Sources
             - All calculations based on official 2025 City of Delta fee schedules
-            - Employment multipliers from standard economic impact models
+            - Construction jobs multiplier: 0.5 jobs per unit (temporary, during build)
             - Population estimates use 2.3 persons per household (Delta County average)
+            - Workers per household: 1.5 (conservative estimate for working-age affordable housing residents)
             """)
 
         col_x, col_y = st.columns(2)
@@ -1175,27 +1182,37 @@ def main():
             st.caption("💡 Cost per Unit-Year normalizes investment across different time periods for fair comparison.")
 
         with col_y:
-            st.markdown("### Economic Impact")
+            st.markdown("### Workforce Housing Impact")
 
-            jobs_data = {
+            # Calculate workforce metrics
+            # Assume 1.5 workers per household on average
+            workers_housed = dev_results['total_affordable'] * 1.5
+
+            workforce_data = {
                 'Impact': [
                     'Total Housing Units',
-                    'Estimated Population Served',
+                    'Affordable Units',
+                    'Market Rate Units',
                     '',
-                    'Construction Jobs (temp)',
-                    'Permanent Jobs Created'
+                    'Estimated Population Served',
+                    'Local Workers Housed',
+                    '',
+                    'Construction Jobs (temp)'
                 ],
                 'Value': [
                     f"{dev_results['total_units']} units",
-                    f"{dev_results['total_units'] * 2.3:.0f} people",
+                    f"{dev_results['total_affordable']} units",
+                    f"{dev_results['market_rate_units']} units",
                     '',
-                    f"{community_results['construction_jobs']:.0f} jobs",
-                    f"{community_results['permanent_jobs']:.0f} jobs"
+                    f"{dev_results['total_units'] * 2.3:.0f} people",
+                    f"~{workers_housed:.0f} workers",
+                    '',
+                    f"{community_results['construction_jobs']:.0f} jobs"
                 ]
             }
-            st.table(pd.DataFrame(jobs_data))
+            st.table(pd.DataFrame(workforce_data))
 
-            st.caption("💡 Permanent jobs estimate based on property management and maintenance needs.")
+            st.caption("💡 Local workers housed: Affordable units enable teachers, healthcare workers, and service employees to live in Delta.")
 
         # Units breakdown pie chart
         st.markdown("### Unit Mix")
