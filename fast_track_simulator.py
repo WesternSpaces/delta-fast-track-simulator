@@ -151,24 +151,38 @@ class FeeCalculator:
     """Calculate City of Delta fees based on 2025 fee schedule"""
 
     @staticmethod
-    def building_permit_fee(valuation: float) -> float:
-        """Calculate building permit fee from Table 3B"""
+    def building_permit_fee(valuation: float) -> tuple:
+        """Calculate building permit fee from Table 3B
+
+        Returns: (total_fee, breakdown_string)
+        """
+        # From Section 3: Building Permits - Table 3B - 2025 Fee Schedule
         if valuation <= 500:
-            return 23.50
+            fee = 23.50
+            breakdown = f"Base fee: ${fee:,.2f}"
         elif valuation <= 2000:
-            return 23.50 + ((valuation - 500) / 100) * 3.05
+            fee = 23.50 + ((valuation - 500) / 100) * 3.05
+            breakdown = f"$23.50 base + ${((valuation - 500) / 100) * 3.05:,.2f} ($3.05 per $100)"
         elif valuation <= 25000:
-            return 69.25 + ((valuation - 2000) / 1000) * 14.00
+            fee = 69.25 + ((valuation - 2000) / 1000) * 14.00
+            breakdown = f"$69.25 base + ${((valuation - 2000) / 1000) * 14.00:,.2f} ($14 per $1,000)"
         elif valuation <= 50000:
-            return 391.25 + ((valuation - 25000) / 1000) * 10.10
+            fee = 391.25 + ((valuation - 25000) / 1000) * 10.10
+            breakdown = f"$391.25 base + ${((valuation - 25000) / 1000) * 10.10:,.2f} ($10.10 per $1,000)"
         elif valuation <= 100000:
-            return 643.75 + ((valuation - 50000) / 1000) * 7.00
+            fee = 643.75 + ((valuation - 50000) / 1000) * 7.00
+            breakdown = f"$643.75 base + ${((valuation - 50000) / 1000) * 7.00:,.2f} ($7 per $1,000)"
         elif valuation <= 500000:
-            return 993.75 + ((valuation - 100000) / 1000) * 5.60
+            fee = 993.75 + ((valuation - 100000) / 1000) * 5.60
+            breakdown = f"$993.75 base + ${((valuation - 100000) / 1000) * 5.60:,.2f} ($5.60 per $1,000)"
         elif valuation <= 1000000:
-            return 3233.75 + ((valuation - 500000) / 1000) * 4.75
+            fee = 3233.75 + ((valuation - 500000) / 1000) * 4.75
+            breakdown = f"$3,233.75 base + ${((valuation - 500000) / 1000) * 4.75:,.2f} ($4.75 per $1,000)"
         else:
-            return 5608.75 + ((valuation - 1000000) / 1000) * 3.15
+            fee = 5608.75 + ((valuation - 1000000) / 1000) * 3.15
+            breakdown = f"$5,608.75 base + ${((valuation - 1000000) / 1000) * 3.15:,.2f} ($3.15 per $1,000)"
+
+        return fee, breakdown
 
     @staticmethod
     def tap_and_system_fees(num_units: int, tap_size: str = "4_combo") -> float:
@@ -201,9 +215,25 @@ class FeeCalculator:
         return tax * (1 - rebate_pct)
 
     @staticmethod
-    def planning_application_fee() -> float:
-        """Base planning application fees"""
-        return 200.0  # Variance example from fee schedule
+    def planning_application_fee(num_units: int) -> tuple:
+        """Calculate planning fees for multi-family development
+
+        Returns: (total_fee, breakdown_dict)
+        """
+        # From Section 6: Land Development - 2025 Fee Schedule
+        # Preliminary Plat: $500 + $20/lot (unit)
+        # Final Plat: $250
+
+        preliminary_plat = 500 + (num_units * 20)
+        final_plat = 250
+        total = preliminary_plat + final_plat
+
+        breakdown = {
+            'Preliminary Plat': preliminary_plat,
+            'Final Plat': final_plat
+        }
+
+        return total, breakdown
 
 
 class DeveloperProForma:
@@ -242,12 +272,14 @@ class DeveloperProForma:
 
         # 2. Fee waivers
         planning_fees_waived = 0
+        planning_fee_breakdown = {}
         if self.policy.waive_planning_fees:
-            planning_fees_waived = self.fees.planning_application_fee()
+            planning_fees_waived, planning_fee_breakdown = self.fees.planning_application_fee(total_units)
 
         building_permit_waived = 0
+        building_permit_breakdown = ""
         if self.policy.waive_building_permit:
-            building_permit_waived = self.fees.building_permit_fee(
+            building_permit_waived, building_permit_breakdown = self.fees.building_permit_fee(
                 self.project.construction_valuation
             )
 
@@ -327,7 +359,9 @@ class DeveloperProForma:
             # Financial - Benefits
             'density_bonus_value': density_bonus_value,
             'planning_fees_waived': planning_fees_waived,
+            'planning_fee_breakdown': planning_fee_breakdown,
             'building_permit_waived': building_permit_waived,
+            'building_permit_breakdown': building_permit_breakdown,
             'tap_fee_savings': tap_fee_savings,
             'use_tax_savings': use_tax_savings,
             'park_fees_waived': park_fees_waived,
@@ -911,6 +945,20 @@ def main():
                 ]
             }
             st.table(pd.DataFrame(benefits_data))
+
+            # Show fee calculation breakdowns
+            if dev_results['building_permit_waived'] > 0:
+                with st.expander("ℹ️ Building Permit Fee Calculation"):
+                    st.write(f"**Total: ${dev_results['building_permit_waived']:,.2f}**")
+                    st.write(dev_results['building_permit_breakdown'])
+                    st.caption("Source: City of Delta 2025 Fee Schedule - Section 3, Table 3B")
+
+            if dev_results['planning_fees_waived'] > 0:
+                with st.expander("ℹ️ Planning Fee Calculation"):
+                    st.write(f"**Total: ${dev_results['planning_fees_waived']:,.2f}**")
+                    for item, amount in dev_results['planning_fee_breakdown'].items():
+                        st.write(f"- {item}: ${amount:,.2f}")
+                    st.caption("Source: City of Delta 2025 Fee Schedule - Section 6, Land Development")
 
         with col_b:
             st.markdown("### Costs to Developer")
