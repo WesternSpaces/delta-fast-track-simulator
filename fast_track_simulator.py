@@ -711,13 +711,15 @@ def main():
     waive_planning = st.sidebar.checkbox("Waive Planning Application Fees", value=True)
     waive_building = st.sidebar.checkbox("Waive Building Permit Fees", value=True)
 
-    tap_fee_reduction = st.sidebar.select_slider(
+    tap_fee_reduction = st.sidebar.slider(
         "Tap & System Improvement Fee Reduction",
-        options=[0.0, 0.30, 0.60, 1.00],
-        value=0.60,
-        format_func=lambda x: f"{int(x*100)}% reduction",
+        min_value=0,
+        max_value=100,
+        value=60,
+        step=5,
+        format="%d%%",
         help="Tier by affordability period: 20yr=30%, 30yr=60%, 50yr=100%"
-    )
+    ) / 100  # Convert to decimal
 
     use_tax_rebate = st.sidebar.slider(
         "Use Tax Rebate",
