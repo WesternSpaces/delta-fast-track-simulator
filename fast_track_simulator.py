@@ -971,6 +971,21 @@ def main():
     with tab1:
         st.subheader("Developer Pro Forma")
 
+        st.info("""
+        **💡 Important Context:** This analysis shows Fast Track incentive value compared to affordability costs.
+
+        Actual project feasibility will depend on a full **capital stack** that typically includes:
+        - Low Income Housing Tax Credits (LIHTC)
+        - Grant funding (HOME, CDBG, state housing funds)
+        - Land contribution or discount
+        - Partnership equity (non-profit, housing authority, etc.)
+        - Debt financing (construction loans, permanent financing)
+        - Developer equity
+
+        The "Fast Track Adds Value" indicator shows whether these incentives help close the gap, not whether
+        the full project pencils out.
+        """)
+
         # How the Numbers Work expander
         with st.expander("ℹ️ How the Numbers Work"):
             st.markdown("""
