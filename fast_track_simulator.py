@@ -701,7 +701,7 @@ def main():
         min_value=0,
         max_value=100,
         value=50,
-        step=10,
+        step=5,
         format="%d%%",
         help="What percentage of the density bonus units must be affordable?"
     ) / 100  # Convert to decimal
