@@ -1299,16 +1299,20 @@ def main():
             st.dataframe(df_comp, use_container_width=True, hide_index=True)
 
         with col_comp2:
-            st.markdown("#### Alternative AMI Thresholds")
+            st.markdown("#### Alternative Rental AMI Thresholds")
+            st.caption(f"Current ownership AMI: {int(ownership_ami*100)}%")
 
-            ami_scenarios = [
+            rental_ami_scenarios = [
                 ("60% AMI", 0.60),
-                ("80% AMI", 0.80)
+                ("70% AMI", 0.70),
+                ("80% AMI", 0.80),
+                ("90% AMI", 0.90),
+                ("100% AMI", 1.00)
             ]
 
-            ami_comparison = []
+            rental_ami_comparison = []
 
-            for name, ami_pct in ami_scenarios:
+            for name, ami_pct in rental_ami_scenarios:
                 temp_policy = PolicySettings(
                     affordability_period_years=affordability_period,
                     rental_ami_threshold=ami_pct,
@@ -1326,14 +1330,71 @@ def main():
                 temp_dev = DeveloperProForma(project, temp_policy, ami_data)
                 temp_results = temp_dev.calculate()
 
-                ami_comparison.append({
+                rental_ami_comparison.append({
                     'AMI Level': name,
-                    'Affordable Rent': f"${temp_results['affordable_rent']:,.0f}",
+                    'Affordable Rent': f"${temp_results['affordable_rent_weighted']:,.0f}",
                     'Rent Gap': f"${temp_results['monthly_rent_gap']:,.0f}",
                     'Developer Net': f"${temp_results['net_developer_gain']:,.0f}"
                 })
 
-            st.dataframe(pd.DataFrame(ami_comparison), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(rental_ami_comparison), use_container_width=True, hide_index=True)
+
+        # Ownership AMI comparison
+        st.markdown("#### Alternative Ownership AMI Thresholds")
+
+        col_own1, col_own2 = st.columns(2)
+
+        with col_own1:
+            st.caption(f"Current rental AMI: {int(rental_ami*100)}%")
+
+            ownership_ami_scenarios = [
+                ("100% AMI", 1.00),
+                ("110% AMI", 1.10),
+                ("120% AMI", 1.20)
+            ]
+
+            ownership_ami_comparison = []
+
+            for name, ami_pct in ownership_ami_scenarios:
+                temp_policy = PolicySettings(
+                    affordability_period_years=affordability_period,
+                    rental_ami_threshold=rental_ami,
+                    ownership_ami_threshold=ami_pct,
+                    min_affordable_pct=min_affordable_pct,
+                    ownership_pct=ownership_pct,
+                    density_bonus_pct=density_bonus_pct,
+                    bonus_affordable_req=bonus_affordable_req,
+                    waive_planning_fees=waive_planning,
+                    waive_building_permit=waive_building,
+                    tap_fee_reduction_pct=tap_fee_reduction,
+                    use_tax_rebate_pct=use_tax_rebate
+                )
+
+                temp_dev = DeveloperProForma(project, temp_policy, ami_data)
+                temp_results = temp_dev.calculate()
+
+                # Calculate affordable sale price based on AMI
+                affordable_sale_price = ami_data.get_affordable_sale_price(ami_pct)
+                sale_gap = project.market_sale_price - affordable_sale_price
+
+                ownership_ami_comparison.append({
+                    'AMI Level': name,
+                    'Affordable Price': f"${affordable_sale_price:,.0f}",
+                    'Price Gap': f"${sale_gap:,.0f}",
+                    'Developer Net': f"${temp_results['net_developer_gain']:,.0f}"
+                })
+
+            st.dataframe(pd.DataFrame(ownership_ami_comparison), use_container_width=True, hide_index=True)
+
+        with col_own2:
+            st.info("""
+            **Rental vs. Ownership AMI Impact:**
+
+            - **Rental AMI:** Affects monthly rent gap (ongoing cost over affordability period)
+            - **Ownership AMI:** Affects one-time sale price discount (upfront cost to developer)
+
+            Higher AMI = less affordable to households, but lower cost to developer.
+            """)
 
         # Scatter plot: Cost vs Affordability
         st.markdown("#### Tradeoff Analysis: City Cost vs. Affordability Duration")
