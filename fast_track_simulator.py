@@ -1121,6 +1121,32 @@ def main():
         else:
             st.caption(f"✗ Costs exceed benefits by \\${abs(dev_results['net_developer_gain']):,.0f} — adjust policy settings to improve feasibility.")
 
+        # Highlight rental income dynamics when CHFA rents exceed market
+        if project_type == "Rental" and dev_results['monthly_rent_gap'] < 0:
+            rental_premium = abs(dev_results['monthly_rent_gap'])
+            ami_pct = int(policy.rental_ami_threshold * 100)
+            st.info(f"""
+            **Why are Affordability Costs so low?**
+
+            At **{ami_pct}% AMI**, the maximum rent allowed by CHFA (\\${dev_results['affordable_rent_weighted']:,.0f}/mo)
+            actually **exceeds** Delta's current market rent (\\${dev_results['market_rent_weighted']:,.0f}/mo) by \\${rental_premium:.0f}/mo.
+
+            This means "affordable" units can charge *more* than market rate — there's no cost to the developer
+            from the affordability requirement at this AMI level. The developer keeps all the Fast Track benefits
+            (density bonus, fee waivers, time savings) without sacrificing rental income.
+
+            **To see a scenario with real affordability costs**, try lowering the Rental AMI threshold to 60% in the
+            Advanced Project Parameters.
+            """)
+        elif project_type == "Rental" and dev_results['monthly_rent_gap'] == 0:
+            ami_pct = int(policy.rental_ami_threshold * 100)
+            st.info(f"""
+            **Rent Breakeven at {ami_pct}% AMI**
+
+            At this AMI level, CHFA maximum rent equals market rent — no cost or benefit to the developer
+            from rental restrictions.
+            """)
+
         st.markdown("---")
 
         # ================================================================
