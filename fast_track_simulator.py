@@ -820,21 +820,27 @@ def main():
         st.markdown("---")
         st.markdown("**AMI Thresholds**")
 
-        rental_ami = st.select_slider(
-            "Rental AMI Threshold",
-            options=[0.30, 0.40, 0.50, 0.60, 0.70, 0.80],
-            value=0.80,
-            format_func=lambda x: f"{int(x*100)}% AMI",
+        rental_ami_pct = st.number_input(
+            "Rental AMI Threshold (%)",
+            min_value=30,
+            max_value=80,
+            value=80,
+            step=10,
+            format="%d",
             help="Area Median Income threshold for rental affordable units"
         )
+        rental_ami = rental_ami_pct / 100
 
-        ownership_ami = st.select_slider(
-            "Ownership AMI Threshold",
-            options=[0.80, 1.00, 1.10, 1.20],
-            value=1.00,
-            format_func=lambda x: f"{int(x*100)}% AMI",
+        ownership_ami_pct = st.number_input(
+            "Ownership AMI Threshold (%)",
+            min_value=80,
+            max_value=120,
+            value=100,
+            step=10,
+            format="%d",
             help="Area Median Income threshold for ownership affordable units"
         )
+        ownership_ami = ownership_ami_pct / 100
 
     # ========================================================================
     # RUN CALCULATIONS
