@@ -555,22 +555,45 @@ def main():
             color: #ecf0f1 !important;
         }
 
-        /* Sidebar expander - fix text color on dark background */
+        /* Sidebar expander - fix text color and background on dark sidebar */
         [data-testid="stSidebar"] .streamlit-expanderHeader {
             color: #ecf0f1 !important;
+            background-color: transparent !important;
         }
 
         [data-testid="stSidebar"] .streamlit-expanderHeader:hover {
             color: #ecf0f1 !important;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.1) !important;
         }
 
         [data-testid="stSidebar"] details summary {
             color: #ecf0f1 !important;
+            background-color: transparent !important;
         }
 
         [data-testid="stSidebar"] details summary:hover {
+            color: #ecf0f1 !important;
             background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Expander content background */
+        [data-testid="stSidebar"] .streamlit-expanderContent {
+            background-color: transparent !important;
+        }
+
+        [data-testid="stSidebar"] details[open] {
+            background-color: transparent !important;
+        }
+
+        /* Ensure all elements inside sidebar expander stay visible */
+        [data-testid="stSidebar"] details * {
+            color: #ecf0f1 !important;
+        }
+
+        [data-testid="stSidebar"] details input,
+        [data-testid="stSidebar"] details select {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
         }
 
         /* Tabs */
