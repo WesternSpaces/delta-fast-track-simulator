@@ -185,34 +185,65 @@ class FeeCalculator:
         return fee, breakdown
 
     @staticmethod
-    def tap_and_system_fees(num_units: int, tap_size: str = "4_combo") -> float:
-        """Calculate water/sewer tap and system improvement fees"""
+    def tap_and_system_fees(num_units: int, tap_size: str = "4_combo") -> tuple:
+        """Calculate water/sewer tap and system improvement fees
+
+        Returns: (total_fee, breakdown_dict)
+        """
         # Based on 24-unit apartment example with 4" combo domestic/fire tap
-        # Water: $86,100 base + $1,500 per unit after first
-        # Sewer: $154,000 base + $2,600 per unit after first
+        # From Section 8: Trash Collection and Utility Services - 2025 Fee Schedule
+        # Water BSIF: $86,100 base + $1,500 per unit after first
+        # Water Tapping Fee: $12,420
+        # Sewer BSIF: $154,000 base + $2,600 per unit after first
 
         if tap_size == "4_combo":
-            water_base = 86100
-            water_per_unit = 1500
-            sewer_base = 154000
-            sewer_per_unit = 2600
+            water_bsif_base = 86100
+            water_bsif_per_unit = 1500
+            water_tapping_fee = 12420
+            sewer_bsif_base = 154000
+            sewer_bsif_per_unit = 2600
         else:
-            # Default calculation
-            water_base = 3000
-            water_per_unit = 1500
-            sewer_base = 5450
-            sewer_per_unit = 2600
+            # Default calculation for smaller taps
+            water_bsif_base = 3000
+            water_bsif_per_unit = 1500
+            water_tapping_fee = 1680
+            sewer_bsif_base = 5450
+            sewer_bsif_per_unit = 2600
+            sewer_bsif_per_unit = 2600
 
-        water_total = water_base + (water_per_unit * max(0, num_units - 1))
-        sewer_total = sewer_base + (sewer_per_unit * max(0, num_units - 1))
+        # Calculate water fees
+        water_bsif = water_bsif_base + (water_bsif_per_unit * max(0, num_units - 1))
+        water_total = water_bsif + water_tapping_fee
 
-        return water_total + sewer_total
+        # Calculate sewer fees
+        sewer_total = sewer_bsif_base + (sewer_bsif_per_unit * max(0, num_units - 1))
+
+        # Total
+        total = water_total + sewer_total
+
+        # Breakdown
+        breakdown = {
+            'Water BSIF': water_bsif,
+            'Water Tapping Fee': water_tapping_fee,
+            'Sewer BSIF': sewer_total
+        }
+
+        return total, breakdown
 
     @staticmethod
-    def use_tax(materials_cost: float, rebate_pct: float = 0.0) -> float:
-        """Calculate 3% use tax on materials, minus any rebate"""
-        tax = materials_cost * 0.03
-        return tax * (1 - rebate_pct)
+    def use_tax_rebate(materials_cost: float, rebate_pct: float = 0.0) -> tuple:
+        """Calculate 3% use tax rebate on materials
+
+        Returns: (rebate_amount, breakdown_string)
+        """
+        # From Section 3: Building Permits - Use tax is 3% of cost of materials
+        full_use_tax = materials_cost * 0.03
+        rebate_amount = full_use_tax * rebate_pct
+
+        breakdown = f"Materials: ${materials_cost:,.0f} × 3% = ${full_use_tax:,.0f} full tax\n"
+        breakdown += f"Rebate: {rebate_pct*100:.0f}% of ${full_use_tax:,.0f} = ${rebate_amount:,.0f}"
+
+        return rebate_amount, breakdown
 
     @staticmethod
     def planning_application_fee(num_units: int) -> tuple:
@@ -283,13 +314,13 @@ class DeveloperProForma:
                 self.project.construction_valuation
             )
 
-        tap_fees_full = self.fees.tap_and_system_fees(total_units)
+        tap_fees_full, tap_fee_breakdown = self.fees.tap_and_system_fees(total_units)
         tap_fees_reduced = tap_fees_full * (1 - self.policy.tap_fee_reduction_pct)
         tap_fee_savings = tap_fees_full - tap_fees_reduced
 
         # Materials cost estimate (60% of construction valuation)
         materials_cost = self.project.construction_valuation * 0.60
-        use_tax_savings = materials_cost * 0.03 * self.policy.use_tax_rebate_pct
+        use_tax_savings, use_tax_breakdown = self.fees.use_tax_rebate(materials_cost, self.policy.use_tax_rebate_pct)
 
         # Park fees (only for PUDs, set to 0 for apartments)
         park_fees_waived = 0
@@ -363,7 +394,9 @@ class DeveloperProForma:
             'building_permit_waived': building_permit_waived,
             'building_permit_breakdown': building_permit_breakdown,
             'tap_fee_savings': tap_fee_savings,
+            'tap_fee_breakdown': tap_fee_breakdown,
             'use_tax_savings': use_tax_savings,
+            'use_tax_breakdown': use_tax_breakdown,
             'park_fees_waived': park_fees_waived,
             'total_fee_waivers': total_fee_waivers,
             'time_savings': time_savings,
@@ -959,6 +992,20 @@ def main():
                     for item, amount in dev_results['planning_fee_breakdown'].items():
                         st.write(f"- {item}: ${amount:,.2f}")
                     st.caption("Source: City of Delta 2025 Fee Schedule - Section 6, Land Development")
+
+            if dev_results['tap_fee_savings'] > 0:
+                with st.expander("ℹ️ Tap & Sewer Fee Calculation"):
+                    st.write(f"**Savings: ${dev_results['tap_fee_savings']:,.2f}** ({policy.tap_fee_reduction_pct*100:.0f}% reduction)")
+                    st.write("**Full Fees:**")
+                    for item, amount in dev_results['tap_fee_breakdown'].items():
+                        st.write(f"- {item}: ${amount:,.2f}")
+                    st.caption("Source: City of Delta 2025 Fee Schedule - Section 8, Tables 8B & 8C")
+
+            if dev_results['use_tax_savings'] > 0:
+                with st.expander("ℹ️ Use Tax Rebate Calculation"):
+                    st.write(f"**Rebate: ${dev_results['use_tax_savings']:,.2f}**")
+                    st.write(dev_results['use_tax_breakdown'])
+                    st.caption("Source: City of Delta 2025 Fee Schedule - Section 3D")
 
         with col_b:
             st.markdown("### Costs to Developer")
