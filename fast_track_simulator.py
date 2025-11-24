@@ -1017,6 +1017,10 @@ def main():
           - 1BR and 3BR estimated using standard ratios (85% and 120% of 2BR)
         - **Construction Costs:** Industry standard estimates for multi-family development
         - **Unit Mix:** Typical multi-family development pattern (20/60/20 split)
+        - **Workforce Metrics:**
+          - Local workers housed: 1.5 workers per affordable household (conservative estimate)
+          - Population served: 2.3 persons per household (Delta County average)
+          - Construction jobs: 0.5 jobs per unit (temporary, during construction)
 
         ---
 
