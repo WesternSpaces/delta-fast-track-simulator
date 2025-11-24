@@ -604,22 +604,18 @@ def main():
     rental_ami = 0.80  # 80% AMI for rentals
     ownership_ami = 1.00  # 100% AMI for ownership
 
-    ownership_pct = st.sidebar.slider(
-        "% of Affordable Units as Ownership",
-        min_value=0,
-        max_value=100,
-        value=0,
-        step=10,
-        format="%d%%",
-        help="What percentage of affordable units will be for-sale (ownership) vs rental? Remaining will be rental."
-    ) / 100  # Convert to decimal
+    project_type = st.sidebar.radio(
+        "Project Type",
+        options=["Rental", "Ownership"],
+        index=0,
+        help="Choose whether this is a rental or for-sale (ownership) development"
+    )
 
-    # Show inverse rental percentage for clarity
-    st.sidebar.caption(f"↳ Rental: {100 - int(ownership_pct*100)}%")
+    # Set ownership_pct based on project type (all or nothing)
+    ownership_pct = 1.0 if project_type == "Ownership" else 0.0
 
     # Fixed minimum affordable requirement (shown in assumptions box at top)
     min_affordable_pct = 0.25  # 25% of base units to qualify for Fast Track
-    bonus_affordable_req = 0.50  # 50% of bonus units must be affordable
 
     st.sidebar.subheader("Density Bonus")
 
@@ -631,6 +627,16 @@ def main():
         step=5,
         format="%d%%",
         help="Additional units allowed beyond base zoning (key policy lever to explore)"
+    ) / 100  # Convert to decimal
+
+    bonus_affordable_req = st.sidebar.slider(
+        "% of Bonus Units that Must Be Affordable",
+        min_value=0,
+        max_value=100,
+        value=50,
+        step=10,
+        format="%d%%",
+        help="What percentage of the density bonus units must be affordable?"
     ) / 100  # Convert to decimal
 
     st.sidebar.subheader("Fee Waivers & Reductions")
@@ -746,16 +752,17 @@ def main():
     st.header("📊 Scenario Results")
 
     # Example project callout with key assumptions
+    project_type_display = "Rental" if ownership_pct == 0 else "Ownership"
+    ami_threshold = rental_ami if ownership_pct == 0 else ownership_ami
+
     st.info(f"""
     **📐 Model Assumptions:**
     - **Base Project Size:** 20 units
+    - **Project Type:** {project_type_display}
+    - **AMI Threshold:** {int(ami_threshold*100)}% AMI
     - **Minimum Affordable Requirement:** {int(min_affordable_pct*100)}% of base units (to qualify for Fast Track)
-    - **Bonus Unit Affordability:** {int(bonus_affordable_req*100)}% of bonus units must be affordable
-    - **Rental AMI Threshold:** {int(rental_ami*100)}% AMI
-    - **Ownership AMI Threshold:** {int(ownership_ami*100)}% AMI
 
-    All scenarios use these same assumptions to enable direct comparison of policy options.
-    Adjust the policy settings in the sidebar (density bonus, affordability period, fees) to see impacts.
+    Adjust the policy settings in the sidebar (density bonus, bonus affordability, affordability period, fees) to see impacts.
     """)
 
     st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
