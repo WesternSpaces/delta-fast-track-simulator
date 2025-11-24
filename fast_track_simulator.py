@@ -729,7 +729,7 @@ def main():
     density_bonus_pct = st.sidebar.slider(
         "Density Bonus Percentage",
         min_value=0,
-        max_value=30,
+        max_value=50,
         value=20,
         step=5,
         format="%d%%",
