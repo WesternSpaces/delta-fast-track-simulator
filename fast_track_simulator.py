@@ -1053,72 +1053,73 @@ def main():
 
     with tab1:
         # ================================================================
-        # WATERFALL CHART - Hero visualization
+        # SIMPLE BAR CHART - Benefits vs Costs
         # ================================================================
 
-        # Build waterfall data
-        waterfall_labels = ['Density Bonus', 'Fee Waivers', 'Time Savings']
-        waterfall_values = [
-            dev_results['density_bonus_value'],
-            dev_results['total_fee_waivers'],
-            dev_results['time_savings']
-        ]
-        waterfall_measures = ['relative', 'relative', 'relative']
-
-        # Add rental income premium if applicable (CHFA > market)
+        # Calculate total benefits (including rental premium if applicable)
+        total_benefits = dev_results['total_benefits']
         if dev_results['rental_affordable'] > 0 and dev_results['total_lost_rent'] < 0:
-            waterfall_labels.append('Rental Premium')
-            waterfall_values.append(abs(dev_results['total_lost_rent']))
-            waterfall_measures.append('relative')
+            total_benefits += abs(dev_results['total_lost_rent'])
 
-        # Add costs (as negative values)
-        if dev_results['rental_affordable'] > 0 and dev_results['total_lost_rent'] > 0:
-            waterfall_labels.append('Rental Costs')
-            waterfall_values.append(-dev_results['total_lost_rent'])
-            waterfall_measures.append('relative')
+        # Calculate total costs
+        total_costs = dev_results['total_developer_costs']
 
-        if dev_results['ownership_affordable'] > 0 and dev_results['total_lost_sale_profit'] > 0:
-            waterfall_labels.append('Ownership Costs')
-            waterfall_values.append(-dev_results['total_lost_sale_profit'])
-            waterfall_measures.append('relative')
+        # Create simple horizontal bar chart
+        fig_compare = go.Figure()
 
-        # Add net total
-        waterfall_labels.append('Net Gain')
-        waterfall_values.append(dev_results['net_developer_gain'])
-        waterfall_measures.append('total')
-
-        fig_waterfall = go.Figure(go.Waterfall(
+        fig_compare.add_trace(go.Bar(
+            y=['Developer Benefits'],
+            x=[total_benefits],
             orientation='h',
-            y=waterfall_labels,
-            x=waterfall_values,
-            measure=waterfall_measures,
-            connector={"line": {"color": "rgb(63, 63, 63)", "width": 1}},
-            increasing={"marker": {"color": "#27ae60"}},
-            decreasing={"marker": {"color": "#e74c3c"}},
-            totals={"marker": {"color": "#3498db"}},
-            textposition="outside",
-            text=[f"${abs(v):,.0f}" for v in waterfall_values],
-            hovertemplate="%{y}: $%{x:,.0f}<extra></extra>"
+            marker_color='#27ae60',
+            text=f"${total_benefits:,.0f}",
+            textposition='inside',
+            textfont=dict(color='white', size=16),
+            hovertemplate="Total Benefits: $%{x:,.0f}<extra></extra>"
         ))
 
-        fig_waterfall.update_layout(
-            height=280,
-            margin=dict(t=20, b=20, l=20, r=80),
+        fig_compare.add_trace(go.Bar(
+            y=['Affordability Costs'],
+            x=[total_costs],
+            orientation='h',
+            marker_color='#e74c3c',
+            text=f"${total_costs:,.0f}",
+            textposition='inside',
+            textfont=dict(color='white', size=16),
+            hovertemplate="Total Costs: $%{x:,.0f}<extra></extra>"
+        ))
+
+        # Add net gain as third bar
+        net_color = '#3498db' if dev_results['net_developer_gain'] >= 0 else '#e74c3c'
+        fig_compare.add_trace(go.Bar(
+            y=['Net Gain'],
+            x=[abs(dev_results['net_developer_gain'])],
+            orientation='h',
+            marker_color=net_color,
+            text=f"${dev_results['net_developer_gain']:,.0f}",
+            textposition='inside',
+            textfont=dict(color='white', size=16),
+            hovertemplate="Net Developer Gain: $%{x:,.0f}<extra></extra>"
+        ))
+
+        fig_compare.update_layout(
+            height=200,
+            margin=dict(t=10, b=10, l=10, r=40),
             xaxis_title="",
             yaxis_title="",
             showlegend=False,
-            xaxis=dict(showgrid=True, gridcolor='rgba(0,0,0,0.1)', zeroline=True, zerolinecolor='rgba(0,0,0,0.3)')
+            xaxis=dict(showgrid=True, gridcolor='rgba(0,0,0,0.1)', showticklabels=False),
+            yaxis=dict(tickfont=dict(size=14)),
+            bargap=0.3
         )
 
-        st.plotly_chart(fig_waterfall, use_container_width=True)
+        st.plotly_chart(fig_compare, use_container_width=True)
 
         # Caption with key insight
-        if dev_results['rental_affordable'] > 0 and dev_results['monthly_rent_gap'] < 0:
-            st.caption(f"✓ At {int(policy.rental_ami_threshold*100)}% AMI, CHFA rents exceed market by \\${abs(dev_results['monthly_rent_gap']):,.0f}/mo — a developer advantage.")
-        elif dev_results['total_developer_costs'] == 0:
-            st.caption("✓ No affordability costs at current settings — all incentive value flows to developer.")
+        if dev_results['net_developer_gain'] > 0:
+            st.caption(f"✓ Benefits exceed costs by \\${dev_results['net_developer_gain']:,.0f} — Fast Track adds value for developers.")
         else:
-            st.caption(f"Benefits minus costs = \\${dev_results['net_developer_gain']:,.0f} net developer gain")
+            st.caption(f"✗ Costs exceed benefits by \\${abs(dev_results['net_developer_gain']):,.0f} — adjust policy settings to improve feasibility.")
 
         st.markdown("---")
 
