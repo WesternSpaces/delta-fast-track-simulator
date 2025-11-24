@@ -272,7 +272,7 @@ class DeveloperProForma:
 
         # DEVELOPER COSTS
 
-        # 1. Lost rent from rental affordable units (over affordability period)
+        # 1. Rental income impact from affordable units (over affordability period)
         # NOTE: Model assumes developer retains ownership and manages rental units
         # Use weighted average across bedroom types for more accurate calculation
         market_rent_weighted = self.project.get_weighted_market_rent()
@@ -280,8 +280,13 @@ class DeveloperProForma:
             self.policy.rental_ami_threshold,
             self.project.unit_mix
         )
-        monthly_rent_gap = max(0, market_rent_weighted - affordable_rent_weighted)
 
+        # Calculate rent gap: positive = developer loses money, negative = developer gains rental income
+        # When CHFA rents exceed market (70%+ AMI), this becomes negative (a benefit to developer)
+        monthly_rent_gap = market_rent_weighted - affordable_rent_weighted
+
+        # Total rental impact over affordability period
+        # If gap is negative (CHFA > market), this represents ADDITIONAL rental income above market
         total_lost_rent = (monthly_rent_gap * rental_affordable * 12 *
                           self.policy.affordability_period_years)
 
@@ -932,24 +937,48 @@ def main():
 
             # Rental costs (if any)
             if dev_results['rental_affordable'] > 0:
-                costs_data['Category'].extend([
-                    '**RENTAL UNITS:**',
-                    'Market Rent (2BR)',
-                    'Affordable Rent (2BR)',
-                    'Monthly Rent Gap',
-                    f'× {dev_results["rental_affordable"]} rental units',
-                    f'× {policy.affordability_period_years} years',
-                    'Subtotal Lost Rent'
-                ])
-                costs_data['Amount'].extend([
-                    '',
-                    f"${dev_results['market_rent']:,.0f}",
-                    f"${dev_results['affordable_rent']:,.0f}",
-                    f"${dev_results['monthly_rent_gap']:,.0f}",
-                    '',
-                    '',
-                    f"${dev_results['total_lost_rent']:,.0f}"
-                ])
+                # Check if this is a cost (positive gap) or benefit (negative gap)
+                if dev_results['monthly_rent_gap'] >= 0:
+                    # Traditional case: market rent exceeds affordable rent (developer loses money)
+                    costs_data['Category'].extend([
+                        '**RENTAL UNITS:**',
+                        'Market Rent (weighted avg)',
+                        'Affordable Rent (weighted avg)',
+                        'Monthly Rent Gap',
+                        f'× {dev_results["rental_affordable"]} rental units',
+                        f'× {policy.affordability_period_years} years',
+                        'Subtotal Lost Rent'
+                    ])
+                    costs_data['Amount'].extend([
+                        '',
+                        f"${dev_results['market_rent_weighted']:,.0f}",
+                        f"${dev_results['affordable_rent_weighted']:,.0f}",
+                        f"${dev_results['monthly_rent_gap']:,.0f}",
+                        '',
+                        '',
+                        f"${dev_results['total_lost_rent']:,.0f}"
+                    ])
+                else:
+                    # CHFA rent exceeds market: developer can charge more (benefit, not cost)
+                    rental_income_gain = abs(dev_results['total_lost_rent'])
+                    costs_data['Category'].extend([
+                        '**RENTAL UNITS:**',
+                        'Market Rent (weighted avg)',
+                        'Affordable Rent (weighted avg)',
+                        'Monthly Rent Premium',
+                        f'× {dev_results["rental_affordable"]} rental units',
+                        f'× {policy.affordability_period_years} years',
+                        'Subtotal Extra Rental Income ✓'
+                    ])
+                    costs_data['Amount'].extend([
+                        '',
+                        f"${dev_results['market_rent_weighted']:,.0f}",
+                        f"${dev_results['affordable_rent_weighted']:,.0f}",
+                        f"${abs(dev_results['monthly_rent_gap']):,.0f}",
+                        '',
+                        '',
+                        f"-${rental_income_gain:,.0f}"
+                    ])
 
             # Ownership costs (if any)
             if dev_results['ownership_affordable'] > 0:
@@ -978,17 +1007,25 @@ def main():
 
             st.table(pd.DataFrame(costs_data))
 
-            # Add warning/info if rent gap is zero or negative
-            if dev_results['rental_affordable'] > 0 and dev_results['monthly_rent_gap'] <= 0:
+            # Add info about rental income dynamics
+            if dev_results['rental_affordable'] > 0 and dev_results['monthly_rent_gap'] < 0:
                 ami_pct = policy.rental_ami_threshold * 100
-                st.warning(f"""
-                **⚠️ No Rental Cost at {ami_pct:.0f}% AMI**
+                rental_premium = abs(dev_results['monthly_rent_gap'])
+                st.success(f"""
+                **✓ Rental Income Premium at {ami_pct:.0f}% AMI**
 
                 At {ami_pct:.0f}% AMI, the CHFA maximum affordable rent (${dev_results['affordable_rent_weighted']:,.0f}/mo weighted avg)
-                equals or exceeds Delta's market rent (${dev_results['market_rent_weighted']:,.0f}/mo weighted avg).
+                **exceeds** Delta's current market rent (${dev_results['market_rent_weighted']:,.0f}/mo weighted avg) by ${rental_premium:.0f}/mo.
 
-                This means there is **NO cost to the developer** for providing affordable rental units at this AMI level.
-                The developer can charge full CHFA maximum rents, which meet or beat market rates.
+                **Developer Advantage:** The developer can charge ${rental_premium:.0f}/mo MORE per affordable unit than market rate,
+                generating extra rental income over the {policy.affordability_period_years}-year period.
+                This additional income increases developer net gain compared to lower AMI thresholds.
+                """)
+            elif dev_results['rental_affordable'] > 0 and dev_results['monthly_rent_gap'] == 0:
+                ami_pct = policy.rental_ami_threshold * 100
+                st.info(f"""
+                **At {ami_pct:.0f}% AMI:** CHFA affordable rent equals market rent (${dev_results['market_rent_weighted']:,.0f}/mo).
+                No cost or benefit to developer from rental restrictions at this AMI level.
                 """)
             elif dev_results['rental_affordable'] > 0:
                 # Show that weighted average was used
@@ -1018,13 +1055,25 @@ def main():
             dev_results['time_savings']
         ]
 
+        # Check if there's rental income premium to add
+        has_rental_premium = (dev_results['rental_affordable'] > 0 and
+                             dev_results['total_lost_rent'] < 0)
+
         # Build cost components dynamically based on what's present
         costs_components = []
         costs_values = []
 
+        # Separate benefits that come from rental income premium
+        rental_income_benefit = 0
+
         if dev_results['rental_affordable'] > 0:
-            costs_components.append('Rental Costs')
-            costs_values.append(dev_results['total_lost_rent'])
+            if dev_results['total_lost_rent'] > 0:
+                # Positive = cost to developer
+                costs_components.append('Rental Costs')
+                costs_values.append(dev_results['total_lost_rent'])
+            elif dev_results['total_lost_rent'] < 0:
+                # Negative = additional income benefit to developer
+                rental_income_benefit = abs(dev_results['total_lost_rent'])
 
         if dev_results['ownership_affordable'] > 0:
             costs_components.append('Ownership Costs')
@@ -1034,13 +1083,19 @@ def main():
         fig = go.Figure()
 
         # Benefits stack (green shades)
-        benefit_colors = ['#27ae60', '#2ecc71', '#58d68d']
+        benefit_colors = ['#27ae60', '#2ecc71', '#58d68d', '#7dcea0']
+
+        # Add rental income premium if applicable
+        if has_rental_premium:
+            benefits_components.append('Rental Income Premium')
+            benefits_values.append(rental_income_benefit)
+
         for i, (component, value) in enumerate(zip(benefits_components, benefits_values)):
             fig.add_trace(go.Bar(
                 name=component,
                 x=['Benefits'],
                 y=[value],
-                marker_color=benefit_colors[i],
+                marker_color=benefit_colors[i % len(benefit_colors)],
                 text=f"${value:,.0f}",
                 textposition='inside',
                 hovertemplate=f'{component}: ${value:,.0f}<extra></extra>'
