@@ -585,15 +585,18 @@ def main():
             background-color: transparent !important;
         }
 
-        /* Ensure all elements inside sidebar expander stay visible */
-        [data-testid="stSidebar"] details * {
-            color: #ecf0f1 !important;
+        /* Input fields inside sidebar expander - make them readable */
+        [data-testid="stSidebar"] details input[type="number"],
+        [data-testid="stSidebar"] details input[type="text"],
+        [data-testid="stSidebar"] details select {
+            background-color: #ffffff !important;
+            color: #2c3e50 !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
         }
 
-        [data-testid="stSidebar"] details input,
-        [data-testid="stSidebar"] details select {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        /* Labels inside expander should stay light */
+        [data-testid="stSidebar"] details label {
+            color: #ecf0f1 !important;
         }
 
         /* Tabs */
