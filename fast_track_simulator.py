@@ -1134,9 +1134,6 @@ def main():
             This means "affordable" units can charge *more* than market rate — there's no cost to the developer
             from the affordability requirement at this AMI level. The developer keeps all the Fast Track benefits
             (density bonus, fee waivers, time savings) without sacrificing rental income.
-
-            **To see a scenario with real affordability costs**, try lowering the Rental AMI threshold to 60% in the
-            Advanced Project Parameters.
             """)
         elif project_type == "Rental" and dev_results['monthly_rent_gap'] == 0:
             ami_pct = int(policy.rental_ami_threshold * 100)
