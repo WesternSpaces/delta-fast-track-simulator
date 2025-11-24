@@ -1238,7 +1238,7 @@ def main():
         # Add summary below chart
         total_benefits = sum(benefits_values)
         total_costs = sum(costs_values)
-        st.caption(f"**Total Benefits:** ${total_benefits:,.0f} | **Total Costs:** ${total_costs:,.0f} | **Net Gain:** ${dev_results['net_developer_gain']:,.0f}")
+        st.caption(f"**Total Benefits:** \\${total_benefits:,.0f} | **Total Costs:** \\${total_costs:,.0f} | **Net Gain:** \\${dev_results['net_developer_gain']:,.0f}")
 
     with tab2:
         st.subheader("Community Benefit Analysis")
