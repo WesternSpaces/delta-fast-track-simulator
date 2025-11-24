@@ -1424,22 +1424,58 @@ def main():
 
             st.caption("💡 Local workers housed: Affordable units enable teachers, healthcare workers, and service employees to live in Delta.")
 
-        # Units breakdown pie chart
+        # Units breakdown - enhanced visualization
         st.markdown("### Unit Mix")
 
-        fig_units = go.Figure(data=[go.Pie(
-            labels=['Affordable Units', 'Market Rate Units'],
-            values=[dev_results['total_affordable'], dev_results['market_rate_units']],
-            hole=.3,
-            marker_colors=['#00CC96', '#AB63FA']
-        )])
+        col_mix1, col_mix2 = st.columns([1, 1])
 
-        fig_units.update_layout(
-            title=f"Total Units: {dev_results['total_units']}",
-            height=350
-        )
+        with col_mix1:
+            # Pie chart
+            fig_units = go.Figure(data=[go.Pie(
+                labels=['Affordable Units', 'Market Rate Units'],
+                values=[dev_results['total_affordable'], dev_results['market_rate_units']],
+                hole=.4,
+                marker_colors=['#00CC96', '#AB63FA'],
+                textposition='inside',
+                textinfo='label+percent',
+                hovertemplate='<b>%{label}</b><br>%{value} units<br>%{percent}<extra></extra>'
+            )])
 
-        st.plotly_chart(fig_units, use_container_width=True)
+            fig_units.update_layout(
+                title={
+                    'text': f"Total Project: {dev_results['total_units']} Units",
+                    'x': 0.5,
+                    'xanchor': 'center'
+                },
+                height=300,
+                showlegend=False,
+                margin=dict(t=60, b=20, l=20, r=20)
+            )
+
+            st.plotly_chart(fig_units, use_container_width=True)
+
+        with col_mix2:
+            # Unit breakdown metrics
+            st.markdown("#### Breakdown")
+
+            affordable_pct = (dev_results['total_affordable'] / dev_results['total_units']) * 100
+            market_pct = (dev_results['market_rate_units'] / dev_results['total_units']) * 100
+
+            unit_breakdown_data = {
+                'Type': ['Base Units', 'Density Bonus', '', 'Affordable', 'Market Rate', '', 'Total Units'],
+                'Count': [
+                    f"{policy.base_units} units",
+                    f"+{dev_results['total_units'] - policy.base_units} units",
+                    '',
+                    f"{dev_results['total_affordable']} units ({affordable_pct:.0f}%)",
+                    f"{dev_results['market_rate_units']} units ({market_pct:.0f}%)",
+                    '',
+                    f"**{dev_results['total_units']} units**"
+                ]
+            }
+            st.table(pd.DataFrame(unit_breakdown_data))
+
+            st.caption(f"💡 Density bonus adds {dev_results['total_units'] - policy.base_units} units ({int(policy.density_bonus_pct*100)}% increase)")
 
     with tab3:
         st.subheader("Scenario Comparisons")
