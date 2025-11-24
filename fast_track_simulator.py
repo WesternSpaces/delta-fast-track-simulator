@@ -667,10 +667,6 @@ def main():
     )
     affordability_display = "Permanent (99+ years)" if affordability_period == 99 else f"{affordability_period} years"
 
-    # Fixed AMI thresholds (shown in assumptions box at top)
-    rental_ami = 0.80  # 80% AMI for rentals
-    ownership_ami = 1.00  # 100% AMI for ownership
-
     project_type = st.sidebar.radio(
         "Project Type",
         options=["Rental", "Ownership"],
@@ -680,6 +676,25 @@ def main():
 
     # Set ownership_pct based on project type (all or nothing)
     ownership_pct = 1.0 if project_type == "Ownership" else 0.0
+
+    # AMI Thresholds
+    st.sidebar.subheader("AMI Thresholds")
+
+    rental_ami = st.sidebar.select_slider(
+        "Rental AMI Threshold",
+        options=[0.30, 0.40, 0.50, 0.60, 0.70, 0.80],
+        value=0.80,
+        format_func=lambda x: f"{int(x*100)}% AMI",
+        help="Area Median Income threshold for rental affordable units"
+    )
+
+    ownership_ami = st.sidebar.select_slider(
+        "Ownership AMI Threshold",
+        options=[0.80, 1.00, 1.10, 1.20],
+        value=1.00,
+        format_func=lambda x: f"{int(x*100)}% AMI",
+        help="Area Median Income threshold for ownership affordable units"
+    )
 
     # Fixed minimum affordable requirement (shown in assumptions box at top)
     min_affordable_pct = 0.25  # 25% of base units to qualify for Fast Track
@@ -822,16 +837,16 @@ def main():
 
     # Example project callout with key assumptions
     project_type_display = "Rental" if ownership_pct == 0 else "Ownership"
-    ami_threshold = rental_ami if ownership_pct == 0 else ownership_ami
 
     st.info(f"""
     **📐 Model Assumptions:**
     - **Base Project Size:** 20 units
     - **Project Type:** {project_type_display}
-    - **AMI Threshold:** {int(ami_threshold*100)}% AMI
+    - **Rental AMI Threshold:** {int(rental_ami*100)}% AMI
+    - **Ownership AMI Threshold:** {int(ownership_ami*100)}% AMI
     - **Minimum Affordable Requirement:** {int(min_affordable_pct*100)}% of base units (to qualify for Fast Track)
 
-    Adjust the policy settings in the sidebar (density bonus, bonus affordability, affordability period, fees) to see impacts.
+    Adjust the policy settings in the sidebar to explore different scenarios and see their impacts.
     """)
 
     st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
