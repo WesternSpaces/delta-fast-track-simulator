@@ -1063,6 +1063,36 @@ def main():
     with tab_instructions:
         st.subheader("How to Use This Simulator")
 
+        # Print instructions helper
+        col_print, col_spacer = st.columns([1, 4])
+        with col_print:
+            st.markdown("""
+            <a href="javascript:window.print();" style="
+                display: inline-block;
+                padding: 0.5rem 1rem;
+                background-color: #3498db;
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: 500;
+                font-size: 14px;
+            ">🖨️ Print Instructions</a>
+            """, unsafe_allow_html=True)
+
+        # Hide sidebar and header when printing
+        st.markdown("""
+        <style>
+        @media print {
+            [data-testid="stSidebar"] { display: none !important; }
+            [data-testid="stHeader"] { display: none !important; }
+            [data-testid="stToolbar"] { display: none !important; }
+            .stTabs [data-baseweb="tab-list"] { display: none !important; }
+            header { display: none !important; }
+            .main > div { padding-top: 0 !important; }
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
         st.markdown("""
         ### Current Draft Settings
 
