@@ -1064,9 +1064,9 @@ def main():
         st.subheader("How to Use This Simulator")
 
         st.markdown("""
-        ### Baseline Assumptions (Already Decided)
+        ### Current Draft Settings
 
-        These settings reflect decisions already made for the Fast Track program:
+        These settings reflect the current draft of the Fast Track program:
 
         | Setting | Value | What It Means |
         |---------|-------|---------------|

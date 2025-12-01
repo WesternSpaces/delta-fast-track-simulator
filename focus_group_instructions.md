@@ -3,9 +3,9 @@
 
 ---
 
-## 1. Baseline Assumptions (Already Decided)
+## 1. Current Draft Settings
 
-These settings reflect decisions already made for the Fast Track program:
+These settings reflect the current draft of the Fast Track program:
 
 | Setting | Value | What It Means |
 |---------|-------|---------------|
