@@ -7,7 +7,7 @@ Interactive web application for exploring policy decisions on the City of Delta 
 This simulator helps the Focus Group visualize tradeoffs between:
 - **Affordability period** (5-99 years)
 - **AMI thresholds** (60%, 80%, 100%, 110%, 120%)
-- **Density bonuses** (0-30%)
+- **Density bonuses** (0-50%)
 - **Fee waivers and reductions** (building permits, tap fees, use tax)
 
 It calculates real-time impacts on:
@@ -51,6 +51,8 @@ The app will open in your browser at `http://localhost:8501`
 
 Your app will be live at: `https://YOUR_APP_NAME.streamlit.app`
 
+**Live App:** https://delta-fast-track-simulator-qrzf2t87mqwzfgwporenqz.streamlit.app/
+
 ## Features
 
 ### Policy Controls
@@ -61,34 +63,35 @@ Your app will be live at: `https://YOUR_APP_NAME.streamlit.app`
 
 ### Analysis Views
 
-**Developer Economics Tab:**
-- Complete pro forma with benefits and costs
-- Financial waterfall chart
-- ROI and feasibility assessment
+**Instructions Tab:**
+- Current draft settings and baseline assumptions
+- What policy questions to explore
+- Step-by-step guide to finding your "sweet spot"
+- Downloadable printable instructions
 
-**Community Benefit Tab:**
-- City investment breakdown
-- Cost per unit-year metrics
-- Economic impact (jobs, population served)
-- 20-year projections
+**Results Tab:**
+- Benefits vs costs bar chart
+- Developer Net Gain indicator (green/red)
+- City investment efficiency metrics
+- Detailed breakdowns (expandable)
 
 **Comparisons Tab:**
-- Side-by-side scenario analysis
-- Alternative affordability periods
-- Alternative AMI thresholds
-- Interactive tradeoff charts
+- Tradeoff scatter plot (affordability period vs city cost)
+- Side-by-side tables by affordability period
+- AMI threshold comparisons (rental and ownership)
 
-**Export & Share Tab:**
+**Export Tab:**
 - Download results as CSV
 - Summary tables
-- Shareable configurations
+- Policy settings snapshot
 
 ## Data Sources
 
-- **2025 Delta County AMI data:** HUD Income Limits
+- **2025 Delta County AMI data:** HUD Income Limits via CHFA
 - **City of Delta 2025 Fee Schedule:** Official city document
-- **Density Bonus Calculations:** Current Fast Track proposal
-- **Housing Needs Assessment:** City of Delta 2023 study
+- **Construction costs:** Grand Junction $120-180/sq ft (HomeBlue); Black Canyon Flats Montrose $22M/60 units
+- **Land costs:** Delta County avg $6,795/acre undeveloped (LandSearch)
+- **Market rents:** Grand Mesa Flats, Delta CO (Nov 2025)
 - **Incentive Policy Assessment:** RPI Consulting, February 2025
 
 ## Technical Details
@@ -119,10 +122,10 @@ Cost per Unit-Year = City Investment / (Units × Years)
 - **Density bonus:** 20% (4 bonus units)
 - **Total units:** 24
 - **Affordable requirement:** 25% of base + 50% of bonus = 7 units
-- **Market rent:** $1,425/month
-- **Affordability period:** 30 years
-- **Construction cost:** $75,000/unit
-- **Land/dev value:** $90,000/unit
+- **Market rent:** $1,425/month (Grand Mesa Flats, Nov 2025)
+- **Affordability period:** 15 years (current draft)
+- **Construction cost:** $200,000/unit (based on non-Denver CO avg)
+- **Land/dev value:** $35,000/unit (Delta County avg)
 
 ## For Focus Group Members
 
@@ -182,6 +185,12 @@ For questions or issues:
 - **Data updates:** Check with Dynamic Planning + Science & Western Spaces
 
 ## Version History
+
+- **v1.1 (December 2025):** Focus Group Meeting #2 Updates
+  - Added Instructions tab with guided walkthrough
+  - Updated construction costs with local Western Slope data
+  - Default affordability period changed to 15 years
+  - Added printable instructions download
 
 - **v1.0 (November 2025):** Initial release for Focus Group Meeting
   - Core pro forma calculations
