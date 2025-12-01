@@ -1063,35 +1063,76 @@ def main():
     with tab_instructions:
         st.subheader("How to Use This Simulator")
 
-        # Print instructions helper
-        col_print, col_spacer = st.columns([1, 4])
-        with col_print:
-            st.markdown("""
-            <a href="javascript:window.print();" style="
-                display: inline-block;
-                padding: 0.5rem 1rem;
-                background-color: #3498db;
-                color: white;
-                text-decoration: none;
-                border-radius: 6px;
-                font-weight: 500;
-                font-size: 14px;
-            ">🖨️ Print Instructions</a>
-            """, unsafe_allow_html=True)
+        # Printable HTML content
+        printable_html = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fast Track Simulator - Instructions</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 30px; }
+        h3 { color: #7f8c8d; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background-color: #34495e; color: white; padding: 12px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }
+        .info-box { background-color: #e8f4f8; border-left: 4px solid #3498db; padding: 15px; margin: 20px 0; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ecf0f1; color: #7f8c8d; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Fast Track Incentive Simulator</h1>
+    <h2>Instructions for Focus Group</h2>
 
-        # Hide sidebar and header when printing
-        st.markdown("""
-        <style>
-        @media print {
-            [data-testid="stSidebar"] { display: none !important; }
-            [data-testid="stHeader"] { display: none !important; }
-            [data-testid="stToolbar"] { display: none !important; }
-            .stTabs [data-baseweb="tab-list"] { display: none !important; }
-            header { display: none !important; }
-            .main > div { padding-top: 0 !important; }
-        }
-        </style>
-        """, unsafe_allow_html=True)
+    <h3>Current Draft Settings</h3>
+    <table>
+        <tr><th>Setting</th><th>Value</th><th>What It Means</th></tr>
+        <tr><td><strong>Rental AMI Threshold</strong></td><td>80%</td><td>Households earning up to $65,280/year*</td></tr>
+        <tr><td><strong>Ownership AMI Threshold</strong></td><td>100%</td><td>Households earning up to $81,600/year*</td></tr>
+        <tr><td><strong>Minimum Affordable Units</strong></td><td>25%</td><td>At least 25% of base units must be affordable</td></tr>
+        <tr><td><strong>Default Affordability Period</strong></td><td>15 years</td><td>Units must remain affordable for at least 15 years</td></tr>
+    </table>
+    <p><em>*2025 HUD Income Limits for Delta County, 2-person household (via CHFA)</em></p>
+
+    <h3>What We Need Your Input On</h3>
+    <p><strong>Density Bonus:</strong> How much extra density should we allow? (Currently 20%, range 0-50%)</p>
+    <p><strong>Fee Waivers & Reductions:</strong> Tap & System Fee Reduction, Use Tax Rebate, Planning/Building Permits</p>
+    <p><strong>Affordability Period:</strong> 15 years vs 30 years — what's the right balance?</p>
+
+    <h3>What to Watch When Changing Inputs</h3>
+    <p><strong>Developer Net Gain:</strong> Green = Fast Track adds value. Red = Developer loses money (won't participate!).</p>
+    <p><strong>City Cost per Unit-Year:</strong> Lower is better. Longer affordability periods reduce this number.</p>
+
+    <h3>Try This: Finding Your Sweet Spot</h3>
+    <ol>
+        <li><strong>Note the Starting Point</strong> — Write down Developer Net Gain and City Cost/Unit-Year</li>
+        <li><strong>Increase Density Bonus</strong> — Move from 20% to 30%. What changed?</li>
+        <li><strong>Try Longer Affordability</strong> — Change to 30 years. Did developer go negative?</li>
+        <li><strong>Compensate with Fee Waivers</strong> — Increase Tap Fee Reduction to get back to green</li>
+        <li><strong>Compare Rental vs Ownership</strong> — Switch project type and see the difference</li>
+        <li><strong>Export Your Scenario</strong> — Download your preferred settings from the Export tab</li>
+    </ol>
+
+    <div class="info-box">
+        <strong>Key Questions to Consider</strong><br>
+        1. What's the minimum density bonus that makes Fast Track attractive?<br>
+        2. Can we achieve 30-year affordability without losing developer interest?<br>
+        3. Which fee waivers matter most to making projects feasible?<br>
+        4. Should rental and ownership projects have different requirements?
+    </div>
+
+    <div class="footer">City of Delta Fast Track Focus Group — December 2025</div>
+</body>
+</html>
+        """
+
+        st.download_button(
+            label="🖨️ Download Printable Instructions",
+            data=printable_html,
+            file_name="fast_track_instructions.html",
+            mime="text/html"
+        )
 
         st.markdown("""
         ### Current Draft Settings
