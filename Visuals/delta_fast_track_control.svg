@@ -1,0 +1,159 @@
+<svg viewBox="0 0 1200 850" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Helvetica, Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #222; }
+      .subtitle { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #666; }
+      .box-title { font-family: Helvetica, Arial, sans-serif; font-size: 13px; fill: #222; font-weight: bold; }
+      .box-text { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #333; }
+      .label-text { font-family: Helvetica, Arial, sans-serif; font-size: 10px; fill: #666; }
+      .emphasis { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #C73E1D; font-weight: bold; }
+      .callout-box { fill: #f9f9f9; stroke: #ddd; stroke-width: 1; }
+      .decision-box { fill: #FFF8DC; stroke: #F18F01; stroke-width: 2; }
+      .control-box { fill: #E8F5E9; stroke: #4CAF50; stroke-width: 2; }
+      .process-box { fill: #E3F2FD; stroke: #2196F3; stroke-width: 1.5; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="35" text-anchor="middle" class="title">Fast Track MAINTAINS Local Control</text>
+  <text x="600" y="55" text-anchor="middle" class="subtitle">Delta retains all approval authority – Fast Track only changes the timeline, not the decision-makers</text>
+
+  <!-- Main Process Flow -->
+
+  <!-- PRE-APPLICATION PHASE (Outside 90-day clock) -->
+  <g id="pre-app">
+    <rect x="50" y="90" width="300" height="90" class="process-box" rx="5"/>
+    <text x="200" y="110" text-anchor="middle" class="box-title">PRE-APPLICATION PHASE</text>
+    <text x="60" y="130" class="box-text">• Mandatory pre-app meeting with City staff</text>
+    <text x="60" y="148" class="box-text">• Required neighborhood consultation</text>
+    <text x="60" y="166" class="box-text">• 14-day comment period for adjacent owners</text>
+    <text x="200" y="195" text-anchor="middle" class="label-text" font-style="italic">Not included in 90-day clock</text>
+  </g>
+
+  <!-- Arrow -->
+  <line x1="200" y1="180" x2="200" y2="220" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="210" y="205" class="label-text">Application submitted</text>
+
+  <!-- COMPLETENESS REVIEW -->
+  <g id="completeness">
+    <rect x="50" y="230" width="300" height="70" class="decision-box" rx="5"/>
+    <text x="200" y="250" text-anchor="middle" class="box-title">COMPLETENESS REVIEW</text>
+    <text x="60" y="270" class="box-text">City has 3 business days to review</text>
+    <text x="200" y="285" text-anchor="middle" class="emphasis">CITY DECISION POINT #1</text>
+    <text x="60" y="300" class="box-text" font-style="italic">Complete? YES = Clock starts | NO = Return to applicant</text>
+  </g>
+
+  <!-- Arrow -->
+  <line x1="200" y1="300" x2="200" y2="340" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="210" y="325" class="label-text" fill="#C73E1D" font-weight="bold">90-DAY CLOCK STARTS</text>
+
+  <!-- STAFF REVIEW & AGENCY COORDINATION -->
+  <g id="staff-review">
+    <rect x="50" y="350" width="300" height="90" class="control-box" rx="5"/>
+    <text x="200" y="370" text-anchor="middle" class="box-title">STAFF REVIEW (21 days)</text>
+    <text x="60" y="390" class="box-text">• Delta staff reviews for code compliance</text>
+    <text x="60" y="408" class="box-text">• Referrals to external agencies (14 days max)</text>
+    <text x="60" y="426" class="box-text">• Comments provided to applicant</text>
+    <text x="200" y="445" text-anchor="middle" class="label-text" font-style="italic">Delta sets the requirements</text>
+  </g>
+
+  <!-- Arrow -->
+  <line x1="200" y1="440" x2="200" y2="480" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- POST-REVIEW MEETING -->
+  <g id="post-review">
+    <rect x="50" y="490" width="300" height="80" class="decision-box" rx="5"/>
+    <text x="200" y="510" text-anchor="middle" class="box-title">POST-REVIEW MEETING</text>
+    <text x="60" y="530" class="box-text">Mandatory meeting to discuss comments</text>
+    <text x="200" y="545" text-anchor="middle" class="emphasis">CITY DECISION POINT #2</text>
+    <text x="60" y="560" class="box-text">Extension needed? City Council decides</text>
+  </g>
+
+  <!-- Arrow -->
+  <line x1="200" y1="570" x2="200" y2="610" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="210" y="595" class="label-text">Applicant revises</text>
+
+  <!-- FINAL DECISION -->
+  <g id="final-decision">
+    <rect x="50" y="620" width="300" height="110" class="control-box" rx="5"/>
+    <text x="200" y="640" text-anchor="middle" class="box-title">FINAL DECISION</text>
+    <text x="200" y="660" text-anchor="middle" class="emphasis" font-size="14">CITY DECISION POINT #3</text>
+    <text x="60" y="680" class="box-text" font-weight="bold">Decision made by:</text>
+    <text x="70" y="698" class="box-text">→ Administrator (use permits, site plans)</text>
+    <text x="70" y="714" class="box-text">→ Planning Commission (CUPs, PUDs)</text>
+    <text x="70" y="730" class="box-text">→ City Council (major projects, variances)</text>
+  </g>
+
+  <!-- Right Side: Control Points Highlighted -->
+  <g id="control-highlights">
+    <rect x="450" y="90" width="700" height="640" class="callout-box" rx="5"/>
+
+    <text x="800" y="120" text-anchor="middle" class="box-title" font-size="16">Delta Maintains Full Control At Every Stage</text>
+
+    <!-- Control Point 1 -->
+    <g id="control-1">
+      <circle cx="480" cy="170" r="25" fill="#F18F01" opacity="0.2"/>
+      <text x="480" y="176" text-anchor="middle" class="box-title" fill="#F18F01" font-size="18">1</text>
+      <text x="520" y="160" class="box-text" font-weight="bold">DELTA DEFINES "COMPLETE APPLICATION"</text>
+      <text x="520" y="178" class="box-text">City establishes what's required before the clock starts</text>
+      <text x="520" y="194" class="box-text">No state mandate on what you must accept</text>
+    </g>
+
+    <!-- Control Point 2 -->
+    <g id="control-2">
+      <circle cx="480" cy="260" r="25" fill="#F18F01" opacity="0.2"/>
+      <text x="480" y="266" text-anchor="middle" class="box-title" fill="#F18F01" font-size="18">2</text>
+      <text x="520" y="250" class="box-text" font-weight="bold">DELTA STAFF REVIEWS FOR COMPLIANCE</text>
+      <text x="520" y="268" class="box-text">All existing codes, standards, and requirements still apply</text>
+      <text x="520" y="284" class="box-text">No automatic approval – project must meet Delta's standards</text>
+    </g>
+
+    <!-- Control Point 3 -->
+    <g id="control-3">
+      <circle cx="480" cy="350" r="25" fill="#F18F01" opacity="0.2"/>
+      <text x="480" y="356" text-anchor="middle" class="box-title" fill="#F18F01" font-size="18">3</text>
+      <text x="520" y="340" class="box-text" font-weight="bold">DELTA DECIDES ON EXTENSIONS</text>
+      <text x="520" y="358" class="box-text">City can grant 30-day extensions to work with applicant</text>
+      <text x="520" y="374" class="box-text">Developer can request one 90-day extension (City approves)</text>
+    </g>
+
+    <!-- Control Point 4 -->
+    <g id="control-4">
+      <circle cx="480" cy="440" r="25" fill="#4CAF50" opacity="0.2"/>
+      <text x="480" y="446" text-anchor="middle" class="box-title" fill="#4CAF50" font-size="18">4</text>
+      <text x="520" y="430" class="box-text" font-weight="bold">NEIGHBORHOOD INPUT REQUIRED</text>
+      <text x="520" y="448" class="box-text">Pre-application consultation with adjacent property owners</text>
+      <text x="520" y="464" class="box-text">Public hearings for CUPs and major projects (if required)</text>
+    </g>
+
+    <!-- Control Point 5 -->
+    <g id="control-5">
+      <circle cx="480" cy="540" r="25" fill="#4CAF50" opacity="0.2"/>
+      <text x="480" y="546" text-anchor="middle" class="box-title" fill="#4CAF50" font-size="18">5</text>
+      <text x="520" y="520" class="box-text" font-weight="bold">DELTA OFFICIALS MAKE FINAL DECISION</text>
+      <text x="520" y="538" class="box-text" font-size="12">Planning Commission or City Council decides:</text>
+      <text x="530" y="556" class="box-text">✓ Approve  |  ✓ Approve with conditions  |  ✓ Deny</text>
+      <text x="520" y="574" class="box-text" font-style="italic">Fast Track = faster timeline, NOT automatic approval</text>
+    </g>
+
+    <!-- What Fast Track Changes -->
+    <rect x="470" y="610" width="660" height="100" fill="#FFF8DC" stroke="#F18F01" stroke-width="2" rx="5"/>
+    <text x="800" y="635" text-anchor="middle" class="box-title" font-size="14" fill="#F18F01">What Fast Track Actually Changes</text>
+    <text x="490" y="660" class="box-text" font-size="12"><tspan font-weight="bold">ONLY THE TIMELINE:</tspan> Decision within 90 days (vs. typical 6-12 months)</text>
+    <text x="490" y="680" class="box-text" font-size="12"><tspan font-weight="bold">NOT THE STANDARDS:</tspan> All Delta codes, zoning, design requirements still apply</text>
+    <text x="490" y="700" class="box-text" font-size="12"><tspan font-weight="bold">NOT THE AUTHORITY:</tspan> Delta staff, Planning Commission, City Council still decide</text>
+  </g>
+
+  <!-- Bottom emphasis -->
+  <rect x="80" y="760" width="1040" height="70" class="control-box" rx="5"/>
+  <text x="600" y="785" text-anchor="middle" class="box-title" font-size="15">Fast Track is a LOCAL program designed BY Delta FOR Delta</text>
+  <text x="600" y="805" text-anchor="middle" class="box-text">Prop 123 requires expedited review, but Delta decides: eligibility criteria, application requirements, review standards,</text>
+  <text x="600" y="820" text-anchor="middle" class="box-text">extension policies, and final approval. This is Delta's program with Delta's values – not a state mandate.</text>
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+    </marker>
+  </defs>
+</svg>

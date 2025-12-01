@@ -1,0 +1,149 @@
+<svg viewBox="0 0 1200 730" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define styles matching existing packet style -->
+  <defs>
+    <style>
+      .title { font-family: Helvetica, Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #222; }
+      .subtitle { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #666; }
+      .axis-label { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #333; }
+      .value-label { font-family: Helvetica, Arial, sans-serif; font-size: 13px; fill: #222; font-weight: bold; }
+      .industry-label { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #333; }
+      .legend-text { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #333; }
+      .grid-line { stroke: #e0e0e0; stroke-width: 1; }
+      .axis-line { stroke: #333; stroke-width: 1.5; }
+      .callout-box { fill: #f9f9f9; stroke: #ddd; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="35" text-anchor="middle" class="title">Who Benefits: Delta County's Working Families</text>
+  <text x="600" y="55" text-anchor="middle" class="subtitle">Over 5,800 workers earn at or below 100% AMI – these are the neighbors who need workforce housing</text>
+
+  <!-- Main Chart Area -->
+  <g id="workforce-chart">
+    <!-- Y-axis (Industries) -->
+    <line x1="280" y1="100" x2="280" y2="580" class="axis-line"/>
+    <!-- X-axis (Number of workers) -->
+    <line x1="280" y1="580" x2="1050" y2="580" class="axis-line"/>
+
+    <!-- X-axis labels -->
+    <text x="280" y="600" text-anchor="middle" class="axis-label">0</text>
+    <text x="472" y="600" text-anchor="middle" class="axis-label">500</text>
+    <text x="664" y="600" text-anchor="middle" class="axis-label">1,000</text>
+    <text x="856" y="600" text-anchor="middle" class="axis-label">1,500</text>
+    <text x="1048" y="600" text-anchor="middle" class="axis-label">2,000</text>
+
+    <!-- Grid lines -->
+    <line x1="472" y1="100" x2="472" y2="580" class="grid-line"/>
+    <line x1="664" y1="100" x2="664" y2="580" class="grid-line"/>
+    <line x1="856" y1="100" x2="856" y2="580" class="grid-line"/>
+
+    <!-- Industries (sorted by those most needing affordable housing) -->
+
+    <!-- 1. Accommodation/Food Services: 801 workers at 50% AMI -->
+    <rect x="280" y="110" width="203" height="22" fill="#A23B72"/>
+    <text x="270" y="125" text-anchor="end" class="industry-label">Accommodation/Food</text>
+    <text x="488" y="125" class="industry-label" font-weight="bold">801</text>
+    <text x="520" y="125" class="industry-label" fill="#666">(restaurant staff, hotel workers)</text>
+
+    <!-- 2. Retail: 1,198 at 90% AMI -->
+    <rect x="280" y="138" width="459" height="22" fill="#1976D2"/>
+    <text x="270" y="153" text-anchor="end" class="industry-label">Retail</text>
+    <text x="744" y="153" class="industry-label" font-weight="bold">1,198</text>
+    <text x="780" y="153" class="industry-label" fill="#666">(store managers, sales associates)</text>
+
+    <!-- 3. Healthcare: 861 at 90% AMI -->
+    <rect x="280" y="166" width="330" height="22" fill="#1976D2"/>
+    <text x="270" y="181" text-anchor="end" class="industry-label">Healthcare</text>
+    <text x="615" y="181" class="industry-label" font-weight="bold">861</text>
+    <text x="650" y="181" class="industry-label" fill="#666">(nurses, CNAs, medical assistants)</text>
+
+    <!-- 4. Manufacturing: 617 at 100% AMI -->
+    <rect x="280" y="194" width="236" height="22" fill="#1976D2"/>
+    <text x="270" y="209" text-anchor="end" class="industry-label">Manufacturing</text>
+    <text x="521" y="209" class="industry-label" font-weight="bold">617</text>
+    <text x="555" y="209" class="industry-label" fill="#666">(production workers, technicians)</text>
+
+    <!-- 5. Public Administration: 593 at 100% AMI -->
+    <rect x="280" y="222" width="227" height="22" fill="#1976D2"/>
+    <text x="270" y="237" text-anchor="end" class="industry-label">Public Administration</text>
+    <text x="512" y="237" class="industry-label" font-weight="bold">593</text>
+    <text x="545" y="237" class="industry-label" fill="#666">(city staff, county employees)</text>
+
+    <!-- 6. Public Education: 571 at 100% AMI -->
+    <rect x="280" y="250" width="218" height="22" fill="#1976D2"/>
+    <text x="270" y="265" text-anchor="end" class="industry-label">Public Education</text>
+    <text x="503" y="265" class="industry-label" font-weight="bold">571</text>
+    <text x="535" y="265" class="industry-label" fill="#666">(teachers, paraprofessionals)</text>
+
+    <!-- 7. Agriculture: 483 at 100% AMI -->
+    <rect x="280" y="278" width="185" height="22" fill="#1976D2"/>
+    <text x="270" y="293" text-anchor="end" class="industry-label">Agriculture</text>
+    <text x="470" y="293" class="industry-label" font-weight="bold">483</text>
+    <text x="500" y="293" class="industry-label" fill="#666">(farm workers, ranch hands)</text>
+
+    <!-- 8. Admin/Support: 300 at 110% AMI -->
+    <rect x="280" y="306" width="115" height="22" fill="#FFC107"/>
+    <text x="270" y="321" text-anchor="end" class="industry-label">Admin/Support</text>
+    <text x="400" y="321" class="industry-label" font-weight="bold">300</text>
+
+    <!-- 9. Other Services: 262 at 100% AMI -->
+    <rect x="280" y="334" width="100" height="22" fill="#1976D2"/>
+    <text x="270" y="349" text-anchor="end" class="industry-label">Other Services</text>
+    <text x="385" y="349" class="industry-label" font-weight="bold">262</text>
+    <text x="410" y="349" class="industry-label" fill="#666">(hair salons, repair shops)</text>
+
+    <!-- 10. Wholesale: 137 at 100% AMI -->
+    <rect x="280" y="362" width="52" height="22" fill="#1976D2"/>
+    <text x="270" y="377" text-anchor="end" class="industry-label">Wholesale</text>
+    <text x="337" y="377" class="industry-label" font-weight="bold">137</text>
+
+    <!-- 11. Transport: 93 at 110% AMI -->
+    <rect x="280" y="390" width="36" height="22" fill="#FFC107"/>
+    <text x="270" y="405" text-anchor="end" class="industry-label">Transportation</text>
+    <text x="321" y="405" class="industry-label" font-weight="bold">93</text>
+
+    <!-- 12. Arts/Recreation: 83 at 80% AMI -->
+    <rect x="280" y="418" width="32" height="22" fill="#2E7D32"/>
+    <text x="270" y="433" text-anchor="end" class="industry-label">Arts/Recreation</text>
+    <text x="317" y="433" class="industry-label" font-weight="bold">83</text>
+
+    <!-- 13. Real Estate: 72 at 80% AMI -->
+    <rect x="280" y="446" width="28" height="22" fill="#2E7D32"/>
+    <text x="270" y="461" text-anchor="end" class="industry-label">Real Estate</text>
+    <text x="313" y="461" class="industry-label" font-weight="bold">72</text>
+
+    <!-- 14. Information: 56 at 110% AMI -->
+    <rect x="280" y="474" width="21" height="22" fill="#FFC107"/>
+    <text x="270" y="489" text-anchor="end" class="industry-label">Information/Tech</text>
+    <text x="306" y="489" class="industry-label" font-weight="bold">56</text>
+
+    <!-- 15. Utilities: 35 at 60% AMI -->
+    <rect x="280" y="502" width="13" height="22" fill="#A23B72"/>
+    <text x="270" y="517" text-anchor="end" class="industry-label">Utilities</text>
+    <text x="298" y="517" class="industry-label" font-weight="bold">35</text>
+
+    <!-- 16. Professional: 200 at 130% AMI (above threshold) -->
+    <rect x="280" y="530" width="77" height="22" fill="#ccc"/>
+    <text x="270" y="545" text-anchor="end" class="industry-label">Professional Services</text>
+    <text x="362" y="545" class="industry-label" font-weight="bold">200</text>
+    <text x="395" y="545" class="industry-label" fill="#999">(above AMI limits)</text>
+  </g>
+
+  <!-- Legend -->
+  <g id="legend">
+    <rect x="350" y="630" width="20" height="20" fill="#A23B72"/>
+    <text x="378" y="645" class="legend-text" font-size="13">≤60% AMI</text>
+
+    <rect x="480" y="630" width="20" height="20" fill="#2E7D32"/>
+    <text x="508" y="645" class="legend-text" font-size="13">60-80% AMI</text>
+
+    <rect x="620" y="630" width="20" height="20" fill="#1976D2"/>
+    <text x="648" y="645" class="legend-text" font-size="13">80-100% AMI</text>
+
+    <rect x="770" y="630" width="20" height="20" fill="#FFC107"/>
+    <text x="798" y="645" class="legend-text" font-size="13">100-120% AMI</text>
+
+    <rect x="930" y="630" width="20" height="20" fill="#999"/>
+    <text x="958" y="645" class="legend-text" font-size="13">Above 120% AMI</text>
+  </g>
+</svg>

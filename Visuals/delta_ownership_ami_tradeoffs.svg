@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1200 560">
+  <!-- Generator: Adobe Illustrator 30.0.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 123)  -->
+  <defs>
+    <style>
+      .st0 {
+        stroke: #f18f01;
+      }
+
+      .st0, .st1, .st2, .st3, .st4, .st5 {
+        fill: none;
+      }
+
+      .st0, .st1, .st4, .st5 {
+        stroke-width: 1.5px;
+      }
+
+      .st0, .st1, .st5 {
+        stroke-dasharray: 3 3;
+      }
+
+      .st6 {
+        fill: #c73e1d;
+      }
+
+      .st1 {
+        stroke: #c73e1d;
+      }
+
+      .st7 {
+        fill: #fff;
+        stroke-width: 2px;
+      }
+
+      .st7, .st8 {
+        stroke: #ddd;
+      }
+
+      .st9, .st10, .st11, .st12, .st13, .st14, .st15 {
+        isolation: isolate;
+      }
+
+      .st10 {
+        font-size: 10.86px;
+      }
+
+      .st10, .st13, .st14 {
+        fill: #333;
+      }
+
+      .st10, .st13, .st15 {
+        font-family: Helvetica, Helvetica;
+      }
+
+      .st11 {
+        font-size: 24px;
+      }
+
+      .st11, .st12 {
+        fill: #222;
+      }
+
+      .st11, .st12, .st14 {
+        font-family: Helvetica-Bold, Helvetica;
+        font-weight: 700;
+      }
+
+      .st8 {
+        fill: #f9f9f9;
+      }
+
+      .st2 {
+        stroke: #e0e0e0;
+      }
+
+      .st16 {
+        fill: #a23b72;
+      }
+
+      .st3 {
+        stroke: #999;
+        stroke-dasharray: 8 4;
+        stroke-width: 3px;
+      }
+
+      .st17 {
+        fill: #f18f01;
+      }
+
+      .st4 {
+        stroke: #333;
+      }
+
+      .st12 {
+        font-size: 13px;
+      }
+
+      .st5 {
+        stroke: #a23b72;
+      }
+
+      .st13, .st14 {
+        font-size: 12px;
+      }
+
+      .st15 {
+        fill: #666;
+        font-size: 14px;
+      }
+    </style>
+  </defs>
+  <g class="st9">
+    <text class="st11" transform="translate(270.29 35)"><tspan x="0" y="0">Ownership AMI Threshold: All Options in Lower Half of Market</tspan></text>
+  </g>
+  <g class="st9">
+    <text class="st15" transform="translate(185.82 55)"><tspan x="0" y="0">Comparing affordability levels for for-sale housing eligibility (based on 2-person household, 30-year mortgage at 7%, median home price $334K)</tspan></text>
+  </g>
+  <g id="comparison-charts">
+    <g id="households-chart">
+      <g class="st9">
+        <text class="st14" transform="translate(223.65 90)"><tspan x="0" y="0">Owner Households Served</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(245.99 108)"><tspan x="0" y="0">(Community Impact)</tspan></text>
+      </g>
+      <line class="st4" x1="150" y1="480" x2="150" y2="140"/>
+      <line class="st4" x1="150" y1="480" x2="500" y2="480"/>
+      <g class="st9">
+        <text class="st13" transform="translate(133.33 485)"><tspan x="0" y="0">0</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(119.98 399)"><tspan x="0" y="0">500</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(109.97 313)"><tspan x="0" y="0">1,000</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(109.97 227)"><tspan x="0" y="0">1,500</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(109.97 141)"><tspan x="0" y="0">2,000</tspan></text>
+      </g>
+      <line class="st2" x1="150" y1="394" x2="500" y2="394"/>
+      <line class="st2" x1="150" y1="308" x2="500" y2="308"/>
+      <line class="st2" x1="150" y1="222" x2="500" y2="222"/>
+      <line class="st2" x1="150" y1="136" x2="500" y2="136"/>
+      <rect class="st16" x="190" y="189" width="70" height="291"/>
+      <g class="st9">
+        <text class="st12" transform="translate(208.73 164)"><tspan x="0" y="0">1,714</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(194.31 179)"><tspan x="0" y="0">households</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st14" transform="translate(197.21 500)"><tspan x="0" y="0">100% AMI</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(185.31 515)"><tspan x="0" y="0">51% of owners</tspan></text>
+      </g>
+      <rect class="st17" x="285" y="159" width="70" height="321"/>
+      <g class="st9">
+        <text class="st12" transform="translate(303.73 137)"><tspan x="0" y="0">1,887</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(289.31 150)"><tspan x="0" y="0">households</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st14" transform="translate(292.54 500)"><tspan x="0" y="0">110% AMI</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(280.31 515)"><tspan x="0" y="0">56% of owners</tspan></text>
+      </g>
+      <rect class="st6" x="380" y="124" width="70" height="356"/>
+      <g class="st9">
+        <text class="st12" transform="translate(398.73 101)"><tspan x="0" y="0">2,092</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(384.31 115)"><tspan x="0" y="0">households</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st14" transform="translate(387.21 500)"><tspan x="0" y="0">120% AMI</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(375.31 515)"><tspan x="0" y="0">62% of owners</tspan></text>
+      </g>
+    </g>
+    <g id="price-chart">
+      <g class="st9">
+        <text class="st14" transform="translate(717.96 90)"><tspan x="0" y="0">Affordable Home Price vs. Delta Median</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(735.56 108)"><tspan x="0" y="0">(All in Lower Half of For-Sale Market)</tspan></text>
+      </g>
+      <line class="st4" x1="650" y1="480" x2="650" y2="140"/>
+      <line class="st4" x1="650" y1="480" x2="1050" y2="480"/>
+      <g class="st9">
+        <text class="st13" transform="translate(626.65 485)"><tspan x="0" y="0">$0</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(605.3 399)"><tspan x="0" y="0">$100K</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(605.3 313)"><tspan x="0" y="0">$200K</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(605.3 227)"><tspan x="0" y="0">$300K</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(605.3 141)"><tspan x="0" y="0">$400K</tspan></text>
+      </g>
+      <line class="st2" x1="650" y1="394" x2="1050" y2="394"/>
+      <line class="st2" x1="650" y1="308" x2="1050" y2="308"/>
+      <line class="st2" x1="650" y1="222" x2="1050" y2="222"/>
+      <line class="st2" x1="650" y1="136" x2="1050" y2="136"/>
+      <line class="st3" x1="650" y1="193" x2="1050" y2="193"/>
+      <g class="st9">
+        <text class="st14" transform="translate(1055 198)"><tspan x="0" y="0">Median: $334K</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(1055 211)"><tspan x="0" y="0">(50% sell below)</tspan></text>
+      </g>
+      <rect class="st16" x="690" y="262" width="70" height="218"/>
+      <g class="st9">
+        <text class="st12" transform="translate(705.85 182)"><tspan x="0" y="0">$256K</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(693.64 157)"><tspan x="0" y="0">$78K below</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(688.99 169)"><tspan x="0" y="0">median (23%)</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st14" transform="translate(697.21 500)"><tspan x="0" y="0">100% AMI</tspan></text>
+      </g>
+      <polygon class="st16" points="725 193 720 198 730 198 725 193"/>
+      <line class="st5" x1="725" y1="198" x2="725" y2="258"/>
+      <rect class="st17" x="800" y="241" width="70" height="239"/>
+      <g class="st9">
+        <text class="st12" transform="translate(815.85 186)"><tspan x="0" y="0">$281K</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(803.64 158)"><tspan x="0" y="0">$53K below</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(798.99 171)"><tspan x="0" y="0">median (16%)</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st14" transform="translate(807.54 500)"><tspan x="0" y="0">110% AMI</tspan></text>
+      </g>
+      <polygon class="st17" points="835 193 830 198 840 198 835 193"/>
+      <line class="st0" x1="835" y1="198" x2="835" y2="237"/>
+      <rect class="st6" x="910" y="220" width="70" height="260"/>
+      <g class="st9">
+        <text class="st12" transform="translate(925.85 188)"><tspan x="0" y="0">$307K</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st10" transform="translate(919.58 158.02)"><tspan x="0" y="0">$27K below</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st13" transform="translate(912.33 172)"><tspan x="0" y="0">median (8%)</tspan></text>
+      </g>
+      <g class="st9">
+        <text class="st14" transform="translate(917.21 500)"><tspan x="0" y="0">120% AMI</tspan></text>
+      </g>
+      <polygon class="st6" points="945 193 940 198 950 198 945 193"/>
+      <line class="st1" x1="945" y1="198" x2="945" y2="216"/>
+    </g>
+  </g>
+  <g class="st9">
+    <text class="st13" transform="translate(190.8 545)"><tspan x="0" y="0">Source: Delta County household income data (2025); HUD income limits (2025); Redfin median sale price ($334K, current); 7% mortgage rate assumption</tspan></text>
+  </g>
+</svg>

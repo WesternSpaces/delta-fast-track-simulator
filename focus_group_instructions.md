@@ -9,10 +9,12 @@ These settings reflect decisions already made for the Fast Track program:
 
 | Setting | Value | What It Means |
 |---------|-------|---------------|
-| **Rental AMI Threshold** | 80% | Affordable rental units serve households earning up to $65,280/year (2-person household) |
-| **Ownership AMI Threshold** | 100% | Affordable for-sale homes serve households earning up to $81,600/year |
+| **Rental AMI Threshold** | 80% | Affordable rental units serve households earning up to $65,280/year* |
+| **Ownership AMI Threshold** | 100% | Affordable for-sale homes serve households earning up to $81,600/year* |
 | **Minimum Affordable Units** | 25% | To qualify for Fast Track, at least 25% of base units must be affordable |
 | **Default Affordability Period** | 15 years | Units must remain affordable for at least 15 years (adjustable for comparison) |
+
+*\*2025 HUD Income Limits for Delta County, 2-person household (via CHFA)*
 
 ---
 

@@ -1,0 +1,107 @@
+<svg viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Helvetica, Arial, sans-serif; font-size: 28px; font-weight: bold; fill: #222; }
+      .subtitle { font-family: Helvetica, Arial, sans-serif; font-size: 16px; fill: #666; }
+      .card-title { font-family: Helvetica, Arial, sans-serif; font-size: 24px; fill: #fff; font-weight: bold; }
+      .card-value { font-family: Helvetica, Arial, sans-serif; font-size: 48px; fill: #222; font-weight: bold; }
+      .card-label { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #666; }
+      .card-text { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #333; }
+      .legend-text { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #333; }
+      .callout-box { fill: #f9f9f9; stroke: #ddd; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="35" text-anchor="middle" class="title">Affordability Term Length Options</text>
+  <text x="600" y="60" text-anchor="middle" class="subtitle">Annual community cost based on 20-unit example project with 5 affordable units</text>
+
+  <!-- Three comparison cards -->
+
+  <!-- OPTION A: 5 Years -->
+  <g id="option-5">
+    <rect x="50" y="90" width="320" height="200" fill="#fff" stroke="#ddd" stroke-width="2" rx="8"/>
+    <rect x="50" y="90" width="320" height="50" fill="#999" rx="8"/>
+    <text x="210" y="125" text-anchor="middle" class="card-title">5 Years</text>
+
+    <!-- Cost metric -->
+    <text x="210" y="175" text-anchor="middle" class="card-label">Annual Community Cost</text>
+    <text x="210" y="230" text-anchor="middle" class="card-value" fill="#999">$148,880</text>
+    <text x="210" y="265" text-anchor="middle" class="card-label">Must re-incentivize after 5 years</text>
+  </g>
+
+  <!-- OPTION B: 20 Years -->
+  <g id="option-20">
+    <rect x="440" y="90" width="320" height="200" fill="#fff" stroke="#F18F01" stroke-width="3" rx="8"/>
+    <rect x="440" y="90" width="320" height="50" fill="#F18F01" rx="8"/>
+    <text x="600" y="125" text-anchor="middle" class="card-title">20 Years</text>
+
+    <!-- Cost metric -->
+    <text x="600" y="175" text-anchor="middle" class="card-label">Annual Community Cost</text>
+    <text x="600" y="230" text-anchor="middle" class="card-value" fill="#F18F01">$37,220</text>
+    <text x="600" y="265" text-anchor="middle" class="card-label">Done after 20 years</text>
+  </g>
+
+  <!-- OPTION C: 30+ Years (Permanent) -->
+  <g id="option-30plus">
+    <rect x="830" y="90" width="320" height="200" fill="#fff" stroke="#ddd" stroke-width="2" rx="8"/>
+    <rect x="830" y="90" width="320" height="50" fill="#4CAF50" rx="8"/>
+    <text x="990" y="125" text-anchor="middle" class="card-title">30+ Years</text>
+
+    <!-- Cost metric -->
+    <text x="990" y="175" text-anchor="middle" class="card-label">Annual Community Cost</text>
+    <text x="990" y="230" text-anchor="middle" class="card-value" fill="#4CAF50">$24,813</text>
+    <text x="990" y="265" text-anchor="middle" class="card-label">Permanent community asset</text>
+  </g>
+
+  <!-- Comparison Chart at Bottom -->
+  <g id="comparison-chart">
+    <rect x="50" y="320" width="1100" height="280" class="callout-box" rx="5"/>
+    <text x="600" y="355" text-anchor="middle" class="card-text" font-weight="bold" font-size="16">What Other Colorado Communities Require</text>
+
+    <!-- Community comparison bars -->
+    <text x="80" y="395" class="card-text" font-size="12">Durango:</text>
+    <rect x="180" y="383" width="240" height="20" fill="#F18F01"/>
+    <text x="430" y="395" class="card-text" font-size="12" font-weight="bold">30-40 years</text>
+
+    <text x="80" y="430" class="card-text" font-size="12">Montrose:</text>
+    <rect x="180" y="418" width="240" height="20" fill="#F18F01"/>
+    <text x="430" y="430" class="card-text" font-size="12" font-weight="bold">30 years</text>
+
+    <text x="80" y="465" class="card-text" font-size="12">Grand Junction:</text>
+    <rect x="180" y="453" width="240" height="20" fill="#F18F01"/>
+    <text x="430" y="465" class="card-text" font-size="12" font-weight="bold">30 years (rental)</text>
+
+    <text x="80" y="500" class="card-text" font-size="12">Fort Collins:</text>
+    <rect x="180" y="488" width="160" height="20" fill="#999"/>
+    <text x="350" y="500" class="card-text" font-size="12">20 years (min)</text>
+    <rect x="350" y="488" width="240" height="20" fill="#4CAF50"/>
+    <text x="600" y="500" class="card-text" font-size="12" font-weight="bold">50 years (max)</text>
+
+    <text x="80" y="535" class="card-text" font-size="12">Breckenridge:</text>
+    <rect x="180" y="523" width="400" height="20" fill="#4CAF50"/>
+    <text x="590" y="535" class="card-text" font-size="12" font-weight="bold">Permanent</text>
+
+    <text x="80" y="570" class="card-text" font-size="12">Summit County:</text>
+    <rect x="180" y="558" width="400" height="20" fill="#4CAF50"/>
+    <text x="590" y="570" class="card-text" font-size="12" font-weight="bold">Permanent</text>
+
+    <!-- Legend -->
+    <g id="legend-terms">
+      <rect x="700" y="383" width="60" height="20" fill="#999"/>
+      <text x="770" y="396" class="legend-text" font-size="12">5-15 years</text>
+
+      <rect x="700" y="418" width="60" height="20" fill="#F18F01"/>
+      <text x="770" y="431" class="legend-text" font-size="12">20-30 years</text>
+
+      <rect x="700" y="453" width="60" height="20" fill="#4CAF50"/>
+      <text x="770" y="466" class="legend-text" font-size="12">30+ years / Permanent</text>
+    </g>
+
+    <!-- Key takeaway -->
+    <rect x="700" y="500" width="430" height="80" fill="#FFF8DC" stroke="#F18F01" stroke-width="2" rx="3"/>
+    <text x="915" y="528" text-anchor="middle" class="card-text" font-weight="bold" font-size="13">Key Takeaway</text>
+    <text x="720" y="552" class="card-text" font-size="11">Most comparable Western Slope communities (Durango,</text>
+    <text x="720" y="569" class="card-text" font-size="11">Montrose, Grand Junction) use <tspan font-weight="bold">30+ years</tspan> as their standard.</text>
+  </g>
+</svg>

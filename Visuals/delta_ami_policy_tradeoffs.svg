@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1200 520">
+  <!-- Generator: Adobe Illustrator 30.0.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 123)  -->
+  <defs>
+    <style>
+      .st0 {
+        opacity: .6;
+      }
+
+      .st0, .st1, .st2, .st3, .st4, .st5, .st6 {
+        isolation: isolate;
+      }
+
+      .st0, .st7 {
+        fill: #f18f01;
+      }
+
+      .st8 {
+        fill: #fff;
+        stroke-width: 2px;
+      }
+
+      .st8, .st9 {
+        stroke: #ddd;
+      }
+
+      .st2 {
+        font-size: 24px;
+      }
+
+      .st2, .st3 {
+        fill: #222;
+      }
+
+      .st2, .st3, .st5 {
+        font-family: Helvetica-Bold, Helvetica;
+        font-weight: 700;
+      }
+
+      .st9 {
+        fill: #f9f9f9;
+      }
+
+      .st10 {
+        stroke: #e0e0e0;
+      }
+
+      .st10, .st11 {
+        fill: none;
+      }
+
+      .st12 {
+        fill: #a23b72;
+      }
+
+      .st13, .st4, .st5 {
+        fill: #333;
+        font-size: 12px;
+      }
+
+      .st13, .st4, .st6 {
+        font-family: Helvetica, Helvetica;
+      }
+
+      .st11 {
+        stroke: #333;
+        stroke-width: 1.5px;
+      }
+
+      .st3 {
+        font-size: 13px;
+      }
+
+      .st6 {
+        fill: #666;
+        font-size: 14px;
+      }
+    </style>
+  </defs>
+  <text class="st2" transform="translate(198.36 35)"><tspan x="0" y="0">Fast Track AMI Threshold: Balancing Community Need with Feasibility</tspan></text>
+  <text class="st6" transform="translate(250.57 55)"><tspan x="0" y="0">Comparing affordability levels for rental housing eligibility (based on 2BR units, Delta&apos;s most common rental type)</tspan></text>
+  <g id="comparison-charts">
+    <g id="households-chart">
+      <text class="st5" transform="translate(223.31 90)"><tspan x="0" y="0">Renter Households Served</tspan></text>
+      <text class="st4" transform="translate(245.99 108)"><tspan x="0" y="0">(Community Impact)</tspan></text>
+      <line class="st11" x1="150" y1="450" x2="150" y2="140"/>
+      <line class="st11" x1="150" y1="450" x2="450" y2="450"/>
+      <text class="st4" transform="translate(133.33 455)"><tspan x="0" y="0">0</tspan></text>
+      <text class="st4" transform="translate(119.98 378)"><tspan x="0" y="0">500</tspan></text>
+      <text class="st4" transform="translate(109.97 301)"><tspan x="0" y="0">1,000</tspan></text>
+      <text class="st4" transform="translate(109.97 224)"><tspan x="0" y="0">1,500</tspan></text>
+      <text class="st4" transform="translate(109.97 147)"><tspan x="0" y="0">2,000</tspan></text>
+      <line class="st10" x1="150" y1="373" x2="450" y2="373"/>
+      <line class="st10" x1="150" y1="296" x2="450" y2="296"/>
+      <line class="st10" x1="150" y1="219" x2="450" y2="219"/>
+      <line class="st10" x1="150" y1="142" x2="450" y2="142"/>
+      <rect class="st12" x="210" y="301" width="80" height="149"/>
+      <text class="st3" transform="translate(239.16 280)"><tspan x="0" y="0">966</tspan></text>
+      <text class="st4" transform="translate(219.31 296)"><tspan x="0" y="0">households</tspan></text>
+      <text class="st5" transform="translate(225.55 470)"><tspan x="0" y="0">60% AMI</tspan></text>
+      <text class="st4" transform="translate(210.98 485)"><tspan x="0" y="0">52% of renters</tspan></text>
+      <rect class="st7" x="320" y="266" width="80" height="184"/>
+      <text class="st3" transform="translate(343.73 246)"><tspan x="0" y="0">1,203</tspan></text>
+      <text class="st4" transform="translate(329.31 261)"><tspan x="0" y="0">households</tspan></text>
+      <text class="st5" transform="translate(335.55 470)"><tspan x="0" y="0">80% AMI</tspan></text>
+      <text class="st4" transform="translate(320.98 485)"><tspan x="0" y="0">64% of renters</tspan></text>
+    </g>
+    <g id="burden-chart">
+      <text class="st5" transform="translate(732.63 90)"><tspan x="0" y="0">Rent Level vs. Delta Market Rate</tspan></text>
+      <text class="st4" transform="translate(765.31 108)"><tspan x="0" y="0">(Developer Feasibility)</tspan></text>
+      <line class="st11" x1="650" y1="450" x2="650" y2="140"/>
+      <line class="st11" x1="650" y1="450" x2="1000" y2="450"/>
+      <text class="st5" transform="translate(548.75 453.2)"><tspan x="0" y="0">Market Rate</tspan></text>
+      <text class="st4" transform="translate(552.08 468.2)"><tspan x="0" y="0">($1,425/mo)</tspan></text>
+      <text class="st4" transform="translate(626.65 455)"><tspan x="0" y="0">$0</tspan></text>
+      <text class="st4" transform="translate(606.3 378)"><tspan x="0" y="0">+$200</tspan></text>
+      <text class="st4" transform="translate(606.3 301)"><tspan x="0" y="0">+$400</tspan></text>
+      <text class="st4" transform="translate(606.3 224)"><tspan x="0" y="0">+$600</tspan></text>
+      <text class="st4" transform="translate(606.3 147)"><tspan x="0" y="0">+$800</tspan></text>
+      <text class="st4" transform="translate(615.98 485)"><tspan x="0" y="0">-$50</tspan></text>
+      <line class="st10" x1="650" y1="373" x2="1000" y2="373"/>
+      <line class="st10" x1="650" y1="296" x2="1000" y2="296"/>
+      <line class="st10" x1="650" y1="219" x2="1000" y2="219"/>
+      <line class="st10" x1="650" y1="142" x2="1000" y2="142"/>
+      <rect class="st12" x="710" y="450" width="80" height="12"/>
+      <text class="st3" transform="translate(730.12 440)"><tspan x="0" y="0">$1,377</tspan></text>
+      <text class="st4" transform="translate(702.64 425)"><tspan x="0" y="0">$48 below market</tspan></text>
+      <text class="st5" transform="translate(725.55 490)"><tspan x="0" y="0">60% AMI</tspan></text>
+      <rect class="st0" x="860" y="286" width="80" height="164"/>
+      <text class="st3" transform="translate(880.12 270)"><tspan x="0" y="0">$1,836</tspan></text>
+      <text class="st5" transform="translate(886.98 360)"><tspan x="0" y="0">$411</tspan></text>
+      <text class="st5" transform="translate(861.31 375)"><tspan x="0" y="0">above market</tspan></text>
+      <text class="st5" transform="translate(875.55 490)"><tspan x="0" y="0">80% AMI</tspan></text>
+    </g>
+  </g>
+  <text class="st4" transform="translate(181.15 505)"><tspan x="0" y="0">Source: 2023 City of Delta Housing Needs Assessment; RPI Incentive Policy Assessment (Feb 2025); HUD income limits (2025); Current market rent analysis</tspan></text>
+</svg>
