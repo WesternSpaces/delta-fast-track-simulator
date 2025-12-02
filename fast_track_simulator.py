@@ -921,13 +921,44 @@ def main():
         text_color = "#27ae60" if adds_value else "#e74c3c"
         status_text = "✓ Developers Will Participate" if adds_value else "✗ Unlikely to Participate"
 
+        # Calculate % of incentives retained as value
+        total_incentives = dev_results['total_benefits']
+        net_value = dev_results['net_developer_gain']
+
+        if total_incentives > 0:
+            if net_value >= total_incentives:
+                # Premium scenario - more than 100%
+                retained_pct = 100
+                bar_label = "100%+ (includes rental premium)"
+            elif net_value >= 0:
+                retained_pct = (net_value / total_incentives) * 100
+                bar_label = f"{retained_pct:.0f}% retained"
+            else:
+                retained_pct = 0
+                bar_label = "Costs exceed incentives"
+        else:
+            retained_pct = 0
+            bar_label = ""
+
+        # Color gradient: green (high) to red (low)
+        if retained_pct >= 70:
+            bar_color = "#27ae60"
+        elif retained_pct >= 40:
+            bar_color = "#f39c12"
+        else:
+            bar_color = "#e74c3c"
+
         st.markdown(f"""
             <div style='background-color: {box_color}; padding: 20px; border-radius: 10px;
                         border-left: 5px solid {border_color};'>
                 <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>FAST TRACK VALUE</p>
                 <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}</p>
                 <p style='color: {text_color}; font-size: 14px; margin: 0; font-weight: 600;'>{status_text}</p>
-                <p style='color: #95a5a6; font-size: 12px; margin-top: 8px; font-style: italic;'>Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
+                <div style='margin-top: 10px; background-color: #ecf0f1; border-radius: 4px; height: 8px; width: 100%;'>
+                    <div style='background-color: {bar_color}; height: 8px; width: {min(retained_pct, 100):.0f}%; border-radius: 4px;'></div>
+                </div>
+                <p style='color: #7f8c8d; font-size: 11px; margin-top: 4px;'>{bar_label} of incentives</p>
+                <p style='color: #95a5a6; font-size: 12px; margin-top: 6px; font-style: italic;'>Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
             </div>
         """, unsafe_allow_html=True)
 
