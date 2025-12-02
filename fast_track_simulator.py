@@ -1253,38 +1253,62 @@ Fast Track Value shows whether the *city's piece* makes the deal more attractive
         # SIMPLE BAR CHART - Benefits vs Costs
         # ================================================================
 
-        # Calculate total benefits (including rental premium if applicable)
+        # Calculate total benefits
         total_benefits = dev_results['total_benefits']
-        if dev_results['rental_affordable'] > 0 and dev_results['total_lost_rent'] < 0:
-            total_benefits += abs(dev_results['total_lost_rent'])
 
-        # Calculate total costs
-        total_costs = dev_results['total_developer_costs']
+        # Determine cost/benefit bar based on project type and rent gap
+        if project_type == "Ownership":
+            # Ownership: always a cost (sale price gap)
+            cost_bar_label = "Lost Sale Revenue"
+            cost_bar_value = dev_results['total_lost_sale_profit']
+            cost_bar_color = '#e74c3c'  # Red
+            cost_bar_is_benefit = False
+        elif dev_results['monthly_rent_gap'] < 0:
+            # Rental with CHFA > market: it's a premium (benefit)
+            cost_bar_label = "Rental Premium (CHFA > Market)"
+            cost_bar_value = abs(dev_results['total_lost_rent'])
+            cost_bar_color = '#27ae60'  # Green
+            cost_bar_is_benefit = True
+            total_benefits += cost_bar_value  # Add to benefits for net calc display
+        elif dev_results['monthly_rent_gap'] == 0:
+            # Rental at breakeven: no cost bar needed
+            cost_bar_label = "Rental Impact"
+            cost_bar_value = 0
+            cost_bar_color = '#95a5a6'  # Gray
+            cost_bar_is_benefit = False
+        else:
+            # Rental with market > CHFA: it's a cost
+            cost_bar_label = "Lost Rental Income"
+            cost_bar_value = dev_results['total_lost_rent']
+            cost_bar_color = '#e74c3c'  # Red
+            cost_bar_is_benefit = False
 
         # Create simple horizontal bar chart
         fig_compare = go.Figure()
 
         fig_compare.add_trace(go.Bar(
             y=['Developer Benefits'],
-            x=[total_benefits],
+            x=[total_benefits if not cost_bar_is_benefit else dev_results['total_benefits']],
             orientation='h',
             marker_color='#27ae60',
-            text=f"${total_benefits:,.0f}",
+            text=f"${dev_results['total_benefits']:,.0f}",
             textposition='inside',
             textfont=dict(color='white', size=16),
             hovertemplate="Total Benefits: $%{x:,.0f}<extra></extra>"
         ))
 
-        fig_compare.add_trace(go.Bar(
-            y=['Lost Income (AMI Cap)'],
-            x=[total_costs],
-            orientation='h',
-            marker_color='#e74c3c',
-            text=f"${total_costs:,.0f}",
-            textposition='inside',
-            textfont=dict(color='white', size=16),
-            hovertemplate="Lost Income (AMI Cap): $%{x:,.0f}<extra></extra>"
-        ))
+        # Only show cost/premium bar if there's a value
+        if cost_bar_value > 0:
+            fig_compare.add_trace(go.Bar(
+                y=[cost_bar_label],
+                x=[cost_bar_value],
+                orientation='h',
+                marker_color=cost_bar_color,
+                text=f"${cost_bar_value:,.0f}",
+                textposition='inside',
+                textfont=dict(color='white', size=16),
+                hovertemplate=f"{cost_bar_label}: $%{{x:,.0f}}<extra></extra>"
+            ))
 
         # Add net gain as third bar
         net_color = '#3498db' if dev_results['net_developer_gain'] >= 0 else '#e74c3c'
@@ -1299,8 +1323,11 @@ Fast Track Value shows whether the *city's piece* makes the deal more attractive
             hovertemplate="Net Developer Gain: $%{x:,.0f}<extra></extra>"
         ))
 
+        # Adjust height based on number of bars (2 or 3)
+        chart_height = 200 if cost_bar_value > 0 else 150
+
         fig_compare.update_layout(
-            height=200,
+            height=chart_height,
             margin=dict(t=10, b=10, l=10, r=40),
             xaxis_title="",
             yaxis_title="",
