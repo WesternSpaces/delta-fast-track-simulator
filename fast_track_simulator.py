@@ -921,32 +921,28 @@ def main():
         text_color = "#27ae60" if adds_value else "#e74c3c"
         status_text = "✓ Developers Will Participate" if adds_value else "✗ Unlikely to Participate"
 
-        # Calculate % of incentives retained as value
-        total_incentives = dev_results['total_benefits']
+        # Calculate value to cost ratio for visual bar
         net_value = dev_results['net_developer_gain']
+        total_costs = dev_results['total_developer_costs']
 
-        if total_incentives > 0:
-            if net_value >= total_incentives:
-                # Premium scenario - more than 100%
-                retained_pct = 100
-                bar_label = "100%+ (includes rental premium)"
-            elif net_value >= 0:
-                retained_pct = (net_value / total_incentives) * 100
-                bar_label = f"{retained_pct:.0f}% retained"
+        # Handle different scenarios
+        if total_costs <= 0:
+            # No cost or premium scenario - all value
+            value_pct = 100
+            cost_pct = 0
+        elif net_value < 0:
+            # Costs exceed value
+            value_pct = 0
+            cost_pct = 100
+        else:
+            # Normal case: split based on value vs cost
+            total = abs(net_value) + abs(total_costs)
+            if total > 0:
+                value_pct = (abs(net_value) / total) * 100
+                cost_pct = (abs(total_costs) / total) * 100
             else:
-                retained_pct = 0
-                bar_label = "Costs exceed incentives"
-        else:
-            retained_pct = 0
-            bar_label = ""
-
-        # Color gradient: green (high) to red (low)
-        if retained_pct >= 70:
-            bar_color = "#27ae60"
-        elif retained_pct >= 40:
-            bar_color = "#f39c12"
-        else:
-            bar_color = "#e74c3c"
+                value_pct = 50
+                cost_pct = 50
 
         st.markdown(f"""
             <div style='background-color: {box_color}; padding: 20px; border-radius: 10px;
@@ -954,10 +950,14 @@ def main():
                 <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>FAST TRACK VALUE</p>
                 <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}</p>
                 <p style='color: {text_color}; font-size: 14px; margin: 0; font-weight: 600;'>{status_text}</p>
-                <div style='margin-top: 10px; background-color: #ecf0f1; border-radius: 4px; height: 8px; width: 100%;'>
-                    <div style='background-color: {bar_color}; height: 8px; width: {min(retained_pct, 100):.0f}%; border-radius: 4px;'></div>
+                <div style='margin-top: 10px; display: flex; border-radius: 4px; height: 12px; width: 100%; overflow: hidden;'>
+                    <div style='background-color: #3498db; height: 12px; width: {value_pct:.0f}%;'></div>
+                    <div style='background-color: #e74c3c; height: 12px; width: {cost_pct:.0f}%;'></div>
                 </div>
-                <p style='color: #7f8c8d; font-size: 11px; margin-top: 4px;'>{bar_label} of incentives</p>
+                <div style='display: flex; justify-content: space-between; margin-top: 4px;'>
+                    <span style='color: #3498db; font-size: 11px;'>Value: {value_pct:.0f}%</span>
+                    <span style='color: #e74c3c; font-size: 11px;'>Cost: {cost_pct:.0f}%</span>
+                </div>
                 <p style='color: #95a5a6; font-size: 12px; margin-top: 6px; font-style: italic;'>Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
             </div>
         """, unsafe_allow_html=True)
