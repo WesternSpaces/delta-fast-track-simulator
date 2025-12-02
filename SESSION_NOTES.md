@@ -1,3 +1,40 @@
+# Session Notes
+
+## December 2, 2025 - Focus Group Meeting #1
+
+### Context
+First focus group meeting. Participants hadn't used the simulator beforehand - used it live during the meeting. Several points of confusion came up that we addressed in real-time.
+
+### Changes Made
+
+**1. Renamed "Developer Net Gain" → "Fast Track Value"**
+- Participants confused by "developer net gain" - sounded like we were just helping developers profit
+- New name emphasizes it's about the program's value proposition
+
+**2. Clarified unit split**
+- Added caption under Fast Track Value: "Value for 7 deed-restricted units; 17 units remain market-rate"
+- Participants didn't realize most units stay market-rate
+
+**3. Added capital stack context box**
+- Prominent blue info box below key metrics
+- Explains this is just the city's contribution, not the whole deal
+- Lists other funding sources: Prop 123 (land banking, concessionary debt, DPA), LIHTC, grants, PPPs, private capital
+
+**4. Added "Email My Preference" button**
+- In Export tab, generates pre-filled email with all settings
+- Sends to sarah@westernspaces.co
+- For follow-up: participants will use simulator independently and submit preferences before next meeting
+
+### Next Steps
+- 10 participants will explore simulator on their own
+- Each submits preferred scenario via email button
+- Sarah compiles results for next meeting
+
+### Git Commit
+`307d0e3` - Focus group feedback: clarify UI and add email submission
+
+---
+
 # Session Notes - November 23, 2025
 
 ## Summary
