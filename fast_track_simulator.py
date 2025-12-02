@@ -982,6 +982,21 @@ def main():
     st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
 
     # ========================================================================
+    # 80% AMI WARNING (when applicable)
+    # ========================================================================
+
+    if project_type == "Rental" and dev_results['monthly_rent_gap'] < 0:
+        st.warning("""
+**Why does Fast Track Value increase with longer affordability periods?**
+
+At **80% AMI**, CHFA maximum rents actually **exceed** Delta's market rents. This flips the usual logic:
+- Longer affordability period = **more** time collecting above-market rent = **higher** Fast Track Value
+- Shorter period = less rental premium = lower value
+
+This is unique to Delta's current market. At lower AMI levels (60-70%), the typical pattern applies: longer periods cost developers more.
+        """)
+
+    # ========================================================================
     # CAPITAL STACK CONTEXT BOX
     # ========================================================================
 
