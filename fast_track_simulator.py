@@ -1287,14 +1287,14 @@ Fast Track Value shows whether the *city's piece* makes the deal more attractive
         fig_compare = go.Figure()
 
         fig_compare.add_trace(go.Bar(
-            y=['Developer Benefits'],
+            y=['Fast Track Incentives'],
             x=[total_benefits if not cost_bar_is_benefit else dev_results['total_benefits']],
             orientation='h',
             marker_color='#27ae60',
             text=f"${dev_results['total_benefits']:,.0f}",
             textposition='inside',
             textfont=dict(color='white', size=16),
-            hovertemplate="Total Benefits: $%{x:,.0f}<extra></extra>"
+            hovertemplate="Fast Track Incentives: $%{x:,.0f}<extra></extra>"
         ))
 
         # Only show cost/premium bar if there's a value
@@ -1313,14 +1313,14 @@ Fast Track Value shows whether the *city's piece* makes the deal more attractive
         # Add net gain as third bar
         net_color = '#3498db' if dev_results['net_developer_gain'] >= 0 else '#e74c3c'
         fig_compare.add_trace(go.Bar(
-            y=['Net Gain'],
+            y=['Fast Track Value'],
             x=[abs(dev_results['net_developer_gain'])],
             orientation='h',
             marker_color=net_color,
             text=f"${dev_results['net_developer_gain']:,.0f}",
             textposition='inside',
             textfont=dict(color='white', size=16),
-            hovertemplate="Net Developer Gain: $%{x:,.0f}<extra></extra>"
+            hovertemplate="Fast Track Value: $%{x:,.0f}<extra></extra>"
         ))
 
         # Adjust height based on number of bars (2 or 3)
