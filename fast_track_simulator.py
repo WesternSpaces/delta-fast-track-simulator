@@ -892,6 +892,19 @@ def main():
 
     st.header("📊 Scenario Results")
 
+    # Capital stack context - what this shows
+    st.info("""
+**What This Shows:** This simulator models the **City of Delta's contribution** to affordable housing deals through Fast Track incentives. Actual projects combine multiple funding sources:
+
+- **Prop 123 Compliance** → Unlocks state land banking, concessionary debt, down payment assistance
+- **Tax Credits** → LIHTC (4% or 9%), state housing credits
+- **Grants** → HOME, CDBG, DOLA, state housing funds
+- **Public-Private Partnerships** → Land contribution, housing authority participation, non-profit developers
+- **Private Capital** → Construction loans, permanent financing, developer equity
+
+Fast Track Value shows whether the *city's piece* makes the deal more attractive — the full capital stack determines overall feasibility.
+    """)
+
     # Top-line metrics with color coding
     col1, col2, col3, col4 = st.columns(4)
 
@@ -996,21 +1009,6 @@ At **80% AMI**, CHFA maximum rents actually **exceed** Delta's market rents. Thi
 This is unique to Delta's current market. At lower AMI levels (60-70%), the typical pattern applies: longer periods cost developers more.
         """)
 
-    # ========================================================================
-    # CAPITAL STACK CONTEXT BOX
-    # ========================================================================
-
-    st.info("""
-**What This Shows:** This simulator models the **City of Delta's contribution** to affordable housing deals through Fast Track incentives. Actual projects combine multiple funding sources:
-
-- **Prop 123 Compliance** → Unlocks state land banking, concessionary debt, down payment assistance
-- **Tax Credits** → LIHTC (4% or 9%), state housing credits
-- **Grants** → HOME, CDBG, DOLA, state housing funds
-- **Public-Private Partnerships** → Land contribution, housing authority participation, non-profit developers
-- **Private Capital** → Construction loans, permanent financing, developer equity
-
-Fast Track Value shows whether the *city's piece* makes the deal more attractive — the full capital stack determines overall feasibility.
-    """)
 
     # ========================================================================
     # COMPREHENSIVE METHODOLOGY & DATA SOURCES
