@@ -941,7 +941,7 @@ def main():
                 value_arrow = "▼"
                 value_change_color = "#e74c3c"
                 value_change_text = f"-${abs(change):,.0f}"
-            value_indicator = f"<span style='color: {value_change_color}; font-size: 18px; margin-left: 8px;'>{value_arrow}</span><span style='color: {value_change_color}; font-size: 14px; margin-left: 4px;'>({value_change_text})</span>"
+            value_indicator = f"<p style='color: {value_change_color}; font-size: 14px; margin: 4px 0 0 0;'>{value_arrow} {value_change_text}</p>"
         else:
             value_indicator = ""
 
@@ -952,8 +952,9 @@ def main():
             <div style='background-color: {box_color}; padding: 20px; border-radius: 10px;
                         border-left: 5px solid {border_color};'>
                 <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>FAST TRACK VALUE</p>
-                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}{value_indicator}</p>
-                <p style='color: {text_color}; font-size: 14px; margin: 0; font-weight: 600;'>{status_text}</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}</p>
+                {value_indicator}
+                <p style='color: {text_color}; font-size: 14px; margin: 4px 0 0 0; font-weight: 600;'>{status_text}</p>
                 <p style='color: #95a5a6; font-size: 12px; margin-top: 8px; font-style: italic;'>Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
             </div>
         """, unsafe_allow_html=True)
@@ -974,7 +975,7 @@ def main():
                 cost_arrow = "▲"
                 cost_change_color = "#e74c3c"
                 cost_change_text = f"+${cost_change:,.0f}"
-            cost_indicator = f"<span style='color: {cost_change_color}; font-size: 18px; margin-left: 8px;'>{cost_arrow}</span><span style='color: {cost_change_color}; font-size: 14px; margin-left: 4px;'>({cost_change_text})</span>"
+            cost_indicator = f"<p style='color: {cost_change_color}; font-size: 14px; margin: 4px 0 0 0;'>{cost_arrow} {cost_change_text}</p>"
         else:
             cost_indicator = ""
 
@@ -985,8 +986,9 @@ def main():
             <div style='background-color: #fef5e7; padding: 20px; border-radius: 10px;
                         border-left: 5px solid #f39c12;'>
                 <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>CITY COST PER UNIT-YEAR</p>
-                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${community_results['cost_per_unit_year']:,.0f}{cost_indicator}</p>
-                <p style='color: #f39c12; font-size: 14px; margin: 0;'>{community_results['unit_years']:.0f} total unit-years</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${community_results['cost_per_unit_year']:,.0f}</p>
+                {cost_indicator}
+                <p style='color: #f39c12; font-size: 14px; margin: 4px 0 0 0;'>{community_results['unit_years']:.0f} total unit-years</p>
             </div>
         """, unsafe_allow_html=True)
 
