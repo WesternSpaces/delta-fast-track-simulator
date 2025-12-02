@@ -490,6 +490,12 @@ def main():
         initial_sidebar_state="expanded"
     )
 
+    # Initialize session state for tracking previous values
+    if 'prev_fast_track_value' not in st.session_state:
+        st.session_state.prev_fast_track_value = None
+    if 'prev_city_cost' not in st.session_state:
+        st.session_state.prev_city_cost = None
+
     # Custom CSS for better aesthetics
     st.markdown("""
         <style>
@@ -921,53 +927,65 @@ def main():
         text_color = "#27ae60" if adds_value else "#e74c3c"
         status_text = "✓ Developers Will Participate" if adds_value else "✗ Unlikely to Participate"
 
-        # Calculate value to cost ratio for visual bar
-        net_value = dev_results['net_developer_gain']
-        total_costs = dev_results['total_developer_costs']
+        # Calculate change from previous value
+        current_value = dev_results['net_developer_gain']
+        prev_value = st.session_state.prev_fast_track_value
 
-        # Handle different scenarios
-        if total_costs <= 0:
-            # No cost or premium scenario - all value
-            value_pct = 100
-            cost_pct = 0
-        elif net_value < 0:
-            # Costs exceed value
-            value_pct = 0
-            cost_pct = 100
-        else:
-            # Normal case: split based on value vs cost
-            total = abs(net_value) + abs(total_costs)
-            if total > 0:
-                value_pct = (abs(net_value) / total) * 100
-                cost_pct = (abs(total_costs) / total) * 100
+        if prev_value is not None and prev_value != current_value:
+            change = current_value - prev_value
+            if change > 0:
+                value_arrow = "▲"
+                value_change_color = "#27ae60"
+                value_change_text = f"+${change:,.0f}"
             else:
-                value_pct = 50
-                cost_pct = 50
+                value_arrow = "▼"
+                value_change_color = "#e74c3c"
+                value_change_text = f"-${abs(change):,.0f}"
+            value_indicator = f"<span style='color: {value_change_color}; font-size: 18px; margin-left: 8px;'>{value_arrow}</span><span style='color: {value_change_color}; font-size: 14px; margin-left: 4px;'>({value_change_text})</span>"
+        else:
+            value_indicator = ""
+
+        # Update session state
+        st.session_state.prev_fast_track_value = current_value
 
         st.markdown(f"""
             <div style='background-color: {box_color}; padding: 20px; border-radius: 10px;
                         border-left: 5px solid {border_color};'>
                 <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>FAST TRACK VALUE</p>
-                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}{value_indicator}</p>
                 <p style='color: {text_color}; font-size: 14px; margin: 0; font-weight: 600;'>{status_text}</p>
-                <div style='margin-top: 10px; display: flex; border-radius: 4px; height: 12px; width: 100%; overflow: hidden;'>
-                    <div style='background-color: #3498db; height: 12px; width: {value_pct:.0f}%;'></div>
-                    <div style='background-color: #e74c3c; height: 12px; width: {cost_pct:.0f}%;'></div>
-                </div>
-                <div style='display: flex; justify-content: space-between; margin-top: 4px;'>
-                    <span style='color: #3498db; font-size: 11px;'>Value: {value_pct:.0f}%</span>
-                    <span style='color: #e74c3c; font-size: 11px;'>Cost: {cost_pct:.0f}%</span>
-                </div>
-                <p style='color: #95a5a6; font-size: 12px; margin-top: 6px; font-style: italic;'>Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
+                <p style='color: #95a5a6; font-size: 12px; margin-top: 8px; font-style: italic;'>Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
             </div>
         """, unsafe_allow_html=True)
 
     with col4:
+        # Calculate change from previous city cost
+        current_cost = community_results['cost_per_unit_year']
+        prev_cost = st.session_state.prev_city_cost
+
+        if prev_cost is not None and prev_cost != current_cost:
+            cost_change = current_cost - prev_cost
+            # For cost, DOWN is good (green), UP is bad (red)
+            if cost_change < 0:
+                cost_arrow = "▼"
+                cost_change_color = "#27ae60"
+                cost_change_text = f"-${abs(cost_change):,.0f}"
+            else:
+                cost_arrow = "▲"
+                cost_change_color = "#e74c3c"
+                cost_change_text = f"+${cost_change:,.0f}"
+            cost_indicator = f"<span style='color: {cost_change_color}; font-size: 18px; margin-left: 8px;'>{cost_arrow}</span><span style='color: {cost_change_color}; font-size: 14px; margin-left: 4px;'>({cost_change_text})</span>"
+        else:
+            cost_indicator = ""
+
+        # Update session state
+        st.session_state.prev_city_cost = current_cost
+
         st.markdown(f"""
             <div style='background-color: #fef5e7; padding: 20px; border-radius: 10px;
                         border-left: 5px solid #f39c12;'>
                 <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>CITY COST PER UNIT-YEAR</p>
-                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${community_results['cost_per_unit_year']:,.0f}</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${community_results['cost_per_unit_year']:,.0f}{cost_indicator}</p>
                 <p style='color: #f39c12; font-size: 14px; margin: 0;'>{community_results['unit_years']:.0f} total unit-years</p>
             </div>
         """, unsafe_allow_html=True)
