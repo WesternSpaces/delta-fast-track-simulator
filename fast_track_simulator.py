@@ -919,14 +919,15 @@ def main():
         box_color = "#e8f8f5" if adds_value else "#fee"
         border_color = "#27ae60" if adds_value else "#e74c3c"
         text_color = "#27ae60" if adds_value else "#e74c3c"
-        status_text = "✓ Fast Track Adds Value" if adds_value else "✗ Cost Exceeds Benefits"
+        status_text = "✓ Developers Will Participate" if adds_value else "✗ Unlikely to Participate"
 
         st.markdown(f"""
             <div style='background-color: {box_color}; padding: 20px; border-radius: 10px;
                         border-left: 5px solid {border_color};'>
-                <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>DEVELOPER NET GAIN</p>
+                <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>FAST TRACK VALUE</p>
                 <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}</p>
                 <p style='color: {text_color}; font-size: 14px; margin: 0; font-weight: 600;'>{status_text}</p>
+                <p style='color: #95a5a6; font-size: 12px; margin-top: 8px; font-style: italic;'>Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -941,6 +942,22 @@ def main():
         """, unsafe_allow_html=True)
 
     st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
+
+    # ========================================================================
+    # CAPITAL STACK CONTEXT BOX
+    # ========================================================================
+
+    st.info("""
+**What This Shows:** This simulator models the **City of Delta's contribution** to affordable housing deals through Fast Track incentives. Actual projects combine multiple funding sources:
+
+- **Prop 123 Compliance** → Unlocks state land banking, concessionary debt, down payment assistance
+- **Tax Credits** → LIHTC (4% or 9%), state housing credits
+- **Grants** → HOME, CDBG, DOLA, state housing funds
+- **Public-Private Partnerships** → Land contribution, housing authority participation, non-profit developers
+- **Private Capital** → Construction loans, permanent financing, developer equity
+
+Fast Track Value shows whether the *city's piece* makes the deal more attractive — the full capital stack determines overall feasibility.
+    """)
 
     # ========================================================================
     # COMPREHENSIVE METHODOLOGY & DATA SOURCES
@@ -1726,6 +1743,69 @@ def main():
             file_name=f"delta_fast_track_scenario_{affordability_period}yr.csv",
             mime="text/csv"
         )
+
+        st.markdown("---")
+
+        # ================================================================
+        # EMAIL MY PREFERENCE
+        # ================================================================
+
+        st.subheader("Submit Your Preferred Scenario")
+
+        st.markdown("""
+        Once you've found settings you'd recommend, click below to email your preference to the Focus Group facilitators.
+        """)
+
+        # Build email body
+        email_subject = "My Fast Track Preference"
+        email_body = f"""My Preferred Fast Track Scenario
+================================
+
+POLICY SETTINGS:
+- Affordability Period: {affordability_display}
+- Project Type: {project_type}
+- Density Bonus: {int(density_bonus_pct*100)}%
+- Bonus Units Affordable: {int(bonus_affordable_req*100)}%
+- Tap Fee Reduction: {int(tap_fee_reduction*100)}%
+- Use Tax Rebate: {int(use_tax_rebate*100)}%
+- Waive Planning Fees: {'Yes' if waive_planning else 'No'}
+- Waive Building Permits: {'Yes' if waive_building else 'No'}
+
+RESULTS (for {base_units}-unit project):
+- Total Units: {dev_results['total_units']} ({dev_results['total_affordable']} affordable, {dev_results['market_rate_units']} market-rate)
+- Fast Track Value: ${dev_results['net_developer_gain']:,.0f}
+- Feasible: {'Yes' if dev_results['developer_feasible'] else 'No'}
+- City Cost per Unit-Year: ${community_results['cost_per_unit_year']:,.0f}
+
+WHY I CHOSE THIS:
+[Please add your reasoning here]
+
+---
+Submitted from Delta Fast Track Simulator
+"""
+
+        # URL-encode for mailto link
+        import urllib.parse
+        encoded_subject = urllib.parse.quote(email_subject)
+        encoded_body = urllib.parse.quote(email_body)
+
+        # Create mailto link - replace with your email
+        mailto_link = f"mailto:sarah@westernspaces.co?subject={encoded_subject}&body={encoded_body}"
+
+        st.markdown(f"""
+        <a href="{mailto_link}" target="_blank" style="
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 16px;
+        ">📧 Email My Preference</a>
+        """, unsafe_allow_html=True)
+
+        st.caption("This will open your email client with a pre-filled message. Add your name and reasoning, then send!")
 
         st.markdown("---")
 
