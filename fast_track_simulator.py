@@ -1253,87 +1253,109 @@ Fast Track Value shows whether the *city's piece* makes the deal more attractive
         # SIMPLE BAR CHART - Benefits vs Costs
         # ================================================================
 
-        # Calculate total benefits
-        total_benefits = dev_results['total_benefits']
+        # Calculate values for stacked bar
+        total_incentives = dev_results['total_benefits']
+        fast_track_value = dev_results['net_developer_gain']
 
-        # Determine cost/benefit bar based on project type and rent gap
+        # Determine cost portion based on project type and rent gap
         if project_type == "Ownership":
-            # Ownership: always a cost (sale price gap)
-            cost_bar_label = "Lost Sale Revenue"
-            cost_bar_value = dev_results['total_lost_sale_profit']
-            cost_bar_color = '#e74c3c'  # Red
-            cost_bar_is_benefit = False
+            cost_label = "Lost Sale Revenue"
+            cost_value = dev_results['total_lost_sale_profit']
+            has_premium = False
         elif dev_results['monthly_rent_gap'] < 0:
-            # Rental with CHFA > market: it's a premium (benefit)
-            cost_bar_label = "Rental Premium (CHFA > Market)"
-            cost_bar_value = abs(dev_results['total_lost_rent'])
-            cost_bar_color = '#27ae60'  # Green
-            cost_bar_is_benefit = True
-            total_benefits += cost_bar_value  # Add to benefits for net calc display
+            # CHFA > market: no cost, actually a premium
+            cost_label = "Affordability Cost"
+            cost_value = 0
+            has_premium = True
+            premium_value = abs(dev_results['total_lost_rent'])
         elif dev_results['monthly_rent_gap'] == 0:
-            # Rental at breakeven: no cost bar needed
-            cost_bar_label = "Rental Impact"
-            cost_bar_value = 0
-            cost_bar_color = '#95a5a6'  # Gray
-            cost_bar_is_benefit = False
+            cost_label = "Affordability Cost"
+            cost_value = 0
+            has_premium = False
         else:
-            # Rental with market > CHFA: it's a cost
-            cost_bar_label = "Lost Rental Income"
-            cost_bar_value = dev_results['total_lost_rent']
-            cost_bar_color = '#e74c3c'  # Red
-            cost_bar_is_benefit = False
+            cost_label = "Lost Rental Income"
+            cost_value = dev_results['total_lost_rent']
+            has_premium = False
 
-        # Create simple horizontal bar chart
+        # Create stacked horizontal bar chart
         fig_compare = go.Figure()
 
-        fig_compare.add_trace(go.Bar(
-            y=['Fast Track Incentives'],
-            x=[total_benefits if not cost_bar_is_benefit else dev_results['total_benefits']],
-            orientation='h',
-            marker_color='#27ae60',
-            text=f"${dev_results['total_benefits']:,.0f}",
-            textposition='inside',
-            textfont=dict(color='white', size=16),
-            hovertemplate="Fast Track Incentives: $%{x:,.0f}<extra></extra>"
-        ))
-
-        # Only show cost/premium bar if there's a value
-        if cost_bar_value > 0:
+        if has_premium:
+            # Special case: CHFA > market, show incentives + premium = total value
             fig_compare.add_trace(go.Bar(
-                y=[cost_bar_label],
-                x=[cost_bar_value],
+                y=['How Fast Track Incentives Break Down'],
+                x=[total_incentives],
                 orientation='h',
-                marker_color=cost_bar_color,
-                text=f"${cost_bar_value:,.0f}",
+                marker_color='#27ae60',
+                text=f"City Incentives: ${total_incentives:,.0f}",
                 textposition='inside',
-                textfont=dict(color='white', size=16),
-                hovertemplate=f"{cost_bar_label}: $%{{x:,.0f}}<extra></extra>"
+                textfont=dict(color='white', size=14),
+                name='City Incentives',
+                hovertemplate="City Incentives: $%{x:,.0f}<extra></extra>"
             ))
+            fig_compare.add_trace(go.Bar(
+                y=['How Fast Track Incentives Break Down'],
+                x=[premium_value],
+                orientation='h',
+                marker_color='#2ecc71',
+                text=f"+Rental Premium: ${premium_value:,.0f}",
+                textposition='inside',
+                textfont=dict(color='white', size=14),
+                name='Rental Premium',
+                hovertemplate="Rental Premium (CHFA > Market): $%{x:,.0f}<extra></extra>"
+            ))
+        else:
+            # Normal case: incentives split into cost + value
+            # Show Fast Track Value first (left side), then cost (right side)
+            if fast_track_value >= 0:
+                fig_compare.add_trace(go.Bar(
+                    y=['How Fast Track Incentives Break Down'],
+                    x=[fast_track_value],
+                    orientation='h',
+                    marker_color='#3498db',
+                    text=f"Fast Track Value: ${fast_track_value:,.0f}",
+                    textposition='inside',
+                    textfont=dict(color='white', size=14),
+                    name='Fast Track Value',
+                    hovertemplate="Fast Track Value: $%{x:,.0f}<extra></extra>"
+                ))
 
-        # Add net gain as third bar
-        net_color = '#3498db' if dev_results['net_developer_gain'] >= 0 else '#e74c3c'
-        fig_compare.add_trace(go.Bar(
-            y=['Fast Track Value'],
-            x=[abs(dev_results['net_developer_gain'])],
-            orientation='h',
-            marker_color=net_color,
-            text=f"${dev_results['net_developer_gain']:,.0f}",
-            textposition='inside',
-            textfont=dict(color='white', size=16),
-            hovertemplate="Fast Track Value: $%{x:,.0f}<extra></extra>"
-        ))
+            if cost_value > 0:
+                fig_compare.add_trace(go.Bar(
+                    y=['How Fast Track Incentives Break Down'],
+                    x=[cost_value],
+                    orientation='h',
+                    marker_color='#e74c3c',
+                    text=f"{cost_label}: ${cost_value:,.0f}",
+                    textposition='inside',
+                    textfont=dict(color='white', size=14),
+                    name=cost_label,
+                    hovertemplate=f"{cost_label}: $%{{x:,.0f}}<extra></extra>"
+                ))
 
-        # Adjust height based on number of bars (2 or 3)
-        chart_height = 200 if cost_bar_value > 0 else 150
+            # If net is negative, show differently
+            if fast_track_value < 0:
+                fig_compare.add_trace(go.Bar(
+                    y=['How Fast Track Incentives Break Down'],
+                    x=[total_incentives],
+                    orientation='h',
+                    marker_color='#27ae60',
+                    text=f"City Incentives: ${total_incentives:,.0f}",
+                    textposition='inside',
+                    textfont=dict(color='white', size=14),
+                    name='City Incentives',
+                    hovertemplate="City Incentives: $%{x:,.0f}<extra></extra>"
+                ))
 
         fig_compare.update_layout(
-            height=chart_height,
+            height=100,
             margin=dict(t=10, b=10, l=10, r=40),
             xaxis_title="",
             yaxis_title="",
             showlegend=False,
             xaxis=dict(showgrid=True, gridcolor='rgba(0,0,0,0.1)', showticklabels=False),
-            yaxis=dict(tickfont=dict(size=14)),
+            yaxis=dict(tickfont=dict(size=13)),
+            barmode='stack',
             bargap=0.3
         )
 
