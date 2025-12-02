@@ -946,21 +946,20 @@ def main():
 
         # Build the indicator HTML
         if prev_value is not None and prev_value != current_value:
-            indicator_html = f'<p style="color: {value_change_color}; font-size: 14px; margin: 4px 0 0 0;">{value_arrow} {value_change_text}</p>'
+            indicator_html = f"<p style='color: {value_change_color}; font-size: 14px; margin: 4px 0 0 0;'>{value_arrow} {value_change_text}</p>"
         else:
-            indicator_html = ''
+            indicator_html = ""
 
-        value_box_html = f"""
-            <div style="background-color: {box_color}; padding: 20px; border-radius: 10px;
-                        border-left: 5px solid {border_color};">
-                <p style="color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;">FAST TRACK VALUE</p>
-                <p style="color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;">${dev_results['net_developer_gain']:,.0f}</p>
+        st.markdown(f"""
+            <div style='background-color: {box_color}; padding: 20px; border-radius: 10px;
+                        border-left: 5px solid {border_color};'>
+                <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>FAST TRACK VALUE</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${dev_results['net_developer_gain']:,.0f}</p>
                 {indicator_html}
-                <p style="color: {text_color}; font-size: 14px; margin: 4px 0 0 0; font-weight: 600;">{status_text}</p>
-                <p style="color: #95a5a6; font-size: 12px; margin-top: 8px; font-style: italic;">Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
+                <p style='color: {text_color}; font-size: 14px; margin: 4px 0 0 0; font-weight: 600;'>{status_text}</p>
+                <p style='color: #95a5a6; font-size: 12px; margin-top: 8px; font-style: italic;'>Value for {dev_results['total_affordable']} deed-restricted units; {dev_results['market_rate_units']} units remain market-rate</p>
             </div>
-        """
-        st.markdown(value_box_html, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
     with col4:
         # Calculate change from previous city cost
@@ -983,20 +982,19 @@ def main():
 
         # Build the indicator HTML
         if prev_cost is not None and prev_cost != current_cost:
-            cost_indicator_html = f'<p style="color: {cost_change_color}; font-size: 14px; margin: 4px 0 0 0;">{cost_arrow} {cost_change_text}</p>'
+            cost_indicator_html = f"<p style='color: {cost_change_color}; font-size: 14px; margin: 4px 0 0 0;'>{cost_arrow} {cost_change_text}</p>"
         else:
-            cost_indicator_html = ''
+            cost_indicator_html = ""
 
-        cost_box_html = f"""
-            <div style="background-color: #fef5e7; padding: 20px; border-radius: 10px;
-                        border-left: 5px solid #f39c12;">
-                <p style="color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;">CITY COST PER UNIT-YEAR</p>
-                <p style="color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;">${community_results['cost_per_unit_year']:,.0f}</p>
+        st.markdown(f"""
+            <div style='background-color: #fef5e7; padding: 20px; border-radius: 10px;
+                        border-left: 5px solid #f39c12;'>
+                <p style='color: #7f8c8d; font-size: 14px; margin: 0; font-weight: 500;'>CITY COST PER UNIT-YEAR</p>
+                <p style='color: #2c3e50; font-size: 32px; margin: 5px 0; font-weight: 600;'>${community_results['cost_per_unit_year']:,.0f}</p>
                 {cost_indicator_html}
-                <p style="color: #f39c12; font-size: 14px; margin: 4px 0 0 0;">{community_results['unit_years']:.0f} total unit-years</p>
+                <p style='color: #f39c12; font-size: 14px; margin: 4px 0 0 0;'>{community_results['unit_years']:.0f} total unit-years</p>
             </div>
-        """
-        st.markdown(cost_box_html, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
     st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
 
