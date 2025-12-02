@@ -1347,14 +1347,29 @@ Fast Track Value shows whether the *city's piece* makes the deal more attractive
                     hovertemplate="City Incentives: $%{x:,.0f}<extra></extra>"
                 ))
 
+        # Add total incentives bar (separate, not stacked)
+        fig_compare.add_trace(go.Bar(
+            y=['Total Fast Track Incentives'],
+            x=[total_incentives],
+            orientation='h',
+            marker_color='#27ae60',
+            text=f"${total_incentives:,.0f}",
+            textposition='inside',
+            textfont=dict(color='white', size=14),
+            name='Total Incentives',
+            hovertemplate="Total Fast Track Incentives: $%{x:,.0f}<extra></extra>",
+            base=0
+        ))
+
         fig_compare.update_layout(
-            height=100,
+            height=140,
             margin=dict(t=10, b=10, l=10, r=40),
             xaxis_title="",
             yaxis_title="",
             showlegend=False,
             xaxis=dict(showgrid=True, gridcolor='rgba(0,0,0,0.1)', showticklabels=False),
-            yaxis=dict(tickfont=dict(size=13)),
+            yaxis=dict(tickfont=dict(size=13), categoryorder='array',
+                      categoryarray=['Total Fast Track Incentives', 'How Fast Track Incentives Break Down']),
             barmode='stack',
             bargap=0.3
         )
