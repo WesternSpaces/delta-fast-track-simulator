@@ -1,5 +1,78 @@
 # Session Notes
 
+## December 2, 2025 - Post-Focus Group Refinements
+
+### Context
+After Focus Group Meeting #1, made several UI/UX improvements based on participant confusion and feedback.
+
+### Changes Made
+
+**1. Renamed metrics for clarity**
+- "Developer Net Gain" → "Fast Track Value"
+- "Developer Benefits" → "Fast Track Incentives" (in chart)
+- Status text: "Developers Will Participate" / "Unlikely to Participate"
+
+**2. Added unit split caption**
+- Shows "Value for 7 deed-restricted units; 17 units remain market-rate"
+- Clarifies most units stay market-rate
+
+**3. Stacked bar chart**
+- Single bar showing how Fast Track Incentives break down into:
+  - Fast Track Value (blue) - what remains after costs
+  - Lost Rental/Sale Revenue (red) - affordability cost
+- Total incentives bar below for comparison
+- Dynamic labels based on scenario (rental vs ownership, 60% vs 80% AMI)
+
+**4. Change indicators on key metrics**
+- Fast Track Value and City Cost per Unit-Year now show arrows when values change
+- ▲ green / ▼ red for Fast Track Value (up = good)
+- ▼ green / ▲ red for City Cost (down = good)
+- Shows change amount: "▲ +$50,000"
+
+**5. 80% AMI warning box**
+- Yellow warning appears when rental + CHFA > market
+- Explains counterintuitive behavior: longer periods = higher value at 80% AMI
+- Only shows when this condition applies
+
+**6. Moved "What This Shows" box**
+- Now appears above scenario results (was below)
+- Explains capital stack context upfront
+
+**7. Added "Email My Preference" button**
+- In Export tab
+- Pre-fills email with all settings and results
+- Sends to sarah@westernspaces.co
+- For collecting participant preferences before next meeting
+
+### Git Commits
+- `307d0e3` - Focus group feedback: clarify UI and add email submission
+- `709007f` - Document Dec 2 focus group session
+- `bc63904` - Dynamic cost/benefit bar based on scenario
+- `15ca938` - Rename chart labels for clarity
+- `e0c5db9` - Convert to stacked bar chart
+- `c1061da` - Add total incentives bar below stacked breakdown
+- `f2e9eb7` - Add change indicators to metric boxes
+- `8744ea6` - Fix HTML rendering (single line)
+- `f5b512e` - Add 80% AMI warning
+- `5563492` - Move 'What This Shows' box above results
+
+### Known Issues / Future Work
+- HTML rendering in Streamlit is finicky - must be single line for f-string interpolation to work
+- 80% AMI behavior is counterintuitive (CHFA > market) - warning helps but may still confuse
+- Focus group wants 60-80% AMI rentals but 80% AMI flips the math
+
+### Next Steps
+- 10 participants will use simulator independently
+- Each submits preferred scenario via email button
+- Sarah compiles results for next meeting
+- May need to revisit AMI threshold discussion
+
+### Live URLs
+- **App:** https://delta-fast-track-simulator-qrzf2t87mqwzfgwporenqz.streamlit.app
+- **Repo:** https://github.com/WesternSpaces/delta-fast-track-simulator
+
+---
+
 ## December 2, 2025 - Focus Group Meeting #1
 
 ### Context
