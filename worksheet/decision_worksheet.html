@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Fast Track - Build Your Package</title>
+    <title>Delta Fast Track Decision Worksheet</title>
     <style>
+        /* Skip link for keyboard users */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 16px;
+            z-index: 100;
+            text-decoration: none;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -15,7 +30,22 @@
             margin: 0;
             padding: 20px;
             background: #f5f5f5;
-            color: #333;
+            color: #222;  /* Darker for better contrast */
+        }
+
+        /* Focus states for accessibility */
+        *:focus {
+            outline: 3px solid #2c5282;
+            outline-offset: 2px;
+        }
+
+        *:focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        *:focus-visible {
+            outline: 3px solid #2c5282;
+            outline-offset: 2px;
         }
 
         .page-wrapper {
@@ -65,12 +95,21 @@
             border-radius: 10px;
             margin-bottom: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 4px solid #2c5282;
         }
 
         .context-section h2 {
             color: #1e3a5f;
             margin-top: 0;
             font-size: 1.3rem;
+        }
+
+        /* Alternate accent colors for visual variety */
+        .context-section:nth-of-type(2) {
+            border-top-color: #38a169;
+        }
+        .context-section:nth-of-type(3) {
+            border-top-color: #805ad5;
         }
 
         table {
@@ -218,7 +257,7 @@
         }
 
         .option-description {
-            color: #666;
+            color: #555;  /* Darker for accessibility */
             font-size: 0.9rem;
             margin-left: 30px;
         }
@@ -264,7 +303,7 @@
         }
 
         .not-selected {
-            opacity: 0.5;
+            opacity: 0.7;  /* Higher opacity for accessibility */
             font-style: italic;
         }
 
@@ -443,6 +482,7 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <header style="max-width: 1200px; margin: 0 auto 30px auto;">
         <h1>Delta Fast Track Decision Worksheet</h1>
         <p style="font-size: 1.1rem; margin-bottom: 15px;">Build your recommended policy package</p>
@@ -457,7 +497,7 @@
     </header>
 
     <div class="page-wrapper">
-    <div class="main-content">
+    <div class="main-content" id="main-content" tabindex="-1">
 
     <!-- CONTEXT SECTION -->
     <section class="context-section">
@@ -543,7 +583,7 @@
             </tr>
         </table>
 
-        <p style="font-size: 0.9rem; color: #666; margin-top: 15px;"><strong>Range of approaches:</strong> From Grand Junction's full incentive package to De Beque's simple compliance—Delta can choose where on this spectrum to land.</p>
+        <p style="font-size: 0.9rem; color: #595959; margin-top: 15px;"><strong>Range of approaches:</strong> From Grand Junction's full incentive package to De Beque's simple compliance—Delta can choose where on this spectrum to land.</p>
     </section>
 
     <section class="context-section">
@@ -677,7 +717,7 @@
                 <li><strong>Salida:</strong> ~17% (1 in 6 units) for all projects with 5+ units; 50% for Fast Track expedited review</li>
                 <li><strong>De Beque:</strong> 50% (follows state baseline)</li>
             </ul>
-            <p style="font-size: 0.9rem; color: #666;">Note: Salida requires affordable units in <em>all</em> larger projects, not just those seeking incentives. Most communities follow the state's 50% threshold.</p>
+            <p style="font-size: 0.9rem; color: #595959;">Note: Salida requires affordable units in <em>all</em> larger projects, not just those seeking incentives. Most communities follow the state's 50% threshold.</p>
 
             <div class="highlight">
                 <strong>Key trade-off:</strong> Lower threshold = more projects may participate but fewer affordable units per project. Higher threshold = more affordable units per project but fewer projects may pencil out.
@@ -734,7 +774,7 @@
 
             <h4>A concrete example from Longmont, CO</h4>
             <p><strong>25% density bonus</strong> for projects that make <strong>12% of units affordable</strong> (at 80% AMI for sale, 50% AMI for rental). This means a 10-unit project becomes 12-13 units, with 1-2 affordable.</p>
-            <p style="font-size: 0.9rem; color: #666;">This costs the city nothing—it's just permission to build more. The developer gets more units to sell; the community gets affordable units.</p>
+            <p style="font-size: 0.9rem; color: #595959;">This costs the city nothing—it's just permission to build more. The developer gets more units to sell; the community gets affordable units.</p>
 
             <h4>Why offer it?</h4>
             <p>More total housing gets built. The builder gets more units to sell or rent. The city gets more affordable units. No taxpayer dollars change hands.</p>
@@ -832,7 +872,7 @@
 
             <h4>How other programs structure this</h4>
             <p>Some programs require <strong>100% of bonus units</strong> be affordable—the logic being that the developer is getting "free" extra units, so all of them should benefit the community. Others allow a lower percentage to make the deal more attractive to builders.</p>
-            <p style="font-size: 0.9rem; color: #666;">Delta has flexibility to design this however it wants. None of our comparison communities have documented requirements for bonus unit affordability.</p>
+            <p style="font-size: 0.9rem; color: #595959;">Delta has flexibility to design this however it wants. None of our comparison communities have documented requirements for bonus unit affordability.</p>
 
             <div class="highlight">
                 <strong>Key trade-off:</strong> Higher requirements = more community benefit per project. Lower requirements = more attractive to builders, potentially more projects participate.
@@ -894,7 +934,7 @@
                 <li><strong>Salida:</strong> Density bonus + parking/dimensional flexibility for inclusionary projects; deferred tap fee collection (not waiver)</li>
                 <li><strong>De Beque:</strong> No fee waivers (bare-bones compliance—just 90-day review)</li>
             </ul>
-            <p style="font-size: 0.9rem; color: #666;">Fee waivers are optional. Grand Junction offers the most; De Beque offers none. Delta can land anywhere on this spectrum.</p>
+            <p style="font-size: 0.9rem; color: #595959;">Fee waivers are optional. Grand Junction offers the most; De Beque offers none. Delta can land anywhere on this spectrum.</p>
 
             <h4>What each option costs the city</h4>
             <table>
@@ -923,7 +963,7 @@
                     <td>~$26,000</td>
                 </tr>
             </table>
-            <p style="font-size: 0.9rem; color: #666;">The city only gives up fees if housing gets built. No project = no cost.</p>
+            <p style="font-size: 0.9rem; color: #595959;">The city only gives up fees if housing gets built. No project = no cost.</p>
 
             <div class="highlight">
                 <strong>Key trade-off:</strong> More incentives make Delta more competitive for builders and may unlock additional state funding. But incentives cost real taxpayer dollars when projects are built.
@@ -1019,11 +1059,11 @@
     <!-- SUBMIT -->
     <section class="submit-section">
         <p>When you're done, send your answers so we can prepare for the discussion.</p>
-        <button class="email-button" onclick="emailPackage()">Send My Answers</button>
-        <button class="print-button" onclick="window.print()">Print</button>
+        <button class="email-button" onclick="emailPackage()" aria-label="Submit your worksheet answers">Send My Answers</button>
+        <button class="print-button" onclick="window.print()" aria-label="Print this worksheet">Print</button>
     </section>
 
-    <footer style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 40px;">
+    <footer style="text-align: center; color: #595959; font-size: 0.9rem; margin-top: 40px;">
         <p>Want to model your package in detail? <a href="https://delta-fast-track-simulator-qrzf2t87mqwzfgwporenqz.streamlit.app/" target="_blank">Visit the simulator</a></p>
         <p>Questions? Contact sarah@westernspaces.co</p>
     </footer>
