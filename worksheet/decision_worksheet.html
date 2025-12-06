@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delta Fast Track - Build Your Package</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .page-wrapper {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 800px;
+        }
+
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-inner {
+            position: sticky;
+            top: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .context-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .context-section h2 {
+            color: #1e3a5f;
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .decision-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #2c5282;
+        }
+
+        .info-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #e8f4f8;
+            border: 1px solid #b8d4e3;
+            color: #2c5282;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.2s;
+        }
+
+        .info-toggle:hover {
+            background: #d0e8f0;
+        }
+
+        .info-toggle .icon {
+            font-weight: bold;
+        }
+
+        .info-content {
+            display: none;
+            background: #f8fbfc;
+            border: 1px solid #d0e8f0;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .info-content.show {
+            display: block;
+        }
+
+        .info-content h4 {
+            color: #1e3a5f;
+            margin: 0 0 10px 0;
+            font-size: 0.95rem;
+        }
+
+        .info-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .info-content li {
+            margin-bottom: 8px;
+        }
+
+        .info-content .highlight {
+            background: #fff3cd;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 3px solid #ffc107;
+        }
+
+        .decision-section h3 {
+            color: #1e3a5f;
+            margin-top: 0;
+        }
+
+        .decision-number {
+            background: #2c5282;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            border-color: #2c5282;
+            background: #f0f4f8;
+        }
+
+        .option.selected {
+            border-color: #2c5282;
+            background: #e8f0f8;
+        }
+
+        .option input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .option-label {
+            font-weight: 500;
+        }
+
+        .option-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-left: 30px;
+        }
+
+        .tradeoff {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .package-summary {
+            background: #1e3a5f;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .package-summary h3 {
+            margin-top: 0;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .package-summary table {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .package-summary th {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .package-summary td {
+            border-bottom-color: rgba(255,255,255,0.2);
+        }
+
+        /* Mobile summary - shown at end of content */
+        .mobile-summary {
+            display: none;
+        }
+
+        .not-selected {
+            opacity: 0.5;
+            font-style: italic;
+        }
+
+        .reflection-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .reflection-section h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .submit-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .email-button {
+            background: #28a745;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .email-button:hover {
+            background: #218838;
+        }
+
+        .print-button {
+            background: #6c757d;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .print-button:hover {
+            background: #5a6268;
+        }
+
+        select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .inline-form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .inline-form label {
+            font-weight: 500;
+        }
+
+        .perspective-group {
+            margin-top: 10px;
+        }
+
+        .perspective-group > label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .perspective-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+        }
+
+        .perspective-options label {
+            font-weight: normal;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .perspective-options input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .package-summary {
+                position: relative;
+                background: #333;
+            }
+            .email-button, .print-button {
+                display: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .page-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                display: none;
+            }
+            .mobile-summary {
+                display: block;
+                margin: 30px 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            header {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 1.4rem;
+            }
+            .inline-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header style="max-width: 1200px; margin: 0 auto 30px auto;">
+        <h1>Delta Fast Track Decision Worksheet</h1>
+        <p style="font-size: 1.1rem; margin-bottom: 15px;">Build your recommended policy package</p>
+        <div style="background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 8px; border-left: 4px solid #fff; text-align: left;">
+            <p style="margin: 0 0 8px 0; color: #fff;"><strong>How to use this worksheet:</strong></p>
+            <p style="margin: 0 0 5px 0; color: #e8e8e8;"><strong>Learn</strong> about the policy options and what other communities have done</p>
+            <p style="margin: 0 0 5px 0; color: #e8e8e8;"><strong>Choose</strong> your preferences for each decision—these aren't final votes, just your starting point</p>
+            <p style="margin: 0 0 10px 0; color: #e8e8e8;"><strong>Discuss</strong> at the focus group—we'll use everyone's input to see where there's consensus and where we need more conversation</p>
+            <p style="margin: 0; font-size: 0.95rem; color: #ccc;">Your choices help us understand community priorities. Nothing is set in stone—this is the beginning of the conversation.</p>
+            <p style="margin: 10px 0 0 0; font-size: 0.95rem; color: #ccc;">Want to model your package in detail? <a href="https://delta-fast-track-simulator-qrzf2t87mqwzfgwporenqz.streamlit.app/" target="_blank" style="color: #8bb8e8;">Visit the simulator</a></p>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+    <div class="main-content">
+
+    <!-- CONTEXT SECTION -->
+    <section class="context-section">
+        <h2>Why This Matters
+            <button class="info-toggle" onclick="toggleInfo('infoFunding')"><span class="icon">ⓘ</span> Learn more about the $300M+ funding pot</button>
+        </h2>
+        <p>Colorado's Proposition 123 set aside hundreds of millions of dollars for housing. To access these funds, Delta must adopt a "Fast Track" program by January 2027.</p>
+
+        <p><strong>If Delta adopts Fast Track</strong>, local projects become eligible for state funding:</p>
+
+        <table>
+            <tr>
+                <th>Funding Program</th>
+                <th>What It Can Be Used For</th>
+            </tr>
+            <tr>
+                <td><strong>Land Banking</strong></td>
+                <td>Grants to acquire land for future housing</td>
+            </tr>
+            <tr>
+                <td><strong>Concessionary Debt</strong></td>
+                <td>Low-interest loans for construction</td>
+            </tr>
+            <tr>
+                <td><strong>Down Payment Assistance</strong></td>
+                <td>Grants to help buyers purchase homes</td>
+            </tr>
+        </table>
+
+        <div class="info-content" id="infoFunding">
+            <h4>Two Funding Streams: ~$300 Million+</h4>
+            <p>Proposition 123 dedicates a portion of state income tax revenue to housing. The money flows through two agencies:</p>
+
+            <h4>DOLA Programs (40% of funds)</h4>
+            <p>Administered by the Department of Local Affairs:</p>
+            <ul>
+                <li><strong>Down Payment Assistance:</strong> Grants for homebuyers—administered through local partners</li>
+                <li><strong>New Construction/Acquisition Rehab:</strong> Funds for building new affordable units or renovating existing ones</li>
+                <li><strong>Mobile Home Programs:</strong> Support for mobile home communities</li>
+                <li><strong>Local Planning Capacity Grants:</strong> Up to $200K for planning staff, software, consultants to process housing applications faster</li>
+            </ul>
+
+            <h4>OEDIT/CHFA Programs (60% of funds)</h4>
+            <p>Administered by the Office of Economic Development and Colorado Housing Finance Authority:</p>
+            <ul>
+                <li><strong>Land Banking:</strong> Grants to local governments (loans to nonprofits) to acquire land for future affordable housing. Over $73M awarded so far.</li>
+                <li><strong>Concessionary Debt:</strong> Low-interest construction loans (as low as 3% vs. market rates of 7-8%). Over $27M awarded for 728 units.</li>
+                <li><strong>Equity Program:</strong> Investments in affordable rental developments. Over $67M awarded in one round alone.</li>
+                <li><strong>Modular/Factory-Built Financing:</strong> $38M invested in modular housing manufacturers to reduce construction costs.</li>
+            </ul>
+
+            <h4>Who Can Apply?</h4>
+            <ul>
+                <li>Local governments and tribal governments</li>
+                <li>Housing authorities</li>
+                <li>Nonprofit developers and community land trusts</li>
+                <li>Private developers (for some programs)</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Key requirement:</strong> To remain eligible for Prop 123 funding in the next 3-year cycle (2027-2029), Delta must adopt Fast Track by January 2027.
+            </div>
+        </div>
+
+        <p><strong>If Delta does not adopt Fast Track</strong>, these funds go to other communities.</p>
+    </section>
+
+    <section class="context-section">
+        <h2>Four Communities to Learn From</h2>
+        <p>Throughout this worksheet, we reference four Colorado communities that have officially adopted Fast Track (verified by DOLA). Each offers a different approach:</p>
+
+        <table>
+            <tr>
+                <th>Community</th>
+                <th>Pop.</th>
+                <th>Approach</th>
+                <th>Why It's Relevant</th>
+            </tr>
+            <tr>
+                <td><strong>Grand Junction</strong></td>
+                <td>65,000</td>
+                <td>Fee waivers + Fast Track</td>
+                <td>Western Slope; detailed incentive program (Sept 2025)</td>
+            </tr>
+            <tr>
+                <td><strong>Montrose</strong></td>
+                <td>20,000</td>
+                <td>Land use code update</td>
+                <td>Delta's neighbor; adopted Dec 2024</td>
+            </tr>
+            <tr>
+                <td><strong>Salida</strong></td>
+                <td>6,000</td>
+                <td>Inclusionary + Fast Track</td>
+                <td>Small mountain town; first to file Prop 123 commitment</td>
+            </tr>
+            <tr>
+                <td><strong>De Beque</strong></td>
+                <td>500</td>
+                <td>Bare-bones compliance</td>
+                <td>Tiny Western Slope town; simple 90-day commitment (Nov 2025)</td>
+            </tr>
+        </table>
+
+        <p style="font-size: 0.9rem; color: #666; margin-top: 15px;"><strong>Range of approaches:</strong> From Grand Junction's full incentive package to De Beque's simple compliance—Delta can choose where on this spectrum to land.</p>
+    </section>
+
+    <section class="context-section">
+        <h2>State Baseline vs. Delta's Draft</h2>
+        <p>The state sets minimum requirements. Delta can choose to customize to fit local needs.</p>
+
+        <table>
+            <tr>
+                <th></th>
+                <th>State Baseline</th>
+                <th>Delta's Draft</th>
+            </tr>
+            <tr>
+                <td>Permit timeline</td>
+                <td>90 days</td>
+                <td>90 days</td>
+            </tr>
+            <tr>
+                <td>Rental AMI threshold</td>
+                <td>60% AMI</td>
+                <td>80% AMI (more inclusive)</td>
+            </tr>
+            <tr>
+                <td>Owner AMI threshold</td>
+                <td>100% AMI</td>
+                <td>100% AMI</td>
+            </tr>
+            <tr>
+                <td>% affordable to qualify</td>
+                <td>50% of units</td>
+                <td>25% of units (more inclusive)</td>
+            </tr>
+            <tr>
+                <td>Affordability period</td>
+                <td>Not specified</td>
+                <td>15 years (draft)</td>
+            </tr>
+            <tr>
+                <td>Incentives</td>
+                <td>Not required</td>
+                <td>Under discussion</td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- DECISIONS -->
+    <h2 style="color: #1e3a5f; margin-top: 40px;">Build Your Package</h2>
+    <p>Make each decision below. Your choices will appear in the summary at the bottom.</p>
+
+    <!-- Decision 1 -->
+    <section class="decision-section">
+        <h3><span class="decision-number">1</span> How long should units stay affordable?
+            <button class="info-toggle" onclick="toggleInfo('info1')"><span class="icon">ⓘ</span> Learn more</button>
+        </h3>
+        <p>This is the length of the deed restriction on affordable units.</p>
+
+        <div class="info-content" id="info1">
+            <h4>What happens when the restriction expires?</h4>
+            <p>When a deed restriction ends, the owner can convert to market-rate and capture full appreciation—sometimes called an "owner windfall." Longer terms reduce this concern.</p>
+
+            <h4>Typical rental property lifetime</h4>
+            <p>Most rental properties last 30-50+ years. Federal programs (HOME, LIHTC) require 20-30 year minimums. If restrictions expire too soon, the community loses affordable units while the buildings are still standing.</p>
+
+            <h4>What our comparison communities use</h4>
+            <ul>
+                <li><strong>Grand Junction:</strong> 30 years minimum—required for any project receiving fee waivers</li>
+                <li><strong>Montrose:</strong> Not specified in their Fast Track resolution</li>
+                <li><strong>Salida:</strong> Permanent—deed restrictions stay with the property "for generations"</li>
+                <li><strong>De Beque:</strong> Not specified in their resolution—follows state baseline</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Key trade-off:</strong> Shorter terms may be more attractive to builders, but longer terms provide more lasting community benefit and often qualify for better state/federal funding.
+            </div>
+        </div>
+
+        <div class="options">
+            <label class="option">
+                <input type="radio" name="affordability" value="5 years">
+                <span class="option-label">5 years</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="affordability" value="10 years">
+                <span class="option-label">10 years</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="affordability" value="15 years (draft)">
+                <span class="option-label">15 years (draft)</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="affordability" value="20 years">
+                <span class="option-label">20 years</span>
+                <span class="option-description">— federal program minimum (HOME, LIHTC)</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="affordability" value="30 years">
+                <span class="option-label">30 years</span>
+                <span class="option-description">— what neighboring cities use</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="affordability" value="Perpetuity">
+                <span class="option-label">Perpetuity</span>
+                <span class="option-description">— permanent affordability</span>
+            </label>
+        </div>
+    </section>
+
+    <!-- Decision 2 -->
+    <section class="decision-section">
+        <h3><span class="decision-number">2</span> What % of units must be affordable to qualify?
+            <button class="info-toggle" onclick="toggleInfo('info2')"><span class="icon">ⓘ</span> Learn more</button>
+        </h3>
+        <p>State requires 50%. Delta's draft lowers this to attract more projects.</p>
+
+        <div class="info-content" id="info2">
+            <h4>Why consider a lower threshold?</h4>
+            <p>A 4-unit project (small local builder) at 50% = 2 affordable units. At 25% = 1 affordable unit. The lower bar may be the difference between a local builder participating or not.</p>
+
+            <h4>What this means in practice</h4>
+            <ul>
+                <li><strong>4-unit project at 25%:</strong> 1 affordable unit, 3 market-rate</li>
+                <li><strong>4-unit project at 50%:</strong> 2 affordable units, 2 market-rate</li>
+                <li><strong>10-unit project at 25%:</strong> 2-3 affordable, 7-8 market-rate</li>
+                <li><strong>10-unit project at 50%:</strong> 5 affordable, 5 market-rate</li>
+            </ul>
+
+            <h4>What our comparison communities require</h4>
+            <ul>
+                <li><strong>Grand Junction:</strong> 50% for Fast Track incentives (follows state baseline)</li>
+                <li><strong>Montrose:</strong> 50% (follows state baseline)</li>
+                <li><strong>Salida:</strong> ~17% (1 in 6 units) for all projects with 5+ units; 50% for Fast Track expedited review</li>
+                <li><strong>De Beque:</strong> 50% (follows state baseline)</li>
+            </ul>
+            <p style="font-size: 0.9rem; color: #666;">Note: Salida requires affordable units in <em>all</em> larger projects, not just those seeking incentives. Most communities follow the state's 50% threshold.</p>
+
+            <div class="highlight">
+                <strong>Key trade-off:</strong> Lower threshold = more projects may participate but fewer affordable units per project. Higher threshold = more affordable units per project but fewer projects may pencil out.
+            </div>
+        </div>
+
+        <div class="options">
+            <label class="option">
+                <input type="radio" name="pct_affordable" value="10%">
+                <span class="option-label">10%</span>
+                <span class="option-description">— 10-unit project = 1 affordable</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="pct_affordable" value="17% (1 in 6)">
+                <span class="option-label">17% (1 in 6)</span>
+                <span class="option-description">— what Salida uses</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="pct_affordable" value="25% (draft)">
+                <span class="option-label">25% (draft)</span>
+                <span class="option-description">— 10-unit project = 2-3 affordable</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="pct_affordable" value="33% (1 in 3)">
+                <span class="option-label">33% (1 in 3)</span>
+                <span class="option-description">— 10-unit project = 3-4 affordable</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="pct_affordable" value="50% (state baseline)">
+                <span class="option-label">50% (state baseline)</span>
+                <span class="option-description">— 10-unit project = 5 affordable</span>
+            </label>
+        </div>
+    </section>
+
+    <!-- Decision 3 -->
+    <section class="decision-section">
+        <h3><span class="decision-number">3</span> Should Delta offer a density bonus?
+            <button class="info-toggle" onclick="toggleInfo('info3')"><span class="icon">ⓘ</span> Learn more</button>
+        </h3>
+        <p>A density bonus lets builders construct more units than zoning allows. It's not city money—it's permission.</p>
+
+        <div class="info-content" id="info3">
+            <h4>How it works</h4>
+            <p>A density bonus allows builders to add units beyond what zoning normally allows. In exchange, they provide some affordable units. The city doesn't spend money—it grants permission.</p>
+
+            <h4>What our comparison communities do</h4>
+            <ul>
+                <li><strong>Grand Junction:</strong> Density bonus as part of Affordable Housing Incentive Program—developers can build more units in exchange for including affordable homes, combined with fee waivers</li>
+                <li><strong>Montrose:</strong> REDO overlay district allows increased density near downtown—minimum lot size of 2,075 sq ft, additional units on standard lots, reduced parking</li>
+                <li><strong>Salida:</strong> Density bonus for inclusionary housing—developers who include affordable units get density bonuses, parking reductions, and dimensional flexibility (2018 ordinance)</li>
+                <li><strong>De Beque:</strong> No density bonus (bare-bones compliance)</li>
+            </ul>
+
+            <h4>A concrete example from Longmont, CO</h4>
+            <p><strong>25% density bonus</strong> for projects that make <strong>12% of units affordable</strong> (at 80% AMI for sale, 50% AMI for rental). This means a 10-unit project becomes 12-13 units, with 1-2 affordable.</p>
+            <p style="font-size: 0.9rem; color: #666;">This costs the city nothing—it's just permission to build more. The developer gets more units to sell; the community gets affordable units.</p>
+
+            <h4>Why offer it?</h4>
+            <p>More total housing gets built. The builder gets more units to sell or rent. The city gets more affordable units. No taxpayer dollars change hands.</p>
+
+            <h4>Example: What each bonus level means for a 10-unit project</h4>
+            <table>
+                <tr>
+                    <th>Option</th>
+                    <th>10 units becomes...</th>
+                    <th>Extra affordable</th>
+                </tr>
+                <tr>
+                    <td>No bonus</td>
+                    <td>10 units</td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td>10%</td>
+                    <td>11 units</td>
+                    <td>+0-1</td>
+                </tr>
+                <tr>
+                    <td>20% (draft)</td>
+                    <td>12 units</td>
+                    <td>+1</td>
+                </tr>
+                <tr>
+                    <td>30%</td>
+                    <td>13 units</td>
+                    <td>+1-2</td>
+                </tr>
+                <tr>
+                    <td>40%</td>
+                    <td>14 units</td>
+                    <td>+2</td>
+                </tr>
+                <tr>
+                    <td>50%</td>
+                    <td>15 units</td>
+                    <td>+2-3</td>
+                </tr>
+            </table>
+
+            <div class="highlight">
+                <strong>Key trade-off:</strong> Buildings may be larger than current zoning envisions. This trades some neighborhood character for more housing supply and affordability.
+            </div>
+        </div>
+
+        <div class="options">
+            <label class="option">
+                <input type="radio" name="density_bonus" value="No bonus">
+                <span class="option-label">No bonus</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="density_bonus" value="10%">
+                <span class="option-label">10%</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="density_bonus" value="20% (draft)">
+                <span class="option-label">20% (draft)</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="density_bonus" value="30%">
+                <span class="option-label">30%</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="density_bonus" value="40%">
+                <span class="option-label">40%</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="density_bonus" value="50%">
+                <span class="option-label">50%</span>
+                <span class="option-description">— aggressive (used in high-cost markets)</span>
+            </label>
+        </div>
+    </section>
+
+    <!-- Decision 4 -->
+    <section class="decision-section" id="decision4" style="display: none;">
+        <h3><span class="decision-number">4</span> What % of bonus units should be affordable?
+            <button class="info-toggle" onclick="toggleInfo('info4')"><span class="icon">ⓘ</span> Learn more</button>
+        </h3>
+
+        <div class="info-content" id="info4">
+            <h4>This decision only matters if you chose a density bonus above</h4>
+            <p>When a builder gets permission to add extra units, what share of those bonus units should be affordable?</p>
+
+            <h4>Example: 20% density bonus on a 10-unit project</h4>
+            <ul>
+                <li>Builder gets 2 bonus units (10 × 20% = 2)</li>
+                <li>At <strong>25%</strong> of bonus affordable: 0-1 affordable bonus unit</li>
+                <li>At <strong>50%</strong> of bonus affordable: 1 affordable bonus unit</li>
+                <li>At <strong>100%</strong> of bonus affordable: 2 affordable bonus units</li>
+            </ul>
+
+            <h4>How other programs structure this</h4>
+            <p>Some programs require <strong>100% of bonus units</strong> be affordable—the logic being that the developer is getting "free" extra units, so all of them should benefit the community. Others allow a lower percentage to make the deal more attractive to builders.</p>
+            <p style="font-size: 0.9rem; color: #666;">Delta has flexibility to design this however it wants. None of our comparison communities have documented requirements for bonus unit affordability.</p>
+
+            <div class="highlight">
+                <strong>Key trade-off:</strong> Higher requirements = more community benefit per project. Lower requirements = more attractive to builders, potentially more projects participate.
+            </div>
+        </div>
+
+        <div class="options">
+            <label class="option">
+                <input type="radio" name="bonus_affordable" value="25%">
+                <span class="option-label">25%</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="bonus_affordable" value="50% (draft)">
+                <span class="option-label">50% (draft)</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="bonus_affordable" value="75%">
+                <span class="option-label">75%</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="bonus_affordable" value="100%">
+                <span class="option-label">100%</span>
+                <span class="option-description">— all bonus units affordable</span>
+            </label>
+        </div>
+    </section>
+
+    <!-- Decision 5 -->
+    <section class="decision-section">
+        <h3><span class="decision-number">5</span> Should Delta offer fee waivers?
+            <button class="info-toggle" onclick="toggleInfo('info5')"><span class="icon">ⓘ</span> Learn more</button>
+        </h3>
+        <p>Fee waivers are optional incentives. This is the only part that costs the city money.</p>
+
+        <div class="info-content" id="info5">
+            <h4>What fees are involved?</h4>
+            <ul>
+                <li><strong>Planning fees:</strong> ~$500 application fee</li>
+                <li><strong>Building permit fees:</strong> Based on project value (formula in fee schedule)</li>
+                <li><strong>Tap fees:</strong> Water and sewer connection fees (~$3,200/unit)</li>
+                <li><strong>Use tax:</strong> 3% of construction materials cost</li>
+            </ul>
+
+            <h4>What this costs the city</h4>
+            <ul>
+                <li><strong>4-unit project:</strong> ~$2,000 (moderate) to ~$5,500 (full)</li>
+                <li><strong>10-unit project:</strong> ~$6,000 (moderate) to ~$26,000 (full)</li>
+                <li><strong>20-unit project:</strong> ~$12,000 (moderate) to ~$84,000 (full)</li>
+            </ul>
+            <p><strong>Per household:</strong> A 10-unit project at "Full" incentives costs about $7 per Delta household (~3,700 total households).</p>
+
+            <h4>The city only pays if housing gets built</h4>
+            <p>Unlike grants or up-front spending, fee waivers only cost money when a qualifying project is completed. No project = no cost.</p>
+
+            <h4>What our comparison communities offer</h4>
+            <ul>
+                <li><strong>Grand Junction:</strong> 100% of impact fees waived for projects at ≤60% AMI; 75% waived at 61-80% AMI; water/sewer assistance also available</li>
+                <li><strong>Montrose:</strong> REDO district reduces ADU tap fees from ~$6,800 to $300; no broad fee waivers for other housing types</li>
+                <li><strong>Salida:</strong> Density bonus + parking/dimensional flexibility for inclusionary projects; deferred tap fee collection (not waiver)</li>
+                <li><strong>De Beque:</strong> No fee waivers (bare-bones compliance—just 90-day review)</li>
+            </ul>
+            <p style="font-size: 0.9rem; color: #666;">Fee waivers are optional. Grand Junction offers the most; De Beque offers none. Delta can land anywhere on this spectrum.</p>
+
+            <h4>What each option costs the city</h4>
+            <table>
+                <tr>
+                    <th>Option</th>
+                    <th>City offers</th>
+                    <th>4-unit cost</th>
+                    <th>10-unit cost</th>
+                </tr>
+                <tr>
+                    <td><strong>None</strong></td>
+                    <td>90-day review only</td>
+                    <td>Staff time</td>
+                    <td>Staff time</td>
+                </tr>
+                <tr>
+                    <td><strong>Moderate</strong></td>
+                    <td>+ planning & permit waivers</td>
+                    <td>~$2,000</td>
+                    <td>~$6,000</td>
+                </tr>
+                <tr>
+                    <td><strong>Full</strong></td>
+                    <td>All above + tap fees + use tax</td>
+                    <td>~$5,500</td>
+                    <td>~$26,000</td>
+                </tr>
+            </table>
+            <p style="font-size: 0.9rem; color: #666;">The city only gives up fees if housing gets built. No project = no cost.</p>
+
+            <div class="highlight">
+                <strong>Key trade-off:</strong> More incentives make Delta more competitive for builders and may unlock additional state funding. But incentives cost real taxpayer dollars when projects are built.
+            </div>
+        </div>
+
+        <div class="options">
+            <label class="option">
+                <input type="radio" name="fee_waivers" value="None">
+                <span class="option-label">None</span>
+                <span class="option-description">— 90-day review only (staff time)</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="fee_waivers" value="Moderate">
+                <span class="option-label">Moderate</span>
+                <span class="option-description">— planning & permit waivers (~$6K for a 10-unit project)</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="fee_waivers" value="Full">
+                <span class="option-label">Full</span>
+                <span class="option-description">— all fees + tap fees + use tax (~$26K for a 10-unit project)</span>
+            </label>
+        </div>
+    </section>
+
+    <!-- MOBILE PACKAGE SUMMARY (hidden on desktop) -->
+    <section class="package-summary mobile-summary">
+        <h3>Your Package</h3>
+        <table>
+            <tr>
+                <td>Affordability period</td>
+                <td class="sum-affordability not-selected">Not selected</td>
+            </tr>
+            <tr>
+                <td>% affordable to qualify</td>
+                <td class="sum-pct not-selected">Not selected</td>
+            </tr>
+            <tr>
+                <td>Density bonus</td>
+                <td class="sum-density not-selected">Not selected</td>
+            </tr>
+            <tr>
+                <td>% of bonus affordable</td>
+                <td class="sum-bonus not-selected">Not selected</td>
+            </tr>
+            <tr>
+                <td>Fee waivers</td>
+                <td class="sum-fees not-selected">Not selected</td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- REFLECTION -->
+    <section class="reflection-section">
+        <h3>Name Your Package</h3>
+        <input type="text" id="package-name" placeholder="e.g., 'Cautious Start' / 'Middle Road' / 'All In'">
+    </section>
+
+    <section class="reflection-section">
+        <h3>About You</h3>
+        <div class="inline-form" style="margin-bottom: 15px;">
+            <label>Name:</label>
+            <input type="text" id="user-name" style="flex: 1; min-width: 200px;">
+        </div>
+        <div class="perspective-group">
+            <label>Perspective (select all that apply):</label>
+            <div class="perspective-options">
+                <label><input type="checkbox" name="perspective" value="Resident/Taxpayer"> Resident/Taxpayer</label>
+                <label><input type="checkbox" name="perspective" value="Builder/Developer"> Builder/Developer</label>
+                <label><input type="checkbox" name="perspective" value="Employer"> Employer</label>
+                <label><input type="checkbox" name="perspective" value="City Staff"> City Staff</label>
+                <label><input type="checkbox" name="perspective" value="Elected Official"> Elected Official</label>
+                <label><input type="checkbox" id="other-checkbox" name="perspective" value="Other" onchange="toggleOtherInput()"> Other</label>
+                <input type="text" id="other-perspective" placeholder="Please specify..." style="display: none; margin-top: 5px; padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; width: 200px;">
+            </div>
+        </div>
+    </section>
+
+    <section class="reflection-section">
+        <h3>Bring This to the Meeting</h3>
+        <p>Complete this before the focus group. Be ready to discuss with the group.</p>
+
+        <p><strong>What was the hardest decision for you?</strong></p>
+        <textarea id="q-hardest" placeholder=""></textarea>
+
+        <p><strong>What would change your mind?</strong></p>
+        <textarea id="q-change" placeholder=""></textarea>
+
+        <p><strong>What's the most important thing to get right?</strong></p>
+        <textarea id="q-important" placeholder=""></textarea>
+    </section>
+
+    <!-- SUBMIT -->
+    <section class="submit-section">
+        <p>When you're done, send your answers so we can prepare for the discussion.</p>
+        <button class="email-button" onclick="emailPackage()">Send My Answers</button>
+        <button class="print-button" onclick="window.print()">Print</button>
+    </section>
+
+    <footer style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 40px;">
+        <p>Want to model your package in detail? <a href="https://delta-fast-track-simulator-qrzf2t87mqwzfgwporenqz.streamlit.app/" target="_blank">Visit the simulator</a></p>
+        <p>Questions? Contact sarah@westernspaces.co</p>
+    </footer>
+
+    </div><!-- end main-content -->
+
+    <!-- SIDEBAR (desktop only) -->
+    <aside class="sidebar">
+        <div class="sidebar-inner">
+            <section class="package-summary">
+                <h3>Your Package</h3>
+                <table>
+                    <tr>
+                        <td>Affordability period</td>
+                        <td class="sum-affordability not-selected">Not selected</td>
+                    </tr>
+                    <tr>
+                        <td>% affordable to qualify</td>
+                        <td class="sum-pct not-selected">Not selected</td>
+                    </tr>
+                    <tr>
+                        <td>Density bonus</td>
+                        <td class="sum-density not-selected">Not selected</td>
+                    </tr>
+                    <tr>
+                        <td>% of bonus affordable</td>
+                        <td class="sum-bonus not-selected">Not selected</td>
+                    </tr>
+                    <tr>
+                        <td>Fee waivers</td>
+                        <td class="sum-fees not-selected">Not selected</td>
+                    </tr>
+                </table>
+            </section>
+        </div>
+    </aside>
+
+    </div><!-- end page-wrapper -->
+
+    <script>
+        // Toggle info content visibility
+        function toggleInfo(id) {
+            const content = document.getElementById(id);
+            const button = content.previousElementSibling.querySelector('.info-toggle') ||
+                           document.querySelector(`[onclick="toggleInfo('${id}')"]`);
+
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                if (button) button.innerHTML = '<span class="icon">ⓘ</span> Learn more';
+            } else {
+                content.classList.add('show');
+                if (button) button.innerHTML = '<span class="icon">✕</span> Close';
+            }
+        }
+
+        // Update summary when selections change
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateSummary);
+        });
+
+        // Highlight selected options
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const name = this.querySelector('input').name;
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.closest('.option').classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+
+        function updateSummary() {
+            const mapping = {
+                'affordability': 'sum-affordability',
+                'pct_affordable': 'sum-pct',
+                'density_bonus': 'sum-density',
+                'bonus_affordable': 'sum-bonus',
+                'fee_waivers': 'sum-fees'
+            };
+
+            for (const [name, className] of Object.entries(mapping)) {
+                const selected = document.querySelector(`input[name="${name}"]:checked`);
+                // Update all cells with this class (both sidebar and mobile)
+                document.querySelectorAll(`.${className}`).forEach(cell => {
+                    if (selected) {
+                        cell.textContent = selected.value;
+                        cell.classList.remove('not-selected');
+                    } else {
+                        cell.textContent = 'Not selected';
+                        cell.classList.add('not-selected');
+                    }
+                });
+            }
+
+            // Show/hide Decision 4 based on density bonus selection
+            const densityBonus = document.querySelector('input[name="density_bonus"]:checked');
+            const decision4 = document.getElementById('decision4');
+            if (densityBonus && densityBonus.value !== 'No bonus') {
+                decision4.style.display = 'block';
+            } else {
+                decision4.style.display = 'none';
+                // Clear any selection in Decision 4 if they chose "No bonus"
+                document.querySelectorAll('input[name="bonus_affordable"]').forEach(input => {
+                    input.checked = false;
+                    input.closest('.option')?.classList.remove('selected');
+                });
+                // Update the summary to show N/A
+                document.querySelectorAll('.sum-bonus').forEach(cell => {
+                    cell.textContent = 'N/A';
+                    cell.classList.add('not-selected');
+                });
+            }
+        }
+
+        function toggleOtherInput() {
+            const otherCheckbox = document.getElementById('other-checkbox');
+            const otherInput = document.getElementById('other-perspective');
+            if (otherCheckbox.checked) {
+                otherInput.style.display = 'block';
+                otherInput.focus();
+            } else {
+                otherInput.style.display = 'none';
+                otherInput.value = '';
+            }
+        }
+
+        function emailPackage() {
+            const name = document.getElementById('user-name').value || 'Anonymous';
+            const perspectives = Array.from(document.querySelectorAll('input[name="perspective"]:checked'))
+                .map(cb => {
+                    if (cb.value === 'Other') {
+                        const otherText = document.getElementById('other-perspective').value;
+                        return otherText ? `Other: ${otherText}` : 'Other';
+                    }
+                    return cb.value;
+                });
+            const perspective = perspectives.length > 0 ? perspectives.join(', ') : 'Not specified';
+            const packageName = document.getElementById('package-name').value || 'Unnamed Package';
+
+            const affordability = document.querySelector('input[name="affordability"]:checked')?.value || 'Not selected';
+            const pctAffordable = document.querySelector('input[name="pct_affordable"]:checked')?.value || 'Not selected';
+            const densityBonus = document.querySelector('input[name="density_bonus"]:checked')?.value || 'Not selected';
+            const bonusAffordable = densityBonus === 'No bonus' ? 'N/A' : (document.querySelector('input[name="bonus_affordable"]:checked')?.value || 'Not selected');
+            const feeWaivers = document.querySelector('input[name="fee_waivers"]:checked')?.value || 'Not selected';
+
+            const qHardest = document.getElementById('q-hardest').value || 'Not answered';
+            const qChange = document.getElementById('q-change').value || 'Not answered';
+            const qImportant = document.getElementById('q-important').value || 'Not answered';
+
+            // Disable button while sending
+            const btn = document.querySelector('.email-button');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            // Send to Formspree
+            fetch('https://formspree.io/f/xzznvopz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    perspective: perspective,
+                    package_name: packageName,
+                    affordability_period: affordability,
+                    pct_affordable: pctAffordable,
+                    density_bonus: densityBonus,
+                    bonus_affordable: bonusAffordable,
+                    fee_waivers: feeWaivers,
+                    hardest_decision: qHardest,
+                    what_would_change_mind: qChange,
+                    most_important: qImportant
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    btn.textContent = 'Sent!';
+                    btn.style.background = '#28a745';
+                    alert('Thank you! Your answers have been sent. You can print this page to bring to the meeting.');
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.textContent = 'Send My Answers';
+                alert('Something went wrong. Please try again or contact sarah@westernspaces.co');
+            });
+        }
+    </script>
+</body>
+</html>
